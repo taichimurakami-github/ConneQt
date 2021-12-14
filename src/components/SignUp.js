@@ -1,6 +1,8 @@
 import { signInWithGoogle } from "../fn/auth/firebase.auth"
 import { Header } from "./Header";
 
+import logo from "../images/logo-1x.png";
+
 export const SignUp = () => {
 
   const handleSignUp = () => {
@@ -13,11 +15,13 @@ export const SignUp = () => {
   return (
     <>
       <Header
+        title="hey! へようこそ"
         backable={false}
       />
-      <h1>ユーザー登録画面</h1>
-      <h2>あなたはまだログインしていません</h2>
-      <button className="btn-orange" onClick={handleSignUp}>googleログインはこちら</button>
+      <p>version: demo-template-with-cra.2021.12.15</p>
+      <img src={logo} alt="hey! ~コミュニケーション促進サービス~"></img>
+      <h2>まずはログインしましょう！</h2>
+      <button className="btn-orange" onClick={handleSignUp}>googleでログイン</button>
     </>
   )
 }

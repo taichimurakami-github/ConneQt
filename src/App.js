@@ -11,7 +11,6 @@ import { UsersList } from "./components/UsersList";
 import { UserProfile } from "./components/UserProfile";
 import { Mypage } from "./components/Mypage";
 import { Modal } from "./components/Modal";
-import { Header } from "./components/Header";
 import { Menu } from "./components/Menu";
 
 
@@ -89,9 +88,11 @@ export const App = () => {
   /**
    * update useState: userData
    */
-  const fetchAndRenewUserData = async () => {
+  const fetchAndRenewUserData = async (options = { init: false }) => {
+
     //userDataを更新
     //userDataが無い場合はfirebaseより情報取得
+
     //loadingをつける
     createLoadingModal();
 
@@ -99,12 +100,43 @@ export const App = () => {
     //返り値は Object(見つかった) or null(見つからなかった)
     const user = await getAuthUserDoc(authState);
 
+    // eraceModal();
+
     //見つからなかったらDBに登録して改めてusedataを取得・登録 >> Mypageを表示 & ようこそ！モーダルを表示
     //見つかったらそのままuserdataを登録 >> 表示するページはいじらない
-    if (user) setUserData(user);
+    if (user) {
+
+      //ユーザー登録済み
+      setUserData(user);
+
+      //init: trueの引数指定の場合のみ、「おかえりなさい！」モーダルを表示
+      // options.init && setModalState({
+      //   display: true,
+      //   closable: true,
+      //   type: appConfig.components.modal.type["002"],
+      //   content: {
+      //     title: "おかえりなさい！"
+      //   }
+      // });
+    }
     else {
+
+      //ユーザー未登録
       setUserData(await registerAuthUserDoc(authState));
       setPageContentState(appConfig.pageContents["004"]);
+      // setModalState({
+      //   display: true,
+      //   closable: true,
+      //   type: appConfig.components.modal.type["002"],
+      //   content: {
+      //     title: "Hey! へようこそ！",
+      //     text: [
+      //       "hey!へようこそ！",
+      //       "これは初回登録時にのみ表示されるメッセージです。",
+      //       "まずはあなたのアカウント設定を行いましょう"
+      //     ]
+      //   }
+      // })
     }
 
     //loadingを消す
@@ -171,7 +203,7 @@ export const App = () => {
 
   //認証状態が変化したらアップデートを行う
   useEffect(() => {
-    authState && fetchAndRenewUserData();
+    authState && fetchAndRenewUserData({ init: true });
   }, [isSignedIn]);
 
 

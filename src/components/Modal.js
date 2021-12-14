@@ -1,36 +1,41 @@
 import loading from "../images/loading.gif";
 import { appConfig } from "../app.config";
-import { useEffect, useReducer } from "react/cjs/react.development";
+import { useState, useEffect } from "react/cjs/react.development";
 
 //style import
 import "../styles/modal.scss";
 
-const modalReducer = (state, action) => {
-  switch (action.type) {
-    case appConfig.components.modal.type["001"]:
-      return <LoadingModal />;
-
-    default:
-      return undefined;
-  }
-}
 
 export const Modal = (props) => {
 
-  const [activeModal, dispatch] = useReducer(modalReducer, undefined);
+  const [modalState, setModalState] = useState();
+
+  const handleModal = () => {
+
+    switch (modalState) {
+      case appConfig.components.modal.type["001"]:
+        return <LoadingModal
+
+        />;
+
+      case appConfig.components.modal.type["002"]:
+        return <ConfirmModal
+
+        />
+
+      default:
+        return undefined;
+    }
+  }
 
   useEffect(() => {
-
-    dispatch({
-      type: props.state.type
-    });
-
+    setModalState(props.state.modal)
   }, [props.state.type])
 
   return (
     <>
       <div className={`modal-wrapper ${props.state.display && "active"}`}>
-        {props.state.display && activeModal}
+        {props.state.display && modalState}
       </div>
     </>
   )
@@ -40,6 +45,19 @@ const LoadingModal = () => {
   return (
     <div className="loading-wrapper">
       <img src={loading}></img>
+    </div>
+  )
+}
+
+const ConfirmModal = (props) => {
+  return (
+    <div className={`confirm-wrapper ${props?.class}`}>
+      <h3>{props?.title}</h3>
+      {
+        props?.text.map((val) => {
+          return <p>{val}</p>
+        })
+      }
     </div>
   )
 }
