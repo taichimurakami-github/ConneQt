@@ -3,24 +3,24 @@ import { appConfig } from "./app.config";
 
 // lib imports
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { collection, getDocs } from "firebase/firestore";
 import { useState, useEffect } from "react";
 
 // components imports
-import { SignIn } from "./components/SignUp";
-import { PeopleList } from "./components/PeopleList";
+import { SignUp } from "./components/SignUp";
+import { UsersList } from "./components/UsersList";
+import { UserProfile } from "./components/UserProfile";
+import { Mypage } from "./components/Mypage";
+import { Modal } from "./components/Modal";
+import { Header } from "./components/Header";
+import { Menu } from "./components/Menu";
+
+
 
 // fn imports
-import { getAuthUserDoc, registerAuthUserDoc } from "./fn/db/firestore.handler";
-import { Modal } from "./components/Modal";
+import { getAllUserDocs, getAuthUserDoc, registerAuthUserDoc } from "./fn/db/firestore.handler";
+// app common style imports
+import "./styles/App.scss";
 
-const modalConfig = appConfig.components.modal;
-const modalState_defaultValue = {
-  display: false,
-  type: null,
-  closeable: false,
-  content: null
-}
 
 export const App = () => {
 
@@ -29,14 +29,96 @@ export const App = () => {
    */
   const [authState, setAuthState] = useState(null);
   const [userData, setUserData] = useState(null);
-  const [signInState, setSignInState] = useState(false);
-  const [modalState, setModalState] = useState(modalState_defaultValue);
+  const [allUsersData, setAllUsersData] = useState([]);
+  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [selectedUserData, setSelectedUserData] = useState(null);
+  const [modalState, setModalState] = useState({ ...appConfig.initialState.App.modalState });
+  const [pageContentState, setPageContentState] = useState(appConfig.pageContents["001"]);
 
   /**
-   * reset state functions
+   * modal state functions
    */
-  const eraceModal = () => setModalState(modalState_defaultValue);
+  const eraceModal = () => setModalState({ ...appConfig.initialState.App.modalState });
+  const createLoadingModal = () => setModalState({
+    ...modalState,
+    display: true,
+    closeable: false,
+    type: appConfig.components.modal.type["001"]
+  });
 
+
+  /**
+   * handle Page Content(Main content) by appConfig.pageContents data
+   * @param {string} id 
+   * @returns 
+   */
+  const handlePageContent = (id) => {
+    switch (id) {
+      //SIGN_UP
+      case appConfig.pageContents["001"]:
+        return <SignUp />;
+
+      //USERS_LIST
+      case appConfig.pageContents["002"]:
+        return <UsersList
+          user={userData}
+          allUsers={allUsersData}
+          renewUsers={fetchAndRenewAllUserData}
+          handlePageContent={setPageContentState}
+          handleSelectUser={setSelectedUserData} />;
+
+      //USER_PROFILE
+      case appConfig.pageContents["003"]:
+        return <UserProfile
+          user={selectedUserData}
+          handlePageContent={setPageContentState} />;
+
+      case appConfig.pageContents["004"]:
+        return <Mypage
+          fetchAndRenewUserData={fetchAndRenewUserData}
+          handleModalState={setModalState}
+          eraceModal={eraceModal}
+          authData={authState}
+          user={userData} />;
+
+      default:
+        return undefined;
+    }
+  }
+
+  /**
+   * update useState: userData
+   */
+  const fetchAndRenewUserData = async () => {
+    //userDataを更新
+    //userDataが無い場合はfirebaseより情報取得
+    //loadingをつける
+    createLoadingModal();
+
+    //authを通ったユーザーを指定
+    //返り値は Object(見つかった) or null(見つからなかった)
+    const user = await getAuthUserDoc(authState);
+
+    //見つからなかったらDBに登録して改めてusedataを取得・登録 >> Mypageを表示 & ようこそ！モーダルを表示
+    //見つかったらそのままuserdataを登録 >> 表示するページはいじらない
+    if (user) setUserData(user);
+    else {
+      setUserData(await registerAuthUserDoc(authState));
+      setPageContentState(appConfig.pageContents["004"]);
+    }
+
+    //loadingを消す
+    eraceModal();
+  }
+
+  /**
+   * update useState: allUserData
+   */
+  const fetchAndRenewAllUserData = async () => {
+    createLoadingModal();
+    setAllUsersData(await getAllUserDocs());
+    eraceModal();
+  }
 
   /**
    * useEffect functions
@@ -44,7 +126,16 @@ export const App = () => {
 
   //ログイン状態を判定・処理
   useEffect(() => {
+    //loadingエフェクトを起動
+    setModalState({
+      display: true,
+      closable: false,
+      type: appConfig.components.modal.type["001"],
+      content: null
+    });
+
     const auth = getAuth();
+    setPageContentState(appConfig.pageContents["002"]);
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -52,44 +143,36 @@ export const App = () => {
         // https://firebase.google.com/docs/reference/js/firebase.User
         console.log("you have signed in!");
         console.log(user);
+
+        // Users Listを表示コンテンツに指定
+        setPageContentState(appConfig.pageContents["002"]);
+
+        // AuthState, SignInStateを更新
         setAuthState(user);
-        setSignInState(true);
-        // ...
+        setIsSignedIn(true);
+
+        //loadingエフェクトを終了
+        eraceModal();
+
       } else {
         // User is signed out
         // ...
         console.log("you have signed out!");
         setAuthState(null);
-        setSignInState(false);
+        setIsSignedIn(false);
+        setPageContentState(appConfig.pageContents["001"]);
+
+        //loadingエフェクトを終了
+        eraceModal();
       }
     });
   }, []);
 
-  //Sign in ・ out状態の切り替えを検知
+
+  //認証状態が変化したらアップデートを行う
   useEffect(() => {
-    // console.log(`sign in state: ${signInState}`);
-    authState && (async () => {
-      //loadingをつける
-      setModalState({
-        ...modalState,
-        display: true,
-        closeable: false,
-        type: appConfig.components.modal.type["001"]
-      });
-
-      //authを通ったユーザーを指定
-      //返り値は Object(見つかった) or null(見つからなかった)
-      const user = await getAuthUserDoc(authState);
-
-      //見つからなかったらDBに登録して改めてusedataを取得・登録
-      //見つかったらそのままuserdataを登録
-      user ? setUserData(user) : setUserData(await registerAuthUserDoc(authState));
-
-      //loadingを消す
-      setModalState(modalState_defaultValue);
-    })()
-
-  }, [signInState]);
+    authState && fetchAndRenewUserData();
+  }, [isSignedIn]);
 
 
   /**
@@ -98,9 +181,20 @@ export const App = () => {
   return (
     <div className="App">
       {
-        signInState
-          ? <PeopleList user={userData} />
-          : <SignIn />
+        // Main contents component
+        // signInState
+        //   ? <UsersList user={userData} />
+        //   : <SignUp />
+        handlePageContent(pageContentState)
+      }
+      <div className="spacer" style={{ height: "100px" }}></div>
+      {
+        authState && userData && (
+          <Menu
+            pageContentState={pageContentState}
+            handlePageContent={setPageContentState}
+          />
+        )
       }
       <Modal state={modalState} />
     </div>

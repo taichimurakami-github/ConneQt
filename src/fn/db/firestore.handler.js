@@ -1,4 +1,4 @@
-import { collection, doc, getDoc, getDocs, getFirestore, setDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, getFirestore, setDoc, updateDoc } from "firebase/firestore";
 import { userDocTemplate } from "../../firebase.config";
 import "./firestore.ready";
 
@@ -46,14 +46,18 @@ const registerAuthUserDoc = async (authData) => {
   template.name = authData.displayName;
   template.uid = authData.uid;
   template.email = authData.email;
-  template.googleProfilePhotoURL = authData.photoURL;
+  template.photo = authData.photoURL;
 
   //create user doc
   const docRef = collection(db, "users");
-  const result = await setDoc(doc(docRef, authData.uid), template);
-  console.log(result);
-
-  return await getAuthUserDoc(authData);
+  await setDoc(doc(docRef, authData.uid), template);
+  return template;
 }
 
-export { getAuthUserDoc, registerAuthUserDoc, getAllUserDocs };
+
+const updateUserData = async (authData, updateData) => {
+  const docRef = doc(db, "users", authData.uid);
+  await updateDoc(docRef, updateData);
+}
+
+export { getAuthUserDoc, registerAuthUserDoc, getAllUserDocs, updateUserData };

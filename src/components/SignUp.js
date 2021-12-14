@@ -1,6 +1,7 @@
-import { signInWithGoogle } from "../fn/auth/firebsae.auth"
+import { signInWithGoogle } from "../fn/auth/firebase.auth"
+import { Header } from "./Header";
 
-export const SignIn = () => {
+export const SignUp = () => {
 
   const handleSignUp = () => {
     (async () => {
@@ -11,9 +12,12 @@ export const SignIn = () => {
 
   return (
     <>
+      <Header
+        backable={false}
+      />
       <h1>ユーザー登録画面</h1>
       <h2>あなたはまだログインしていません</h2>
-      <button onClick={handleSignUp}>googleログインはこちら</button>
+      <button className="btn-orange" onClick={handleSignUp}>googleログインはこちら</button>
     </>
   )
 }

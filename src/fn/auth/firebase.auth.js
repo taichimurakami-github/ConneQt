@@ -10,7 +10,7 @@ const signInWithGoogle = async () => {
     .then(() => {
       return signInWithRedirect(auth, provider);
     })
-    .catch(() => {
+    .catch((error) => {
       // Handle Errors here.
       console.log("failed to sign in with google.");
       console.log(error);
@@ -18,6 +18,9 @@ const signInWithGoogle = async () => {
 
 }
 
-const signOut = () => getAuth().signOut();
+const signOut = () => {
+  console.log("signout function");
+  getAuth().signOut();
+}
 
 export { signInWithGoogle, signOut };

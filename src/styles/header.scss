@@ -1,0 +1,48 @@
+@import "./common/assets";
+
+$back-to-before-component-width: 100px;
+
+header{
+  background: $yellow;
+  position: relative;
+  text-align: center;
+  padding: 20px 10px;
+  box-shadow: 0 2px 10px 1px $darkgray;
+  margin-bottom: 30px;
+
+  h1{
+    margin: 0;
+    font-size: 22px;
+  }
+}
+
+.back-to-before-component{
+  $arrow-width: 15px;
+
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: $back-to-before-component-width;
+  height: 100%;
+  padding-left: 10px;
+
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+
+
+  .arrow-lt{
+    height: 30px;
+  }
+
+  .text{
+    font-weight: bold;
+    font-size: 1.8rem;
+  }
+
+
+ &:not(.active){
+    display: none;
+  }
+
+}
