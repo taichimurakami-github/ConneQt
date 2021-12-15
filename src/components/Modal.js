@@ -8,11 +8,11 @@ import "../styles/modal.scss";
 
 export const Modal = (props) => {
 
-  const [modalState, setModalState] = useState();
+  const [modalState, setModalState] = useState(props.state);
 
   const handleModal = () => {
 
-    switch (modalState) {
+    switch (modalState.type) {
       case appConfig.components.modal.type["001"]:
         return <LoadingModal
 
@@ -20,7 +20,8 @@ export const Modal = (props) => {
 
       case appConfig.components.modal.type["002"]:
         return <ConfirmModal
-
+          title={modalState.content.title}
+          text={modalState.content.text}
         />
 
       default:
@@ -28,14 +29,18 @@ export const Modal = (props) => {
     }
   }
 
+  const handleClose = () => {
+    modalState.closable && props.handleModalState(appConfig.initialState.App.modalState);
+  }
+
   useEffect(() => {
-    setModalState(props.state.modal)
-  }, [props.state.type])
+    setModalState(props.state)
+  }, [props.state])
 
   return (
     <>
-      <div className={`modal-wrapper ${props.state.display && "active"}`}>
-        {props.state.display && modalState}
+      <div className={`modal-wrapper ${props.state.display && "active"}`} onClick={handleClose}>
+        {props.state.display && handleModal()}
       </div>
     </>
   )
@@ -51,13 +56,14 @@ const LoadingModal = () => {
 
 const ConfirmModal = (props) => {
   return (
-    <div className={`confirm-wrapper ${props?.class}`}>
-      <h3>{props?.title}</h3>
+    <div className={`modal-container white confirm ${props?.class}`}>
+      <h3 className="title">{props?.title}</h3>
       {
         props?.text.map((val) => {
-          return <p>{val}</p>
+          return <p className="text">{val}</p>
         })
       }
+      <button className="btn-gray btn-close">閉じる</button>
     </div>
   )
 }

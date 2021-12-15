@@ -108,6 +108,7 @@ export const App = () => {
 
       //ユーザー登録済み
       setUserData(user);
+      eraceModal();
 
       //init: trueの引数指定の場合のみ、「おかえりなさい！」モーダルを表示
       // options.init && setModalState({
@@ -124,23 +125,23 @@ export const App = () => {
       //ユーザー未登録
       setUserData(await registerAuthUserDoc(authState));
       setPageContentState(appConfig.pageContents["004"]);
-      // setModalState({
-      //   display: true,
-      //   closable: true,
-      //   type: appConfig.components.modal.type["002"],
-      //   content: {
-      //     title: "Hey! へようこそ！",
-      //     text: [
-      //       "hey!へようこそ！",
-      //       "これは初回登録時にのみ表示されるメッセージです。",
-      //       "まずはあなたのアカウント設定を行いましょう"
-      //     ]
-      //   }
-      // })
+      setModalState({
+        display: true,
+        closable: true,
+        type: appConfig.components.modal.type["002"],
+        content: {
+          title: "Hey! へようこそ！",
+          text: [
+            "hey!へようこそ！",
+            "これは初回登録時にのみ表示されるメッセージです。",
+            "まずはあなたのアカウント設定を行いましょう"
+          ]
+        }
+      })
     }
 
     //loadingを消す
-    eraceModal();
+    // eraceModal();
   }
 
   /**
@@ -228,7 +229,10 @@ export const App = () => {
           />
         )
       }
-      <Modal state={modalState} />
+      <Modal
+        state={modalState}
+        handleModalState={setModalState} 
+        />
     </div>
   );
 }
