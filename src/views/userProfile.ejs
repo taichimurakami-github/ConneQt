@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- <script src="/javascripts/top.js"></script> -->
+  <title>test</title>
+</head>
+<body>
+  <h1>プロフィール閲覧ページ</h1> 
+  <div>
+      <a href="/top">topページへ戻る</a>
+  </div>
+  
+  <h2><%= target.getDataValue('name') %> さんのプロフィール</h2>
+
+  <ul>
+    <li>active: <%= target.getDataValue('active') %></li>
+    <li>name: <%= target.getDataValue('name') %></li>
+    <li>email: <%= target.getDataValue('email') %></li>
+    <li>lat: <%= target.getDataValue('lat') %></li>
+    <li>lng: <%= target.getDataValue('lng') %></li>
+  </ul>
+
+  <h2>現在地</h2>
+  <div id="google_map_container"></div>
+
+   <div style="margin-bottom: 100px; margin-top:50px;">
+    <a href="request/">友達リクエストをおくる！</a>
+  </div> 
+
+
+</body>
+<script>
+  //Google map iframe 動的生成
+  const gmap = document.createElement("iframe");
+  const lat = "<%= target.getDataValue('lat') %>";
+  const lng = "<%= target.getDataValue('lng') %>";
+  console.log(lat, lng);
+  gmap.style.width = "700px";
+  gmap.style.height = "400px";
+  gmap.setAttribute("allowfullscreen", "");
+  gmap.src = `https://maps.google.com/maps?output=embed&ll=${lat},${lng}&t=m&hl=ja&z=18`;
+  document.getElementById("google_map_container").appendChild(gmap) ;
+
+
+</script>
+</html>

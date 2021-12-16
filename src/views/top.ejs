@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- <script src="/javascripts/top.js"></script> -->
+  <title>test</title>
+</head>
+<body>
+  <h1>LOGINED SUCCESSFULLY!!</h1> 
+  <h2><%= content.title %></h2>
+
+  <h3>YOUR ACCOUNT INFO (signed in by Google)</h3>
+  <ul>
+    <li>
+      <img src="<%= user.getDataValue('picture') %>">
+    </li>
+    <li>active: <%= user.getDataValue('active') %></li>
+    <li>name: <%= user.getDataValue('name') %></li>
+    <li>email: <%= user.getDataValue('email') %></li>
+    <li>lat: <%= user.getDataValue('lat') %></li>
+    <li>lng: <%= user.getDataValue('lng') %></li>
+  </ul>
+
+   <div style="margin-bottom: 15px; padding-left: 50px;">
+    <a href="/logout" style="display: inline-block; margin-right: 30px; padding: 5px; width: 150px; text-align: center; background: salmon; color:white;">
+      <b>logout</b>
+    </a>
+    <a href="/deleteUserData" style="display: inline-block; padding: 5px; border: 3px solid red; color: red; font-size: 10px;">
+      <b>アカウントを消去</b>
+    </a>
+    <!-- <a href="/friends">友達一覧</a> -->
+  </div> 
+
+  <div>
+    <button onclick="renewActivateStatus(1)">アカウントをactiveに変更</button>
+    <button onclick="renewActivateStatus(0)">アカウントをunactiveに変更</button>
+  </div>
+
+  <h2 style="margin-top: 50px;">現在地を設定</h2>
+  <div>
+    <button style="margin-bottom: 15px;" onclick="renewMyPosition()">現在地に設定を更新</button>
+    <button onclick="setPositionToOtherPlace('TOKYO')">現在地を東京駅に設定</button>
+    <button onclick="setPositionToOtherPlace('KYOTO')">現在地を京都駅に設定</button>
+    <button onclick="setPositionToOtherPlace('SENDAI')">現在地を仙台駅に設定</button>
+    <button style="margin-bottom: 15px;" onclick="setPositionToOtherPlace('SENDAI_AIRPORT')">現在地を仙台空港に設定</button>
+  </div>
+  <div id="input_place_container" style="margin-bottom: 20px;">
+    <input type="text" id="input_place_lat" placeholder="緯度(latitude)を入力" style="height: 35px;width: 300px;">
+    <input type="text" id="input_place_lng" placeholder="緯度(longitude)を入力" style="height: 35px;width: 300px;">
+    <button  onclick="setPositionToInputPlace()" style="background: black; color: white; margin-top: 15px;">現在地を入力した緯度経度の場所に設定</button>
+  </div>
+  <h4 style="margin-bottom: 10px; padding-left: 270px;">現在地はこちら↓</h4>
+  <div id="google_map_container"></div>
+
+  <h2>ダミーアカウントを作成</h2>
+  <div id="make_dummy_account_container" style="margin-bottom: 50px;">
+    <input type="text" id="dummy_user_place_user_name" placeholder="アカウント名を入力" style="height: 35px;width: 300px;">
+    <input type="text" id="dummy_user_place_lat" placeholder="緯度(latitude)を入力" style="height: 35px;width: 300px;">
+    <input type="text" id="dummy_user_place_lng" placeholder="緯度(longitude)を入力" style="height: 35px;width: 300px;">
+    <div style="height: 10px;"></div>
+    <button onclick="createNewUser()" style="background: black; color: white;">入力したデータのダミーアカウントを作成</button>
+  </div>
+
+  <h2>近くにいる友達候補を表示</h2>
+  <ul style="margin-bottom: 100px;">
+    <% for (let others of content.nearbyUsers ) { %>
+      <li>
+        <a href="/userProfile?id=<%= others.getDataValue('id') %>" style="display:block; padding: 15px; border: 2px solid skyblue; max-width: 750px; margin-bottom: 10px;">
+          <p>USER NAME: <span class="others-name"><%= others.getDataValue('name') %></span></p>
+          <p>USER EMAIL: <span class="others-email"><%= others.getDataValue('email') %></span></p>
+          <p>USER POSITION: <span class="others-position"><%= others.getDataValue('lat') %>, <%= others.getDataValue('lng') %></span></p>
+        </a>
+      </li>
+    <% } %>
+    <% if (content.nearbyUsers.length === 0) { %>
+      <b style="color: red;">近くに友達がいません。</b>
+    <% } %>
+  </ul>
+
+
+</body>
+<script>
+  //Google map iframe 動的生成
+  const gmap = document.createElement("iframe");
+  const lat = "<%= user.getDataValue('lat') %>";
+  const lng = "<%= user.getDataValue('lng') %>";
+  console.log(lat, lng);
+  gmap.style.width = "700px";
+  gmap.style.height = "400px";
+  gmap.setAttribute("allowfullscreen", "");
+  gmap.src = `https://maps.google.com/maps?output=embed&ll=${lat},${lng}&t=m&hl=ja&z=18`;
+  document.getElementById("google_map_container").appendChild(gmap) ;
+
+  // const makeXmlRequest = (settings={}) => {
+  //   const defaultSettings = {
+  //     method: 'POST',
+  //     url: '/',
+  //     redirectUrl: null,
+  //     headerName: 'Content-Type',
+  //     headerValue: 'application/json',
+  //     sendContent: {}
+  //   }
+
+  //   const parsedSettings = {
+  //     ...defaultSettings,
+  //     ...settings
+  //   }
+
+  //     console.log(parsedSettings);
+  //     return;
+
+  //     const xhr = new XMLHttpRequest();
+  //     xhr.open(parsedSettings.method, parsedSettings.url);
+  //     xhr.setRequestHeader(parsedSettings.headerName, parsedSettings.headerValue);
+  //     xhr.onload = () => {
+  //         console.log(xhr.responseText);
+  //         xhr.responseText === 'success'
+  //           && parsedSettings.redirectUrl
+  //           && location.assign(parsedSettings.redirectUrl);
+  //     }
+  //     xhr.send(JSON.stringify());
+  // }
+  const createNewUser = () => {
+    const lat = document.getElementById("dummy_user_place_lat").value;
+    const lng = document.getElementById("dummy_user_place_lng").value;
+    const name = document.getElementById("dummy_user_place_user_name").value;
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '/createUserData');
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = () => {
+        console.log(xhr.responseText);
+        xhr.responseText === 'success' && location.assign('top');
+    }
+    xhr.send(JSON.stringify({
+        content: {
+          lat: lat,
+          lng: lng,
+          name: name
+        }
+    }));
+  }
+
+  const renewActivateStatus = (nextValue) => {
+         const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/renewUserData');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onload = () => {
+            console.log(xhr.responseText);
+            xhr.responseText === 'success' && location.assign('top');
+        }
+        xhr.send(JSON.stringify({
+            content: {
+              active: nextValue
+            }
+        }));
+  }
+
+  const setPositionToInputPlace = () => {
+    const lat = document.getElementById("input_place_lat").value;
+    const lng = document.getElementById("input_place_lng").value;
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '/renewUserData');
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = () => {
+        console.log(xhr.responseText);
+        xhr.responseText === 'success' && location.assign('top');
+    }
+    xhr.send(JSON.stringify({
+        content: {
+          lat: lat,
+          lng: lng
+        }
+    }));
+  }
+
+  const setPositionToOtherPlace = (place='TOKYO') => {
+    const coords = {
+      TOKYO: {
+        lat: 35.68150015667328, 
+        lng: 139.7671113533416
+      },
+      KYOTO: {
+        lat: 34.9860039107455,
+        lng: 135.75877510917218,
+      },
+      SENDAI: {
+        lat: 38.26033376407954, 
+        lng: 140.88240531109682,
+      },
+      SENDAI_AIRPORT: {
+        lat: 38.140860879619254, 
+        lng: 140.91754993929936,
+      }
+    }
+
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', '/renewUserData');
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.onload = () => {
+          console.log(xhr.responseText);
+          xhr.responseText === 'success' && location.assign('top');
+      }
+      xhr.send(JSON.stringify({
+          mode: "RENEW_POSITION",
+          content: {
+            lat: coords[place].lat,
+            lng: coords[place].lng,
+          }
+      }));
+  }
+
+
+  const renewMyPosition = () => {
+
+    // success callback
+    const success = (position) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/renewUserData');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onload = () => {
+            console.log(xhr.responseText);
+            xhr.responseText === 'success' && location.assign('top');
+        }
+        xhr.send(JSON.stringify({
+            mode: "RENEW_POSITION",
+            content: {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            }
+        }));
+    }
+
+    // error callback
+    const error = () => {
+        console.log("fn renewMyPosition callback fail");
+        console.log(error);
+    }
+
+    // get current position by GPS
+    navigator.geolocation.getCurrentPosition( success, error );
+  }
+</script>
+</html>

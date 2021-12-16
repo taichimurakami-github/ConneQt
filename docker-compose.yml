@@ -1,0 +1,53 @@
+version: '3'
+services:
+  app:
+    #起動するイメージの指定
+    image: node:16
+
+    #コンテナ名
+    container_name: nearby-matching-demo
+
+    env_file: ./app.env
+    #環境変数の設定
+    environment:
+      - TZ=Asia/Tokyo
+      - DEBUG=app:*
+
+    tty: true
+
+    #ホスト側のポート
+    ports:
+      - '3000:3000'
+
+    volumes:
+      - ./src:/app
+    
+    #移動時のcurrent_folderを指定
+    working_dir: /app
+
+    #起動後に実行するコマンドを指定
+    command: npm run dev
+    
+    links:
+      - "mysql"
+
+
+  mysql:
+    image: mariadb
+
+    env_file: ./mysql/mysql.env
+    environment:
+      - TZ=Asia/Tokyo
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./mysql/conf:/etc/mysql/conf.d/:ro
+      - mysqldata:/var/lib/mysql
+    # networks:
+    #   - backend
+
+# networks:
+#   backend:
+
+volumes:
+  mysqldata:
