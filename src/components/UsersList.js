@@ -3,53 +3,8 @@ import { appConfig } from "../app.config";
 
 import "../styles/usersList.scss";
 
-import testicon from "../images/logo-1x.png";
-import { Header } from "./Header";
+import { Header } from "./UI/Header";
 import { useEffect } from "react/cjs/react.development";
-
-const initialListState = [];
-const testListState = [
-  {
-    uid: "testuser001-uid",
-    name: "testuser001@gmail.com",
-    email: "testuser001@gmail.com",
-    profile: "testuser001のプロフィール",
-    status: "1",
-    photo: testicon,
-  },
-  {
-    uid: "testuser002-uid",
-    name: "testuser002@gmail.com",
-    email: "testuser002@gmail.com",
-    profile: "testuser002のプロフィール",
-    status: "1",
-    photo: testicon,
-  },
-  {
-    uid: "testuser003-uid",
-    name: "testuser003@gmail.com",
-    email: "testuser003@gmail.com",
-    profile: "testuser003のプロフィール",
-    status: "1",
-    photo: testicon,
-  },
-  {
-    uid: "testuser004-uid",
-    name: "testuser004@gmail.com",
-    email: "testuser004@gmail.com",
-    profile: "testuser004のプロフィール",
-    status: "1",
-    photo: testicon,
-  },
-  {
-    uid: "testuser005-uid",
-    name: "testuser005@gmail.com",
-    email: "testuser005@gmail.com",
-    profile: "testuser005のプロフィール",
-    status: "1",
-    photo: testicon,
-  },
-]
 
 export const UsersList = (props) => {
 

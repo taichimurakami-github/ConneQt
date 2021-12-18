@@ -1,5 +1,5 @@
-import { appConfig } from "../app.config";
-import "../styles/menu.scss";
+import { appConfig } from "../../app.config";
+import "../../styles/menu.scss";
 
 export const Menu = (props) => {
   console.log(props.pageContentState);

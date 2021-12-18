@@ -54,7 +54,6 @@ const registerAuthUserDoc = async (authData) => {
   return template;
 }
 
-
 const updateUserData = async (authData, updateData) => {
   const docRef = doc(db, "users", authData.uid);
   await updateDoc(docRef, updateData);

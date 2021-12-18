@@ -4,9 +4,12 @@ import { signOut } from "../fn/auth/firebase.auth";
 import "../styles/mypage.scss";
 
 import { updateUserData } from "../fn/db/firestore.handler";
-import { Header } from "./Header";
+import { Header } from "./UI/Header";
 
-import { MypageConfig } from "./config/Mypage";
+import { MypageConfig } from "./Mypage/config";
+import { MypageTop } from "./Mypage/MyPageTop";
+import { EditText } from "./Mypage/EditText";
+
 
 const cmpConfig = { ...MypageConfig }
 
@@ -93,61 +96,6 @@ export const Mypage = (props) => {
         title={myPageState.header.title}
       />
       {handleComponent()}
-    </>
-  )
-}
-
-
-const MypageTop = (props) => {
-
-  return (
-    <div className="mypage-top-wrapper">
-
-      <img className="user-icon" src={props.user?.photo}></img>
-
-      <p className="name clickable" id={cmpConfig["003"].id} onClick={props.handleOnClick}>
-        {props.user?.name}
-      </p>
-
-      <p className="state clickable" id={cmpConfig["004"].id} onClick={props.handleOnClick}>
-        {props.user?.state}
-      </p>
-
-      <p className="profile card clickable" id={cmpConfig["005"].id} onClick={props.handleOnClick}>
-        <span>プロフィールメッセージ：</span>
-        {props.user?.profile}
-      </p>
-
-      <button className="btn-gray" onClick={signOut}>ログアウトする</button>
-    </div>
-
-  )
-}
-
-
-const EditText = (props) => {
-
-  const [inputState, setInputState] = useState(props.nowData);
-
-
-  const handleInput = (e) => {
-    setInputState(e.target.value);
-  }
-
-  const handleSubmit = () => props.handleSubmit(props.type, inputState);
-
-
-  return (
-    <>
-      <h2 className="input-target-title">{props.title}</h2>
-      <input
-        onChange={handleInput}
-        placeholder={props.title}
-        value={inputState}
-        className="text-input"
-      />
-      <button className="btn-orange" onClick={handleSubmit}>この内容に変更する</button>
-      <button className="btn-gray" onClick={props.handleBackToTop}>戻る</button>
     </>
   )
 }

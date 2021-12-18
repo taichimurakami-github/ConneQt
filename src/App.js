@@ -8,10 +8,10 @@ import { useState, useEffect } from "react";
 // components imports
 import { SignUp } from "./components/SignUp";
 import { UsersList } from "./components/UsersList";
-import { UserProfile } from "./components/UserProfile";
+import { UserProfile } from "./components/Top/UserProfile";
 import { Mypage } from "./components/Mypage";
 import { Modal } from "./components/Modal";
-import { Menu } from "./components/Menu";
+import { Menu } from "./components/UI/Menu";
 
 
 
@@ -33,6 +33,8 @@ export const App = () => {
   const [selectedUserData, setSelectedUserData] = useState(null);
   const [modalState, setModalState] = useState({ ...appConfig.initialState.App.modalState });
   const [pageContentState, setPageContentState] = useState(appConfig.pageContents["001"]);
+
+  // const 
 
   /**
    * modal state functions
@@ -99,8 +101,6 @@ export const App = () => {
     //authを通ったユーザーを指定
     //返り値は Object(見つかった) or null(見つからなかった)
     const user = await getAuthUserDoc(authState);
-
-    // eraceModal();
 
     //見つからなかったらDBに登録して改めてusedataを取得・登録 >> Mypageを表示 & ようこそ！モーダルを表示
     //見つかったらそのままuserdataを登録 >> 表示するページはいじらない

@@ -1,6 +1,9 @@
-import loading from "../images/loading.gif";
 import { appConfig } from "../app.config";
 import { useState, useEffect } from "react/cjs/react.development";
+
+//modal import
+import { LoadingModal } from "./Modal/LoadingModal";
+import { ConfirmModal } from "./Modal/ConfirmModal";
 
 //style import
 import "../styles/modal.scss";
@@ -14,9 +17,7 @@ export const Modal = (props) => {
 
     switch (modalState.type) {
       case appConfig.components.modal.type["001"]:
-        return <LoadingModal
-
-        />;
+        return <LoadingModal/>;
 
       case appConfig.components.modal.type["002"]:
         return <ConfirmModal
@@ -34,7 +35,7 @@ export const Modal = (props) => {
   }
 
   useEffect(() => {
-    setModalState(props.state)
+    setModalState(props.state);
   }, [props.state])
 
   return (
@@ -43,27 +44,5 @@ export const Modal = (props) => {
         {props.state.display && handleModal()}
       </div>
     </>
-  )
-}
-
-const LoadingModal = () => {
-  return (
-    <div className="loading-wrapper">
-      <img src={loading}></img>
-    </div>
-  )
-}
-
-const ConfirmModal = (props) => {
-  return (
-    <div className={`modal-container white confirm ${props?.class}`}>
-      <h3 className="title">{props?.title}</h3>
-      {
-        props?.text.map((val) => {
-          return <p className="text">{val}</p>
-        })
-      }
-      <button className="btn-gray btn-close">閉じる</button>
-    </div>
   )
 }

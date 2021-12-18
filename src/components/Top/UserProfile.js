@@ -1,6 +1,6 @@
-import { appConfig } from "../app.config";
-import "../styles/userProfile.scss";
-import { Header } from "./Header";
+import { appConfig } from "../../app.config";
+import "../../styles/userProfile.scss";
+import { Header } from "../UI/Header";
 
 export const UserProfile = (props) => {
 
