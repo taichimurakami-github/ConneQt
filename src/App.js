@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 // components imports
 import { SignUp } from "./components/SignUp";
 import { FindUserHandler } from "./components/FindUserHandler";
+import { FriendHandler } from "./components/FriendHandler";
 import { Mypage } from "./components/Mypage";
 import { Modal } from "./components/Modal";
 import { Menu } from "./components/UI/Menu";
@@ -69,6 +70,11 @@ export const App = () => {
           handleAllUserDocsState={setAllUserDocsState}
           handlePageContent={setPageContentState}
           handleModalState={setModalState}
+        />;
+
+      case appConfig.pageContents["003"]:
+        return <FriendHandler
+          appUser={userData}
         />;
 
       case appConfig.pageContents["004"]:
