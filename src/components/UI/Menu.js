@@ -34,7 +34,8 @@ export const Menu = (props) => {
         id={appConfig.pageContents["003"]}
         onClick={handlePageContent}
         className={`menu-content ${isActivated(appConfig.pageContents["003"]) && "active"} clickable`}>
-        chat
+        <span className="notification orange"></span>
+        friend
       </li>
       <li
         id={appConfig.pageContents["004"]}

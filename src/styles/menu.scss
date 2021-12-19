@@ -11,6 +11,7 @@
 }
 
 .menu-content{
+  position: relative;
   width: 50%;
   height: 100%;
   display: flex;
@@ -23,4 +24,12 @@
     background: $yellow;
     color: white;
   }
+}
+
+.notification{
+  display: block;
+  width: 15px;
+  height: 15px;
+  border-radius: 100px;
+  background: $orange;
 }
