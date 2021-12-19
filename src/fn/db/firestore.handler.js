@@ -17,6 +17,7 @@ const getAuthUserDoc = async (authData) => {
 
   const docRef = doc(db, "users", authData.uid);
   const result = await getDoc(docRef);
+  console.log(result.data());
 
   if (result.exists()) return result.data();
   else return null;

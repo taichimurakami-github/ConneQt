@@ -33,6 +33,8 @@ export const App = () => {
   const [allUserDocsState, setAllUserDocsState] = useState(
     generateDummyUserDocs()
   );
+  // const [userData, setUserData] = useState(null);
+  // const [allUserDocsState, setAllUserDocsState] = useState([]);
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [modalState, setModalState] = useState({ ...appConfig.initialState.App.modalState });
   const [pageContentState, setPageContentState] = useState(appConfig.pageContents["001"]);
@@ -90,14 +92,14 @@ export const App = () => {
     }
   }
 
+  useEffect(() => {
+    console.log("allUserDocsState changed!");
+  }, [allUserDocsState]);
+
   /**
    * update useState: userData
    */
   const fetchAndRenewUserData = async (options = { init: false }) => {
-
-    //userDataを更新
-    //userDataが無い場合はfirebaseより情報取得
-
     //loadingをつける
     createLoadingModal();
 
@@ -165,7 +167,7 @@ export const App = () => {
     });
 
     const auth = getAuth();
-    setPageContentState(appConfig.pageContents["002"]);
+    // setPageContentState(appConfig.pageContents["002"]);
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -173,9 +175,6 @@ export const App = () => {
         // https://firebase.google.com/docs/reference/js/firebase.User
         console.log("you have signed in!");
         console.log(user);
-
-        // Users Listを表示コンテンツに指定
-        setPageContentState(appConfig.pageContents["002"]);
 
         // AuthState, SignInStateを更新
         setAuthState(user);
@@ -194,12 +193,12 @@ export const App = () => {
          * PLEASE FIX IT BEFORE CHANGE MODE TO PRODUCTION!
          */
         // setAuthState(null);
-        setAuthState(true);
-        setIsSignedIn(true);
+        // setAuthState(true);
+        // setIsSignedIn(true);
 
 
-        // setIsSignedIn(false);
-        // setPageContentState(appConfig.pageContents["001"]);
+        setIsSignedIn(false);
+        setPageContentState(appConfig.pageContents["001"]);
 
         //loadingエフェクトを終了
         eraceModal();
@@ -211,7 +210,10 @@ export const App = () => {
   //認証状態が変化したらアップデートを行う
   useEffect(() => {
     (async () => {
-      authState && fetchAndRenewUserData({ init: true });
+
+      isSignedIn && authState && await fetchAndRenewUserData({ init: true });
+      // Users Listを表示コンテンツに指定
+      setPageContentState(appConfig.pageContents["002"]);
     })();
   }, [isSignedIn]);
 

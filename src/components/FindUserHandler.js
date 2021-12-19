@@ -24,6 +24,7 @@ export const FindUserHandler = (props) => {
   const [viewState, setViewState] = useState(cmpConfig.state.view["001"]);
 
   const fetchAndRenewAllUserDocs = async () => {
+    console.log("handle fetch");
 
     //モーダルを表示
     props.handleModalState({
@@ -33,20 +34,20 @@ export const FindUserHandler = (props) => {
     });
 
     //すべてのユーザーデータを取得し、App.allUserDocsStateを変更
-    props.handleAllUserDocsState(await getAllUserDocs());
+    const fetchResult = await getAllUserDocs();
+    console.log(Object.is(props.allUserDocs, fetchResult));
+    props.handleAllUserDocsState(fetchResult);
 
     //モーダルを消去
     props.handleModalState({ display: false });
 
+    return true;
   }
 
-  useEffect(() => {
-    // AllUserDocsが空だったらfetchを実行
-    if (props.allUserDocs.length === 0) fetchAndRenewAllUserDocs();
 
+  useEffect(() => {
     // viewStateが初期値に戻ったら、selectedUserStateを初期化
     if (viewState === cmpConfig.state.view["001"]) setSelectedUserState(null);
-
   }, [viewState]);
 
 
@@ -58,6 +59,7 @@ export const FindUserHandler = (props) => {
           nowUserDoc={props.user}
           handleSelectedUser={setSelectedUserState}
           handleViewState={setViewState}
+          handleFetchAndRenewAllUserDocs={fetchAndRenewAllUserDocs}
         />;
 
       case cmpConfig.state.view["002"]:
