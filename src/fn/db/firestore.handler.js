@@ -60,4 +60,17 @@ const updateUserData = async (authData, updateData) => {
   await updateDoc(docRef, updateData);
 }
 
-export { getAuthUserDoc, registerAuthUserDoc, getAllUserDocs, updateUserData };
+const registerRequest = async (senderData, receiverData) => {
+  console.log(`sending request from ${senderData.email} to ${receiverData.uid}`);
+
+  // create doc ref
+  const senderDocRef = doc(db, "users", senderData.uid);
+  const receiverDocRef = doc(db, "users", receiverData.uid);
+
+  //set user doc
+  await setDoc(senderDocRef, senderData);
+  await setDoc(receiverDocRef, receiverData);
+  console.log("...done!");
+}
+
+export { getAuthUserDoc, registerAuthUserDoc, getAllUserDocs, updateUserData, registerRequest };

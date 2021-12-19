@@ -114,7 +114,8 @@ export const App = () => {
     if (user) {
 
       //ユーザー登録済み
-      console.log(user);
+      console.log("you're registered.");
+      // console.log(user);
 
       if (isUserStateExists) {
         console.log("your userdata has already exist.");
@@ -127,6 +128,7 @@ export const App = () => {
 
     }
     else {
+      console.log("you're NOT registered.");
 
       //ユーザー未登録
       setUserData(await registerAuthUserDoc(authState));
@@ -173,8 +175,7 @@ export const App = () => {
       if (user) {
         // User is signed in, see docs for a list of available properties
         // https://firebase.google.com/docs/reference/js/firebase.User
-        console.log("you have signed in!");
-        console.log(user);
+        console.log("you have signed in as : " + user.email);
 
         // AuthState, SignInStateを更新
         setAuthState(user);

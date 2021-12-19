@@ -4,12 +4,6 @@ import cmpConfig from "./config";
 
 export const ShowRequestForm = (props) => {
 
-  const handleSendRequest = () => {
-    /**
-     * リクエストを送る処理を入れる
-     */
-  }
-
   return (
     <>
       <Header
@@ -18,7 +12,7 @@ export const ShowRequestForm = (props) => {
         handleBack={() => props.handleViewState(cmpConfig.state.view["002"])}
       />
       <img className="user-icon" src={props.user.photo}></img>
-      <button className="btn-orange" onClick={handleSendRequest}>
+      <button className="btn-orange" onClick={props.handleRequest}>
         チケット１枚を消費して<br></br>リクエストを送る
       </button>
       <button className="btn-gray" onClick={() => props.handleViewState(cmpConfig.state.view["001"])}>

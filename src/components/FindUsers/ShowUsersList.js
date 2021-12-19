@@ -38,10 +38,6 @@ export const ShowUsersList = (props) => {
     // setState([...props.allUserDocs]);
   }, [props.allUserDocs]);
 
-
-
-  useEffect(() => console.log(props.allUserDocs.length), [props.allUserDocs.length]);
-
   return (
     <>
       <Header

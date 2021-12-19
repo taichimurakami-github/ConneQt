@@ -10,7 +10,7 @@ export const generateDummyUserDocs = () => {
       state: "1",
       request_received: [],
       request_sent: [],
-      chatroom: [],
+      friend: [],
       uid: "DldY7bA4QJTNxd9PIZnkBOqUdON2"
     },
     {
@@ -21,7 +21,7 @@ export const generateDummyUserDocs = () => {
       state: "1",
       request_received: [],
       request_sent: [],
-      chatroom: [],
+      friend: [],
       uid: "snAVxfT07ZWwq9M1k6W3CiwIQqu2"
     },
     {
@@ -32,7 +32,7 @@ export const generateDummyUserDocs = () => {
       state: "1",
       request_received: [],
       request_sent: [],
-      chatroom: [],
+      friend: [],
       uid: "uwUaPEA4kkgU8UnsiX62ePnmSFN2"
     },
     {
@@ -43,7 +43,7 @@ export const generateDummyUserDocs = () => {
       state: "1",
       request_received: [],
       request_sent: [],
-      chatroom: [],
+      friend: [],
       uid: "uyNPnSstwiZPJ0E0DzhJPVmHnfh1"
     },
   ]

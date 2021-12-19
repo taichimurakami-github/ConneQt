@@ -1,37 +1,23 @@
-改造チャート
+memo
+
+# やることメモ
+
++ sendRequestのエラーハンドリング
+  >> 一度requestを送った相手に対して再びrequestがおくれないようにする
 
 
+# request機能実装に必要な機能
 
-(1) UsersListを子コンポーネント内で制御する
++ requestの送信者と受信者のデータの用意　OK!
++ requestを送信するfirebase handler
++ requestの記録を検知して、知らせてくれる機能
+    - react側とfirebase側の双方で実装が必要？
 
-1.必要な受け渡しデータを整理
+# friend chat 機能実装に必要な機能
 
-UsersListで行う事
-+ アカウントに設定された現在住所から、地図を表示
-+ All Userの中から、アカウントに記録されている特定条件を満たすユーザーを順に表示
-
-必要データ
-+ ユーザーリスト
-+ ログインしているユーザー
-
-App.js >> UsersList.js
-
-+ allUsers
-+ nowUser
-+ handleModalState
-
-以上のみ受け渡し
-
-
-2. UsersList >> FindUsersに名前変更
-import関係の依存を解消する
-
-+ UsersList.js >> components/FindUsersHandler.js
-+ UsersList/ ~ >> FindUsers/ ~
-+ FindUsers/UsersList.js >> ShowUsers.js
-
-
-
-3.  
-
-
++ friendsの記録・読み出し(各friendsのuid, 対応するchatroomのid)
++ friendsの記録を書き出すfirebase handler
++ friendsの記録を読みだすfirebase handler
++ chatの記録を行うデータベースの準備(chatroom)
++ chatの記録を検知して、知らせてくれる機能
+    - react側とfirebase側の双方で実装が必要？
