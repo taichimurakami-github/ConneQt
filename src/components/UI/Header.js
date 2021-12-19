@@ -3,7 +3,6 @@ import arrow_lt from "../../images/arrow-lt-black.svg";
 
 export const Header = (props) => {
 
-
   return (
     <header>
       <div

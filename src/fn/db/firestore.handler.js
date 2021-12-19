@@ -28,7 +28,7 @@ const getAuthUserDoc = async (authData) => {
  * @returns {Array}
  */
 const getAllUserDocs = async () => {
-
+  console.log("getting all user docs from firestore...");
   const result = [];
   const querySnapshot = await getDocs(collection(db, "users"));
   querySnapshot.forEach((doc) => {

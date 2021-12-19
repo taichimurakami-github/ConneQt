@@ -1,4 +1,9 @@
 export const appConfig = {
+  AppMode: {
+    "000": "PRODUCTION",
+    "001": "DEVELOPMENT",
+    "002": "DEV_TEST",
+  },
   initialState: {
     App: {
       modalState: {
@@ -20,8 +25,8 @@ export const appConfig = {
   },
   pageContents: {
     "001": "NOT_SIGNED_IN",
-    "002": "USERS_LIST",
-    "003": "USER_PROFILE",
+    "002": "FIND_USERS",
+    "003": "CHAT",
     "004": "MY_PAGE",
   }
 }

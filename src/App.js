@@ -7,18 +7,17 @@ import { useState, useEffect } from "react";
 
 // components imports
 import { SignUp } from "./components/SignUp";
-import { UsersList } from "./components/UsersList";
-import { UserProfile } from "./components/Top/UserProfile";
+import { FindUserHandler } from "./components/FindUserHandler";
 import { Mypage } from "./components/Mypage";
 import { Modal } from "./components/Modal";
 import { Menu } from "./components/UI/Menu";
 
-
-
 // fn imports
-import { getAllUserDocs, getAuthUserDoc, registerAuthUserDoc } from "./fn/db/firestore.handler";
+import { getAuthUserDoc, registerAuthUserDoc } from "./fn/db/firestore.handler";
+
 // app common style imports
 import "./styles/App.scss";
+import { generateDummyUserDocs } from "./devTools/dummyUserListData";
 
 
 export const App = () => {
@@ -27,10 +26,13 @@ export const App = () => {
    * setState definitions
    */
   const [authState, setAuthState] = useState(null);
-  const [userData, setUserData] = useState(null);
-  const [allUsersData, setAllUsersData] = useState([]);
+  const [userData, setUserData] = useState(
+    generateDummyUserDocs()[0]
+  );
+  const [allUserDocsState, setAllUserDocsState] = useState(
+    generateDummyUserDocs()
+  );
   const [isSignedIn, setIsSignedIn] = useState(false);
-  const [selectedUserData, setSelectedUserData] = useState(null);
   const [modalState, setModalState] = useState({ ...appConfig.initialState.App.modalState });
   const [pageContentState, setPageContentState] = useState(appConfig.pageContents["001"]);
 
@@ -61,18 +63,13 @@ export const App = () => {
 
       //USERS_LIST
       case appConfig.pageContents["002"]:
-        return <UsersList
+        return <FindUserHandler
           user={userData}
-          allUsers={allUsersData}
-          renewUsers={fetchAndRenewAllUserData}
+          allUserDocs={allUserDocsState}
+          handleAllUserDocsState={setAllUserDocsState}
           handlePageContent={setPageContentState}
-          handleSelectUser={setSelectedUserData} />;
-
-      //USER_PROFILE
-      case appConfig.pageContents["003"]:
-        return <UserProfile
-          user={selectedUserData}
-          handlePageContent={setPageContentState} />;
+          handleModalState={setModalState}
+        />;
 
       case appConfig.pageContents["004"]:
         return <Mypage
@@ -100,25 +97,26 @@ export const App = () => {
 
     //authを通ったユーザーを指定
     //返り値は Object(見つかった) or null(見つからなかった)
-    const user = await getAuthUserDoc(authState);
+    const isUserStateExists = userData ? true : false;
+    const user = isUserStateExists ? { ...userData } : await getAuthUserDoc(authState);
+    console.log(`isUsersStateExists?: ${isUserStateExists}`);
 
     //見つからなかったらDBに登録して改めてusedataを取得・登録 >> Mypageを表示 & ようこそ！モーダルを表示
     //見つかったらそのままuserdataを登録 >> 表示するページはいじらない
     if (user) {
 
       //ユーザー登録済み
-      setUserData(user);
+      console.log(user);
+
+      if (isUserStateExists) {
+        console.log("your userdata has already exist.");
+      }
+      else {
+        setUserData(user);
+      }
+
       eraceModal();
 
-      //init: trueの引数指定の場合のみ、「おかえりなさい！」モーダルを表示
-      // options.init && setModalState({
-      //   display: true,
-      //   closable: true,
-      //   type: appConfig.components.modal.type["002"],
-      //   content: {
-      //     title: "おかえりなさい！"
-      //   }
-      // });
     }
     else {
 
@@ -135,7 +133,8 @@ export const App = () => {
             "hey!へようこそ！",
             "これは初回登録時にのみ表示されるメッセージです。",
             "まずはあなたのアカウント設定を行いましょう"
-          ]
+          ],
+          buttonText: "閉じる"
         }
       })
     }
@@ -144,14 +143,6 @@ export const App = () => {
     // eraceModal();
   }
 
-  /**
-   * update useState: allUserData
-   */
-  const fetchAndRenewAllUserData = async () => {
-    createLoadingModal();
-    setAllUsersData(await getAllUserDocs());
-    eraceModal();
-  }
 
   /**
    * useEffect functions
@@ -191,9 +182,18 @@ export const App = () => {
         // User is signed out
         // ...
         console.log("you have signed out!");
-        setAuthState(null);
-        setIsSignedIn(false);
-        setPageContentState(appConfig.pageContents["001"]);
+
+        /**
+         * SET AUTH FOR TRUE DUE TO DEVELOPMENT
+         * PLEASE FIX IT BEFORE CHANGE MODE TO PRODUCTION!
+         */
+        // setAuthState(null);
+        setAuthState(true);
+        setIsSignedIn(true);
+
+
+        // setIsSignedIn(false);
+        // setPageContentState(appConfig.pageContents["001"]);
 
         //loadingエフェクトを終了
         eraceModal();
@@ -204,7 +204,9 @@ export const App = () => {
 
   //認証状態が変化したらアップデートを行う
   useEffect(() => {
-    authState && fetchAndRenewUserData({ init: true });
+    (async () => {
+      authState && fetchAndRenewUserData({ init: true });
+    })();
   }, [isSignedIn]);
 
 
@@ -214,10 +216,6 @@ export const App = () => {
   return (
     <div className="App">
       {
-        // Main contents component
-        // signInState
-        //   ? <UsersList user={userData} />
-        //   : <SignUp />
         handlePageContent(pageContentState)
       }
       <div className="spacer" style={{ height: "100px" }}></div>
@@ -231,8 +229,8 @@ export const App = () => {
       }
       <Modal
         state={modalState}
-        handleModalState={setModalState} 
-        />
+        handleModalState={setModalState}
+      />
     </div>
   );
 }

@@ -1,19 +1,16 @@
-import { appConfig } from "../../app.config";
 import "../../styles/userProfile.scss";
+import cmpConfig from "./config";
 import { Header } from "../UI/Header";
 
-export const UserProfile = (props) => {
+export const ShowUserProfile = (props) => {
 
-  const handleBack = () => {
-    props.handlePageContent(appConfig.pageContents["002"]);
-  }
 
   return (
     <>
       <Header
         backable={true}
         title={`${props.user?.name} さんのプロフィール`}
-        handleBack={handleBack}
+        handleBack={() => props.handleViewState(cmpConfig.state.view["001"])}
       />
 
       <div className="user-profile-wrapper">
@@ -24,6 +21,13 @@ export const UserProfile = (props) => {
         </p>
         <p className="profile card">{props.user?.profile}</p>
       </div>
+
+      <button className="btn-orange" onClick={() => props.handleViewState(cmpConfig.state.view["003"])}>
+        リクエストを送る
+      </button>
+      <button className="btn-gray" onClick={() => props.handleViewState(cmpConfig.state.view["001"])}>
+        前のページに戻る
+      </button>
     </>
   )
 }

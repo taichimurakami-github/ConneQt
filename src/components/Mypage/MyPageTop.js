@@ -1,5 +1,5 @@
+import { signOut } from "../../fn/auth/firebase.auth"
 import { MypageConfig } from "./config"
-import { signOut } from "firebase/auth"
 
 const cmpConfig = { ...MypageConfig }
 
@@ -18,12 +18,12 @@ export const MypageTop = (props) => {
         {props.user?.state}
       </p>
 
-      <p classname="profile card clickable" id={cmpConfig["005"].id} onclick={props.handleonclick}>
+      <p className="profile card clickable" id={cmpConfig["005"].id} onClick={props.handleOnclick}>
         <span>プロフィールメッセージ：</span>
         {props.user?.profile}
       </p>
 
-      <button classname="btn-gray" onclick={signOut}>ログアウトする</button>
+      <button classname="btn-gray" onClick={signOut}>ログアウトする</button>
     </div>
 
   )
