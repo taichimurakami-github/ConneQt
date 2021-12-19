@@ -17,21 +17,21 @@ export const MypageTop = (props) => {
         <img className="user-icon" src={props.user?.photo}></img>
 
         <li className="edit-menu-container name clickable"
-          id={cmpConfig["003"].id}
+          id={cmpConfig.state.view["003"]}
           onClick={() => props.handleViewState(cmpConfig.state.view["003"])}>
           <h3 className="nav-title">お名前を編集：</h3>
           {props.user?.name}
           <img className="arrow-gt absolute" src={darkgrayArrowGt}></img>
         </li>
         <li className="edit-menu-container state clickable"
-          id={cmpConfig["004"].id}
+          id={cmpConfig.state.view["004"]}
           onClick={() => props.handleViewState(cmpConfig.state.view["004"])}>
           <h3 className="nav-title">状態を編集：</h3>
           {props.user?.state}
           <img className="arrow-gt absolute" src={darkgrayArrowGt}></img>
         </li>
         <li className="edit-menu-container profile clickable"
-          id={cmpConfig["005"].id}
+          id={cmpConfig.state.view["005"]}
           onClick={() => props.handleViewState(cmpConfig.state.view["005"])}>
           <h3 className="nav-title">プロフィールを編集：</h3>
           {props.user?.profile}

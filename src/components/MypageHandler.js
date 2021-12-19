@@ -29,21 +29,29 @@ export const MypageHandler = (props) => {
 
       case cmpConfig.state.view["002"]:
         return <EditText
+          viewState={viewState}
+          handleViewState={setViewState}
           handleSubmit={handleSubmitToDB}
         />;
 
       case cmpConfig.state.view["003"]:
         return <EditText
+          viewState={viewState}
+          handleViewState={setViewState}
           handleSubmit={handleSubmitToDB}
         />;
 
       case cmpConfig.state.view["004"]:
         return <EditText
+          viewState={viewState}
+          handleViewState={setViewState}
           handleSubmit={handleSubmitToDB}
         />;
 
       case cmpConfig.state.view["005"]:
         return <EditText
+          viewState={viewState}
+          handleViewState={setViewState}
           handleSubmit={handleSubmitToDB}
         />;
 
