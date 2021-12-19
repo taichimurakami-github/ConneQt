@@ -2,10 +2,14 @@ import { Header } from "../UI/Header";
 import cmpConfig from "./config";
 
 export const ShowUsersList = (props) => {
+
+  /**
+   * 1. 該当ユーザーを検索し、selectedUserに登録する
+   * 2. 表示コンテンツをUserProfileに変更する
+   * @param {React.DOMAttributes<React.MouseEvent<HTMLLIElement | MouseEvent>>} e 
+   */
   const handleSelectUser = (e) => {
 
-    //該当ユーザーを検索し、selectedUserに登録する
-    //表示コンテンツをUserProfileに変更する
     for (let user of props.allUserDocs) {
       if (user.uid === e.target.id) {
         props.handleSelectedUser(user);
@@ -44,8 +48,6 @@ export const ShowUsersList = (props) => {
           )
         })}
       </ul>
-
     </>
-
   )
 }
