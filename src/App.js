@@ -15,11 +15,11 @@ import { Menu } from "./components/UI/Menu";
 
 // fn imports
 import { getAuthUserDoc, registerAuthUserDoc } from "./fn/db/firestore.handler";
+import handleOnWriteHook from "../functions";
 
 // app common style imports
 import "./styles/App.scss";
 import { generateDummyUserDocs } from "./devTools/dummyUserListData";
-
 
 export const App = () => {
 
@@ -112,6 +112,8 @@ export const App = () => {
     //見つからなかったらDBに登録して改めてusedataを取得・登録 >> Mypageを表示 & ようこそ！モーダルを表示
     //見つかったらそのままuserdataを登録 >> 表示するページはいじらない
     if (user) {
+      // registerUpdateHook(`/users/${user.uid}`);
+      handleOnWriteHook(`users/${user.uid}`);
 
       //ユーザー登録済み
       console.log("you're registered.");
@@ -217,6 +219,8 @@ export const App = () => {
       setPageContentState(appConfig.pageContents["002"]);
     })();
   }, [isSignedIn]);
+
+
 
 
   /**

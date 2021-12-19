@@ -1,9 +1,13 @@
 import { collection, doc, getDoc, getDocs, getFirestore, setDoc, updateDoc } from "firebase/firestore";
 import { userDocTemplate } from "../../firebase.config";
 import "./firestore.ready";
+import "./cloudfunctions.ready";
+import { document } from "firebase-functions";
 
 //get Cloud Firestore
 const db = getFirestore();
+
+
 
 /**
  * user docs から、認証情報に合致するユーザーを取得
@@ -73,4 +77,26 @@ const registerRequest = async (senderData, receiverData) => {
   console.log("...done!");
 }
 
-export { getAuthUserDoc, registerAuthUserDoc, getAllUserDocs, updateUserData, registerRequest };
+
+
+const registerUpdateHook = (targetDoc) => {
+  console.log("registered updateHook for firestore.");
+  console.log(targetDoc);
+
+  document(targetDoc)
+    .onWrite(((changedDocSnapshot, context) => {
+      console.log("registerUpdateHook.js")
+      console.log(changedDocSnapshot.data());
+      console.log(context);
+    }))
+};
+
+
+export {
+  getAuthUserDoc,
+  registerAuthUserDoc,
+  getAllUserDocs,
+  updateUserData,
+  registerRequest,
+  registerUpdateHook,
+};

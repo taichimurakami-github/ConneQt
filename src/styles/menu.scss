@@ -32,4 +32,8 @@
   height: 15px;
   border-radius: 100px;
   background: $orange;
+
+  &:not(.active) {
+    display: none;
+  }
 }
