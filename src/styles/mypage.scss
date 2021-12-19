@@ -1,16 +1,32 @@
+@import "./common/assets";
 
 .mypage-top-wrapper{
+
+  width: 90%;
+  max-width: 700px;
+  margin: auto;
 
   .user-icon{
     margin-bottom: 15px;
   }
+}
 
-  .name{
-    font-size: 2rem;
-    margin-bottom: 15px;
+.edit-menu-container{
+  text-align: left;
+  position: relative;
+  padding: 15px;
+
+  .nav-title{
+    font-weight: normal;
+    font-size: 15px;
+    color: $darkgray;
   }
 
-  .state{
-    margin-bottom: 50px;
+  .arrow-gt{
+    right: 15px;
+  }
+
+  &:hover{
+    background: lightgray;
   }
 }

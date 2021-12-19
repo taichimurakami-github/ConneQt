@@ -9,7 +9,7 @@ import { useState, useEffect } from "react";
 import { SignUp } from "./components/SignUp";
 import { FindUserHandler } from "./components/FindUserHandler";
 import { FriendHandler } from "./components/FriendHandler";
-import { Mypage } from "./components/Mypage";
+import { MypageHandler } from "./components/MypageHandler";
 import { Modal } from "./components/Modal";
 import { Menu } from "./components/UI/Menu";
 
@@ -78,7 +78,7 @@ export const App = () => {
         />;
 
       case appConfig.pageContents["004"]:
-        return <Mypage
+        return <MypageHandler
           fetchAndRenewUserData={fetchAndRenewUserData}
           handleModalState={setModalState}
           eraceModal={eraceModal}

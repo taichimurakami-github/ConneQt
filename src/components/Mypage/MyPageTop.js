@@ -1,30 +1,45 @@
 import { signOut } from "../../fn/auth/firebase.auth"
-import { MypageConfig } from "./config"
+import { Header } from "../UI/Header"
+import { cmpConfig } from "./config"
+import darkgrayArrowGt from "../../images/arrow-gt-darkgray.svg";
 
-const cmpConfig = { ...MypageConfig }
 
 export const MypageTop = (props) => {
 
   return (
-    <div className="mypage-top-wrapper">
+    <>
+      <Header
+        title="マイページ"
+        backable={false}
+      />
 
-      <img className="user-icon" src={props.user?.photo}></img>
+      <ul className="mypage-top-wrapper">
+        <img className="user-icon" src={props.user?.photo}></img>
 
-      <p className="name clickable" id={cmpConfig["003"].id} onClick={props.handleOnClick}>
-        {props.user?.name}
-      </p>
+        <li className="edit-menu-container name clickable"
+          id={cmpConfig["003"].id}
+          onClick={() => props.handleViewState(cmpConfig.state.view["003"])}>
+          <h3 className="nav-title">お名前を編集：</h3>
+          {props.user?.name}
+          <img className="arrow-gt absolute" src={darkgrayArrowGt}></img>
+        </li>
+        <li className="edit-menu-container state clickable"
+          id={cmpConfig["004"].id}
+          onClick={() => props.handleViewState(cmpConfig.state.view["004"])}>
+          <h3 className="nav-title">状態を編集：</h3>
+          {props.user?.state}
+          <img className="arrow-gt absolute" src={darkgrayArrowGt}></img>
+        </li>
+        <li className="edit-menu-container profile clickable"
+          id={cmpConfig["005"].id}
+          onClick={() => props.handleViewState(cmpConfig.state.view["005"])}>
+          <h3 className="nav-title">プロフィールを編集：</h3>
+          {props.user?.profile}
+          <img className="arrow-gt absolute" src={darkgrayArrowGt}></img>
+        </li>
 
-      <p className="state clickable" id={cmpConfig["004"].id} onClick={props.handleOnClick}>
-        {props.user?.state}
-      </p>
-
-      <p className="profile card clickable" id={cmpConfig["005"].id} onClick={props.handleOnclick}>
-        <span>プロフィールメッセージ：</span>
-        {props.user?.profile}
-      </p>
-
-      <button classname="btn-gray" onClick={signOut}>ログアウトする</button>
-    </div>
-
+        <button className="btn-gray" onClick={signOut}>ログアウトする</button>
+      </ul>
+    </>
   )
 }

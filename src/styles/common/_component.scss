@@ -46,3 +46,14 @@ button{
   width: 95%;
   max-width: 750px;
 }
+
+.arrow-gt.absolute {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+}
+
+.p-events-none{
+  pointer-events: none;
+}
