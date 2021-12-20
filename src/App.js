@@ -15,7 +15,7 @@ import { Menu } from "./components/UI/Menu";
 
 // fn imports
 import { getAuthUserDoc, registerAuthUserDoc } from "./fn/db/firestore.handler";
-import handleOnWriteHook from "../functions";
+// import handleOnWriteHook from "../functions";
 
 // app common style imports
 import "./styles/App.scss";
@@ -112,8 +112,12 @@ export const App = () => {
     //見つからなかったらDBに登録して改めてusedataを取得・登録 >> Mypageを表示 & ようこそ！モーダルを表示
     //見つかったらそのままuserdataを登録 >> 表示するページはいじらない
     if (user) {
+      /**
+       * ここでfirestoreの変更をhookする関数を起動しておきたい
+       * ログイン時に１回だけ起動できれば良い？はず
+       */
       // registerUpdateHook(`/users/${user.uid}`);
-      handleOnWriteHook(`users/${user.uid}`);
+      // handleOnWriteHook(`users/${user.uid}`);
 
       //ユーザー登録済み
       console.log("you're registered.");
