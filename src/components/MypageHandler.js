@@ -106,11 +106,11 @@ export const MypageHandler = (props) => {
       //loadingモーダルを隠す
       props.eraceModal();
 
-      //appState: userDataを更新      
-      props.fetchAndRenewUserData();
+      //appState: userDataを更新 >> registerUpdateHookForUsersにより自動化
+      // props.fetchAndRenewUserData();
 
       //myPageTopに遷移
-      showMypageTop();
+      setViewState(cmpConfig.state.view["001"]);
     })();
   }
 
