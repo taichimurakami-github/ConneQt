@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react"
+import cmpConfig from "./config";
+import { Header } from "../UI/Header";
 
 export const ShowFriendList = (props) => {
 
@@ -31,6 +33,35 @@ export const ShowFriendList = (props) => {
 
   }
 
+  const getNumberFromStringID = (data, splitChar = "_") => {
+    const splitArr = data.split(splitChar);
+    return Number(splitArr.pop());
+  }
+
+
+  const handleShowProfileOnRequestSent = (e) => {
+
+    // selectedUserDocStateを設定
+    props.handleSelectedUserDoc(
+      req_sentUserDocsState[getNumberFromStringID(e.target.id)]
+    );
+
+    // showUserProfile画面を表示
+    props.handleViewState(cmpConfig.state.view["004"]);
+  }
+
+
+  const handleShowProfileOnRequestReceived = (e) => {
+
+    // selectedUserDocStateを設定
+    props.handleSelectedUserDoc(
+      req_receivedUserDocsState[getNumberFromStringID(e.target.id)]
+    );
+
+    // showUserProfile画面を表示
+    props.handleViewState(cmpConfig.state.view["003"]);
+  }
+
   const [friendDocsState, setFriendDocsState] = useState([]);
   const [req_receivedUserDocsState, setReq_receivedUserDocsState] = useState([]);
   const [req_sentUserDocsState, setReq_sentUserDocsState] = useState([]);
@@ -45,13 +76,17 @@ export const ShowFriendList = (props) => {
 
   return (
     <>
-      <p style={{ margin: "15px auto 10px", background: "black", color: "white" }}>あなたが受け取ったリクエスト一覧</p>
+      <Header
+        title="フレンドリスト"
+        backable={false}
+      />
+      <p style={{ margin: "15px auto 10px", background: "green", color: "white" }}>あなたが受け取ったリクエスト一覧</p>
       <ul className="req-received-users-list-wrapper">
         {
           req_receivedUserDocsState.length !== 0 ?
-            req_receivedUserDocsState.map(val =>
+            req_receivedUserDocsState.map((val, index) =>
               <li
-
+                id={`user-req-received_${index}`}
                 className="user-list"
               >
                 <img className="user-icon" src={val.photo} />
@@ -59,18 +94,24 @@ export const ShowFriendList = (props) => {
                   <p className="name">{val.name}</p>
                   <p className="profile">{val.profile}</p>
                 </div>
+                <button
+                  className="btn-orange"
+                  onClick={handleShowProfileOnRequestReceived}
+                >
+                  プロフィールを見る
+                </button>
               </li>)
             :
             <p>no request received.</p>
         }
       </ul>
-      <p style={{ margin: "100px auto 10px", background: "black", color: "white" }}>あなたが送ったリクエスト一覧</p>
+      <p style={{ margin: "100px auto 10px", background: "darkorange", color: "white" }}>あなたが送ったリクエスト一覧</p>
       <ul className="req-sent-users-list-wrapper">
         {
           req_sentUserDocsState.length !== 0 ?
-            req_sentUserDocsState.map(val =>
+            req_sentUserDocsState.map((val, index) =>
               <li
-
+                id={`user-req-sent_${index}`}
                 className="user-list"
               >
                 <img className="user-icon" src={val.photo} />
@@ -78,9 +119,16 @@ export const ShowFriendList = (props) => {
                   <p className="name">{val.name}</p>
                   <p className="profile">{val.profile}</p>
                 </div>
+                <button
+                  className="btn-orange"
+                  onClick={handleShowProfileOnRequestSent}
+                >
+
+                  プロフィールを見る
+                </button>
               </li>)
             :
-            <p>no sent request now.</p>
+            <p>現在、承認待ちのリクエストはありません。</p>
         }
       </ul>
       <p style={{ margin: "100px auto 10px", background: "black", color: "white" }}>あなたのフレンド一覧</p>
@@ -99,7 +147,7 @@ export const ShowFriendList = (props) => {
                 </div>
               </li>)
             :
-            <p>no friends.</p>
+            <p>下部メニューの「見つける」から、<br></br>新しい友達を探しましょう！</p>
         }
       </ul>
     </>
