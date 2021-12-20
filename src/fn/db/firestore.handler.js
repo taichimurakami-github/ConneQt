@@ -1,4 +1,4 @@
-import { collection, doc, getDoc, getDocs, getFirestore, setDoc, updateDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, getFirestore, setDoc, updateDoc, onSnapshot } from "firebase/firestore";
 import { userDocTemplate } from "../../firebase.config";
 import "./firestore.ready";
 import "./cloudfunctions.ready";
@@ -79,16 +79,57 @@ const registerRequest = async (senderData, receiverData) => {
 
 
 
-const registerUpdateHook = (targetDoc) => {
+const registerUpdateHookForUsers = (uid, setter) => {
   console.log("registered updateHook for firestore.");
-  console.log(targetDoc);
 
-  document(targetDoc)
-    .onWrite(((changedDocSnapshot, context) => {
-      console.log("registerUpdateHook.js")
-      console.log(changedDocSnapshot.data());
-      console.log(context);
-    }))
+  if (!uid || typeof uid !== "string") {
+    throw new Error("registerUpdateHookForUser Error: uidを引数に正しく指定してください.");
+  }
+
+  if (!setter) {
+    throw new Error("registerUpdateHookUser Error: UserDocを保持するstate用のsetterを正しく指定してください。")
+  }
+
+  /**
+   * onSnapshot with doc
+   * 該当ユーザーのデータベースの読み込みを行う
+   * 初回起動時はユーザーデータが "added" 扱いで取得される。
+   * それ以降はユーザーデータに変更があったときのみ該当データが取得される。
+   */
+  return onSnapshot(doc(db, "users", uid), (doc) => {
+    setter(doc.data());
+  });
+
+
+  /**
+   * onSnapshot with collection
+   * users collection内のすべてのデータの読み込みを行う
+   * 初回起動時はすべてのユーザーが "added" 扱いで取得されるよう。
+   * つまり、
+   * 初回起動時 -> change.type="added" && getAllUserData()
+   * それ以降 -> users collection 内のデータが更新されたら、更新されたデータを自動でとってくる
+   */
+
+  // return onSnapshot(collection(db, "users"), (snapshot) => {
+  //   snapshot.docChanges().forEach((change) => {
+  //     if (change.type === "added") {
+  //       console.log("New city: ", change.doc.data());
+  //     }
+  //     if (change.type === "modified") {
+  //       console.log("Modified city: ", change.doc.data());
+  //     }
+  //     if (change.type === "removed") {
+  //       console.log("Removed city: ", change.doc.data());
+  //     }
+  //   });
+  // });
+
+  // document(targetDoc)
+  //   .onWrite(((changedDocSnapshot, context) => {
+  //     console.log("registerUpdateHook.js")
+  //     console.log(changedDocSnapshot.data());
+  //     console.log(context);
+  //   }))
 };
 
 
@@ -98,5 +139,5 @@ export {
   getAllUserDocs,
   updateUserData,
   registerRequest,
-  registerUpdateHook,
+  registerUpdateHookForUsers,
 };

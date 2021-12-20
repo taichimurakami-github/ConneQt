@@ -46,7 +46,7 @@ export const ShowUsersList = (props) => {
       />
       <ul className="users-list-wrapper">
         {
-          props.allUserDocs.length !== 0
+          props.allUserDocs.length !== 0 && props.nowUserDoc
             ? props.allUserDocs.map((val) => {
 
               if (val.uid === props.nowUserDoc.uid) return undefined;

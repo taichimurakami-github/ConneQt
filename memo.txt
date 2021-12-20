@@ -5,6 +5,9 @@ memo
 + sendRequestのエラーハンドリング
   >> 一度requestを送った相手に対して再びrequestがおくれないようにする
 
++ onSnapshot周りの実装
+  >> リロード時に前のonSnapshotのリッスンが消えていない説
+
 
 # request機能実装に必要な機能
 
