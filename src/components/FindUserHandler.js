@@ -34,7 +34,6 @@ export const FindUserHandler = (props) => {
 
     //すべてのユーザーデータを取得し、App.allUserDocsStateを変更
     const fetchResult = await getAllUserDocs();
-    console.log(Object.is(props.allUserDocs, fetchResult));
     props.handleAllUserDocsState(fetchResult);
 
     //モーダルを消去

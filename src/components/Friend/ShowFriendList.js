@@ -2,9 +2,14 @@ import { useState, useEffect } from "react"
 
 export const ShowFriendList = (props) => {
 
+  /**
+   * firestore の users >> nowAppUser[target] のuid-arrayの中に一致するuidを持つ
+   * allUserDocs内のオブジェクト（userDoc）を返す 
+   * @param {string} target 
+   * @returns 
+   */
   const getSpecifiedUserDocsByUid = (target) => {
     let result = [];
-    console.log(props.nowUserDoc[target]);
     if (props.nowUserDoc[target].length === 0) return result;
 
     for (const userDoc of props.allUserDocs) {
@@ -22,12 +27,8 @@ export const ShowFriendList = (props) => {
       //   >> 全取得完了、処理を処理を終了
       if (result.length === props.nowUserDoc[target].length) break;
     }
-    console.log(result);
     return result;
 
-  }
-
-  const getReceivedRequest = () => {
   }
 
   const [friendDocsState, setFriendDocsState] = useState([]);
