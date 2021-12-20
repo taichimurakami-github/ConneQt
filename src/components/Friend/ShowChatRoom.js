@@ -1,7 +1,8 @@
 import { Header } from "../UI/Header"
 
 
-export const Chat = (props) => {
+export const ShowChatRoom = (props) => {
+
   return (
     <>
       <Header

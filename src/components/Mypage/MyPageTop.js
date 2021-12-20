@@ -1,4 +1,3 @@
-import { signOut } from "../../fn/auth/firebase.auth"
 import { Header } from "../UI/Header"
 import { cmpConfig } from "./config"
 import darkgrayArrowGt from "../../images/arrow-gt-darkgray.svg";
@@ -38,7 +37,7 @@ export const MypageTop = (props) => {
           <img className="arrow-gt absolute" src={darkgrayArrowGt}></img>
         </li>
 
-        <button className="btn-gray" onClick={signOut}>ログアウトする</button>
+        <button className="btn-gray" onClick={props.signOut}>ログアウトする</button>
       </ul>
     </>
   )
