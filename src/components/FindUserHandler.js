@@ -43,6 +43,7 @@ export const FindUserHandler = (props) => {
   }
 
 
+
   /**
    * sendRequest
    */
@@ -99,16 +100,18 @@ export const FindUserHandler = (props) => {
 
       case cmpConfig.state.view["002"]:
         return <ShowUserProfile
-          user={selectedUserState}
+          nowUserDoc={props.user}
+          targetUserDoc={selectedUserState}
           handleViewState={setViewState}
         />;
 
       case cmpConfig.state.view["003"]:
         return <ShowRequestForm
-          user={selectedUserState}
+          targetUserDoc={selectedUserState}
           handleRequest={sendRequest}
           handleViewState={setViewState}
         />;
+
 
       default:
         return undefined;

@@ -2,7 +2,6 @@ import { appConfig } from "../../app.config";
 import "../../styles/menu.scss";
 
 export const Menu = (props) => {
-  console.log(props.pageContentState);
 
   const handlePageContent = (e) => props.handlePageContent(e.target.id);
 
@@ -28,20 +27,20 @@ export const Menu = (props) => {
         id={appConfig.pageContents["002"]}
         onClick={handlePageContent}
         className={`menu-content ${isActivated(appConfig.pageContents["002"]) && "active"} clickable`}>
-        find
+        見つける
       </li>
       <li
         id={appConfig.pageContents["003"]}
         onClick={handlePageContent}
         className={`menu-content ${isActivated(appConfig.pageContents["003"]) && "active"} clickable`}>
         <span className="notification orange"></span>
-        friend
+        友達一覧
       </li>
       <li
         id={appConfig.pageContents["004"]}
         onClick={handlePageContent}
         className={`menu-content ${isActivated(appConfig.pageContents["004"]) && "active"} clickable`} >
-        mypage
+        マイページ
       </li>
     </ul>
   )

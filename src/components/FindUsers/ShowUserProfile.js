@@ -9,17 +9,17 @@ export const ShowUserProfile = (props) => {
     <>
       <Header
         backable={true}
-        title={`${props.user?.name} さんのプロフィール`}
+        title={`${props.targetUserDoc?.name} さんのプロフィール`}
         handleBack={() => props.handleViewState(cmpConfig.state.view["001"])}
       />
 
       <div className="user-profile-wrapper">
-        <img className="user-icon" src={props.user?.photo}></img>
-        <p className="name">{props.user?.name}</p>
+        <img className="user-icon" src={props.targetUserDoc?.photo}></img>
+        <p className="name">{props.targetUserDoc?.name}</p>
         <p className="status">
-          {props.user?.status === "1" ? "online" : "offline"}
+          {props.targetUserDoc?.status === "1" ? "online" : "offline"}
         </p>
-        <p className="profile card">{props.user?.profile}</p>
+        <p className="profile card">{props.targetUserDoc?.profile}</p>
       </div>
 
       <button className="btn-orange" onClick={() => props.handleViewState(cmpConfig.state.view["003"])}>
