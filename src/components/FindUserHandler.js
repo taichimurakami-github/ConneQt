@@ -4,7 +4,6 @@ import { appConfig } from "../app.config";
 import "../styles/usersList.scss";
 
 //import components
-import { Header } from "./UI/Header";
 import { ShowUsersList } from "./FindUsers/ShowUsersList";
 import { ShowUserProfile } from "./FindUsers/ShowUserProfile";
 import { ShowRequestForm } from "./FindUsers/ShowRequestForm";

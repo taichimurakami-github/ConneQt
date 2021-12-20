@@ -97,6 +97,8 @@ const registerUpdateHookForUsers = (uid, setter) => {
    * それ以降はユーザーデータに変更があったときのみ該当データが取得される。
    */
   return onSnapshot(doc(db, "users", uid), (doc) => {
+    console.log("user data updated.");
+    console.log(doc.data());
     setter(doc.data());
   });
 

@@ -29,8 +29,9 @@ export const ShowFriendList = (props) => {
 
   // AppState: userData, allUserDocsStateが変更された時にフレンドリストを更新
   useEffect(() => {
+    console.log("props changed")
     setFriendDocsState(getFriend());
-  }, [props.userDoc, props.allUserDocs]);
+  }, [props.nowUserDoc, props.allUserDocs]);
 
   return (
     <>
@@ -40,6 +41,8 @@ export const ShowFriendList = (props) => {
           friendDocsState.length !== 0 ?
             friendDocsState.map(val =>
               <li
+
+                className="user-list"
               >
                 <img className="user-icon" src={val.photo} />
                 <div className="text-container">
