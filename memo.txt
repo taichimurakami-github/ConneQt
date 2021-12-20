@@ -6,8 +6,11 @@ memo
   >> 一度requestを送った相手に対して再びrequestがおくれないようにする
 
 + onSnapshot周りの実装
-  >> リロード時に前のonSnapshotのリッスンが消えていない説
 
++ friendList周りの実装
+(1) allUserDocsから該当のfriendを抽出する関数
+  >> 1. friend該当者がアカウントを削除した場合のハンドリング
+  >> 2. appUserDoc, allUserDocsが変更されるたびにfriendlistを更新してしまうので、差分を検出して変更を反映する方式に最適化できないか
 
 # request機能実装に必要な機能
 

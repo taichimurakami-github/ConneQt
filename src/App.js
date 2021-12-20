@@ -28,14 +28,14 @@ export const App = () => {
    * setState definitions
    */
   const [authState, setAuthState] = useState(null);
-  const [userData, setUserData] = useState(
-    generateDummyUserDocs()[0]
-  );
-  const [allUserDocsState, setAllUserDocsState] = useState(
-    generateDummyUserDocs()
-  );
-  // const [userData, setUserData] = useState(null);
-  // const [allUserDocsState, setAllUserDocsState] = useState([]);
+  // const [userData, setUserData] = useState(
+  //   generateDummyUserDocs()[0]
+  // );
+  // const [allUserDocsState, setAllUserDocsState] = useState(
+  //   generateDummyUserDocs()
+  // );
+  const [userData, setUserData] = useState(null);
+  const [allUserDocsState, setAllUserDocsState] = useState([]);
   const [modalState, setModalState] = useState({ ...appConfig.initialState.App.modalState });
   const [pageContentState, setPageContentState] = useState(appConfig.pageContents["001"]);
 
@@ -87,7 +87,8 @@ export const App = () => {
 
       case appConfig.pageContents["003"]:
         return <FriendHandler
-          appUser={userData}
+          nowUserDoc={userData}
+          allUserDocs={allUserDocsState}
         />;
 
       case appConfig.pageContents["004"]:
