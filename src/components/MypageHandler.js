@@ -25,6 +25,7 @@ export const MypageHandler = (props) => {
           handleViewState={setViewState}
           handleSubmit={handleSubmitToDB}
           user={props.user}
+          signOut={props.signOut}
         />;
 
       case cmpConfig.state.view["002"]:

@@ -20,6 +20,7 @@ import { getAuthUserDoc, registerAuthUserDoc, registerUpdateHookForUsers } from 
 // app common style imports
 import "./styles/App.scss";
 import { generateDummyUserDocs } from "./devTools/dummyUserListData";
+import { signOut } from "./fn/auth/firebase.auth";
 
 export const App = () => {
 
@@ -50,6 +51,17 @@ export const App = () => {
     closeable: false,
     type: appConfig.components.modal.type["001"]
   });
+
+  /**
+   * execute signOut
+   */
+  const signOutFromApp = () => {
+    // onSnapshot のリスナーを削除
+    authState.onSnapshot_unsubscribe();
+
+    // sign outを実行
+    signOut();
+  }
 
 
   /**
@@ -83,7 +95,9 @@ export const App = () => {
           handleModalState={setModalState}
           eraceModal={eraceModal}
           authData={authState}
-          user={userData} />;
+          user={userData}
+          signOut={signOutFromApp}
+        />;
 
       default:
         return undefined;
@@ -116,24 +130,21 @@ export const App = () => {
         // https://firebase.google.com/docs/reference/js/firebase.User
         console.log("you have signed in as : " + user.email);
 
-        // AuthStateを更新
-        setAuthState(user);
-
         /**
          * ここでfirestoreの変更をhookする関数を起動しておきたい
          * ログイン時に１回だけ起動できれば良い？はず
          * 以後、ログアウトするまで自動でuserDocの更新時にsetStateしてくれる
          */
-        unsubscribe = registerUpdateHookForUsers(user.uid, setUserData);
+        user.onSnapshot_unsubscribe = registerUpdateHookForUsers(user.uid, setUserData);
+        console.log(user);
 
+        // AuthStateを更新
+        setAuthState(user);
 
       } else {
         // User is signed out
         // ...
         console.log("you have signed out!");
-
-        // onSnapshotを削除
-        unsubscribe && unsubscribe();
 
         // AuthStateを更新
         setAuthState(null);
