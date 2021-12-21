@@ -4,7 +4,7 @@ import { appConfig } from "../app.config";
 import "../styles/usersList.scss";
 
 //import components
-import { ShowUsersList } from "./FindUsers/ShowUsersList";
+import { ShowFoundUsersList } from "./FindUsers/ShowFoundUsersList";
 import { ShowUserProfile } from "./FindUsers/ShowUserProfile";
 import { ShowRequestForm } from "./FindUsers/ShowRequestForm";
 
@@ -89,7 +89,7 @@ export const FindUserHandler = (props) => {
   const handleView = () => {
     switch (viewState) {
       case cmpConfig.state.view["001"]:
-        return <ShowUsersList
+        return <ShowFoundUsersList
           allUserDocs={props.allUserDocs}
           nowUserDoc={props.user}
           handleSelectedUser={setSelectedUserState}

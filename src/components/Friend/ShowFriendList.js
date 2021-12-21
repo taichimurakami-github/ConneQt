@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import cmpConfig from "./config";
 import { Header } from "../UI/Header";
+import { UsersList } from "../UI/UsersList";
 
 export const ShowFriendList = (props) => {
 
@@ -81,102 +82,45 @@ export const ShowFriendList = (props) => {
         title="フレンドリスト"
         backable={false}
       />
+
       <p style={{ margin: "15px auto 10px", background: "green", color: "white" }}>あなたが受け取ったリクエスト一覧</p>
-      <ul className="req-received-users-list-wrapper">
-        {
-          req_receivedUserDocsState.length !== 0 ?
-            req_receivedUserDocsState.map((val, index) =>
-              <li
-                id={`user-req-received_${index}`}
-                className="user-list"
-              >
-                <img className="user-icon" src={val.photo} />
-                <div className="text-container">
-                  <p className="name">{val.name}</p>
-                  <p className="profile">{val.profile}</p>
-                </div>
-                <button
-                  className="btn-orange"
-                  onClick={handleShowProfileOnRequestReceived}
-                >
-                  プロフィールを見る
-                </button>
-              </li>)
-            :
-            <p>no request received.</p>
-        }
-      </ul>
+      <UsersList
+        userDocs={req_receivedUserDocsState}
+        noUserMessage="現在、あなたが受け取ったリクエストはありません。"
+      >
+        <button
+          className="btn-orange"
+          onClick={handleShowProfileOnRequestReceived}
+        >
+          プロフィールを見る
+        </button>
+      </UsersList>
+
       <p style={{ margin: "100px auto 10px", background: "darkorange", color: "white" }}>あなたが送ったリクエスト一覧</p>
-      <ul className="req-sent-users-list-wrapper">
-        {
-          req_sentUserDocsState.length !== 0 ?
-            req_sentUserDocsState.map((val, index) =>
-              <li
-                id={`user-req-sent_${index}`}
-                className="user-list"
-              >
-                <img className="user-icon" src={val.photo} />
-                <div className="text-container">
-                  <p className="name">{val.name}</p>
-                  <p className="profile">{val.profile}</p>
-                </div>
-                <button
-                  className="btn-orange"
-                  onClick={handleShowProfileOnRequestSent}
-                >
+      <UsersList
+        userDocs={req_sentUserDocsState}
+        noUserMessage="現在、あなたが送ったリクエストはありません。"
+      >
+        <button
+          className="btn-orange"
+          onClick={handleShowProfileOnRequestSent}
+        >
+          プロフィールを見る
+        </button>
+      </UsersList>
 
-                  プロフィールを見る
-                </button>
-              </li>)
-            :
-            <p>現在、承認待ちのリクエストはありません。</p>
-        }
-      </ul>
       <p style={{ margin: "100px auto 10px", background: "red", color: "white" }}>あなたが拒否された・拒否したリクエスト一覧</p>
-      <ul className="req-sent-users-list-wrapper">
-        {
-          req_rejectedUserDocsState.length !== 0 ?
-            req_rejectedUserDocsState.map((val, index) =>
-              <li
-                id={`user-req-sent_${index}`}
-                className="user-list"
-              >
-                <img className="user-icon" src={val.photo} />
-                <div className="text-container">
-                  <p className="name">{val.name}</p>
-                  <p className="profile">{val.profile}</p>
-                </div>
-                <button
-                  className="btn-orange"
-                  onClick={handleShowProfileOnRequestSent}
-                >
+      <UsersList
+        userDocs={req_rejectedUserDocsState}
+        noUserMessage="現在、拒否された・したリクエストはありません。"
+      >
+      </UsersList>
 
-                  プロフィールを見る
-                </button>
-              </li>)
-            :
-            <p>現在、拒否されたリクエストはありません。</p>
-        }
-      </ul>
       <p style={{ margin: "100px auto 10px", background: "black", color: "white" }}>あなたのフレンド一覧</p>
-      <ul className="friend-users-list-wrapper">
-        {
-          friendDocsState.length !== 0 ?
-            friendDocsState.map(val =>
-              <li
-
-                className="user-list"
-              >
-                <img className="user-icon" src={val.photo} />
-                <div className="text-container">
-                  <p className="name">{val.name}</p>
-                  <p className="profile">{val.profile}</p>
-                </div>
-              </li>)
-            :
-            <p>下部メニューの「見つける」から、<br></br>新しい友達を探しましょう！</p>
-        }
-      </ul>
+      <UsersList
+        userDocs={friendDocsState}
+        noUserMessage={<>下部メニューの「見つける」から、<br></br>新しい友達を探しましょう！</>}
+      ></UsersList>
     </>
   )
 }
