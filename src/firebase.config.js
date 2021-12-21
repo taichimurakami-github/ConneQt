@@ -13,7 +13,11 @@ const userDocTemplate = {
   email: '',
   photo: '',
   profile: 'これはあなたのプロフィールです。早速編集してみましょう！',
-  state: '1'
+  state: '1',
+  request_received: [],
+  request_rejected: [],
+  request_sent: [],
+  friend: [],
 }
 
 export { firebaseConfig, userDocTemplate }

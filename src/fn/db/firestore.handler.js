@@ -78,6 +78,14 @@ const registerRequest = async (...dataArr) => {
   console.log("...done!");
 }
 
+const registerChatroom = async (user01Doc, user02Doc) => {
+  const chatRoomID = user01Doc.uid + "_AND_" + user02Doc.uid;
+  const chatRoomInitialTemplate = {};
+  chatRoomInitialTemplate[user01Doc.uid] = [];
+  chatRoomInitialTemplate[user02Doc.uid] = [];
+  await setDoc(doc(db, "chatroom", chatRoomID), chatRoomInitialTemplate);
+  return chatRoomID;
+}
 
 
 const registerUpdateHookForUsers = (uid, setter) => {
