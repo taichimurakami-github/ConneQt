@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useEffect } from "react/cjs/react.development";
 import { Header } from "../UI/Header";
+import { UsersList } from "../UI/UsersList";
 import cmpConfig from "./config";
 
 export const ShowUsersList = (props) => {
@@ -121,30 +122,10 @@ export const ShowUsersList = (props) => {
         title="ユーザーを探す"
         backable={false}
       />
-      <ul className="users-list-wrapper">
-        {
-          showableUserDocs.length !== 0
-            ? showableUserDocs.map((val) => {
-              return (
-                <li
-                  id={val.uid}
-                  className="user-list clickable"
-                  onClick={handleSelectUser}
-                  key={val.uid}
-                >
-                  <img className="user-icon" src={val.photo} />
-                  <div className="text-container">
-                    <p className="name">{val.name}</p>
-                    <p className="profile">{val.profile}</p>
-                  </div>
-
-                </li>
-              )
-            }
-            )
-            : <p>no user found.</p>
-        }
-      </ul>
+      <UsersList
+        userDocs={showableUserDocs}
+        handleOnClick={handleSelectUser}
+      />
     </>
   )
 }
