@@ -64,16 +64,17 @@ const updateUserData = async (authData, updateData) => {
   await updateDoc(docRef, updateData);
 }
 
-const registerRequest = async (senderData, receiverData) => {
-  console.log(`sending request from ${senderData.email} to ${receiverData.uid}`);
+const registerRequest = async (...dataArr) => {
+  // console.log(`sending request from ${senderData.email} to ${receiverData.uid}`);
+  console.log("registerRequest(): targetUser is " + dataArr);
 
-  // create doc ref
-  const senderDocRef = doc(db, "users", senderData.uid);
-  const receiverDocRef = doc(db, "users", receiverData.uid);
+  for (const data of dataArr) {
+    // create doc ref
+    const docRef = doc(db, "users", data.uid);
 
-  //set user doc
-  await setDoc(senderDocRef, senderData);
-  await setDoc(receiverDocRef, receiverData);
+    //set user doc
+    await setDoc(docRef, data);
+  }
   console.log("...done!");
 }
 
