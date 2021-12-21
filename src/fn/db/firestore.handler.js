@@ -79,7 +79,7 @@ const registerRequest = async (...dataArr) => {
 }
 
 const registerChatroom = async (user01Doc, user02Doc) => {
-  const chatRoomID = user01Doc.uid + "_AND_" + user02Doc.uid;
+  const chatRoomID = new Date().getTime().toString(16) + Math.floor(1000 * Math.random()).toString(16);
   const chatRoomInitialTemplate = {};
   chatRoomInitialTemplate[user01Doc.uid] = [];
   chatRoomInitialTemplate[user02Doc.uid] = [];
@@ -99,6 +99,8 @@ const registerUpdateHookForUsers = (uid, setter) => {
     throw new Error("registerUpdateHookUser Error: UserDocを保持するstate用のsetterを正しく指定してください。")
   }
 
+
+  console.log(uid);
   /**
    * onSnapshot with doc
    * 該当ユーザーのデータベースの読み込みを行う
@@ -110,7 +112,6 @@ const registerUpdateHookForUsers = (uid, setter) => {
     console.log(doc.data());
     setter(doc.data());
   });
-
 
   /**
    * onSnapshot with collection
@@ -143,6 +144,17 @@ const registerUpdateHookForUsers = (uid, setter) => {
   //   }))
 };
 
+const registerUpdateHookForChatroom = (chatroomIDArr, setter) => {
+
+  if (!setter) return;
+
+  return chatroomIDArr.map((chatroomID) => onSnapshot(
+    doc(db, "chatroom", chatroomID),
+    doc => {
+      setter(doc.data());
+    }));
+}
+
 
 export {
   getAuthUserDoc,
@@ -151,4 +163,6 @@ export {
   updateUserData,
   registerRequest,
   registerUpdateHookForUsers,
+  registerUpdateHookForChatroom,
+  registerChatroom,
 };

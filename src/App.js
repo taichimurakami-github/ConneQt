@@ -14,7 +14,7 @@ import { Modal } from "./components/Modal";
 import { Menu } from "./components/UI/Menu";
 
 // fn imports
-import { getAuthUserDoc, registerAuthUserDoc, registerUpdateHookForUsers } from "./fn/db/firestore.handler";
+import { getAuthUserDoc, registerAuthUserDoc, registerUpdateHookForChatroom, registerUpdateHookForUsers } from "./fn/db/firestore.handler";
 // import handleOnWriteHook from "../functions";
 
 // app common style imports
@@ -39,7 +39,6 @@ export const App = () => {
   const [modalState, setModalState] = useState({ ...appConfig.initialState.App.modalState });
   const [pageContentState, setPageContentState] = useState(appConfig.pageContents["001"]);
 
-  // const 
 
   /**
    * modal state functions
@@ -57,7 +56,7 @@ export const App = () => {
    */
   const signOutFromApp = () => {
     // onSnapshot のリスナーを削除
-    authState.onSnapshot_unsubscribe();
+    authState.onSnapshot_unsubscribe.map((func) => func());
 
     // sign outを実行
     signOut();
@@ -89,6 +88,8 @@ export const App = () => {
         return <FriendHandler
           nowUserDoc={userData}
           allUserDocs={allUserDocsState}
+          authState={authState}
+          handleAuthState={setAuthState}
         />;
 
       case appConfig.pageContents["004"]:
@@ -124,7 +125,6 @@ export const App = () => {
     // setPageContentState(appConfig.pageContents["002"]);
 
     onAuthStateChanged(auth, (user) => {
-      let unsubscribe;
 
       if (user) {
         // User is signed in, see docs for a list of available properties
@@ -132,11 +132,13 @@ export const App = () => {
         console.log("you have signed in as : " + user.email);
 
         /**
-         * ここでfirestoreの変更をhookする関数を起動しておきたい
+         * firestoreのusers > nowUser.uid のdocの変更をhookする関数を起動
          * ログイン時に１回だけ起動できれば良い？はず
          * 以後、ログアウトするまで自動でuserDocの更新時にsetStateしてくれる
          */
-        user.onSnapshot_unsubscribe = registerUpdateHookForUsers(user.uid, setUserData);
+        user.onSnapshot_unsubscribe = [
+          registerUpdateHookForUsers(user.uid, setUserData),
+        ];
         console.log(user);
 
         // AuthStateを更新
@@ -150,12 +152,12 @@ export const App = () => {
         // AuthStateを更新
         setAuthState(null);
 
-        //loadingエフェクトを終了
-        eraceModal();
-
         // Signed Inを表示コンテンツに指定
         setPageContentState(appConfig.pageContents["001"]);
       }
+
+      //loadingエフェクトを終了
+      eraceModal();
     });
   }, []);
 
@@ -176,6 +178,12 @@ export const App = () => {
       //authを通ったユーザーを指定
       //返り値は Object(見つかった) or null(見つからなかった)
       const isUserStateExists = userData ? true : false;
+      if (isUserStateExists) {
+        //既にuserDocStateが存在しているかどうか判定
+        console.log("your userdata has already exist.")
+        return;
+      }
+
       const user = isUserStateExists ? { ...userData } : await getAuthUserDoc(authState);
       console.log(`isUsersStateExists?: ${isUserStateExists}`);
 
@@ -190,13 +198,27 @@ export const App = () => {
         //ユーザー登録済み
         console.log("you're registered.");
 
-        //既にuserDocStateが存在しているかどうか判定
-        isUserStateExists
-          ? console.log("your userdata has already exist.")
-          : setUserData(user);
+        setUserData(user);
+
+        const chatRoomNewDataArr = await registerUpdateHookForChatroom(user.friend.map(val => val.chatRoomID));
+
+        chatRoomNewDataArr && chatRoomNewDataArr.length > 0 &&
+          setAuthState(
+            {
+              ...authState,
+              onSnapshot_unsubscribe: [
+                ...authState.onSnapshot_unsubscribe,
+                ...chatRoomNewDataArr
+              ]
+            }
+          );
 
         eraceModal();
 
+        // FInd Usersを表示コンテンツに指定
+        setPageContentState(appConfig.pageContents["002"]);
+
+        return;
       }
       else {
         console.log("you're NOT registered.");
@@ -204,27 +226,11 @@ export const App = () => {
         //ユーザー未登録
         setUserData(await registerAuthUserDoc(authState));
         setPageContentState(appConfig.pageContents["004"]);
-        setModalState({
-          display: true,
-          closable: true,
-          type: appConfig.components.modal.type["002"],
-          content: {
-            title: "Hey! へようこそ！",
-            text: [
-              "hey!へようこそ！",
-              "これは初回登録時にのみ表示されるメッセージです。",
-              "まずはあなたのアカウント設定を行いましょう"
-            ],
-            buttonText: "閉じる"
-          }
-        })
+
+
+        eraceModal();
+        return;
       }
-
-      //loadingエフェクトを終了
-      eraceModal();
-
-      // FInd Usersを表示コンテンツに指定
-      setPageContentState(appConfig.pageContents["002"]);
     })();
 
   }, [authState]);

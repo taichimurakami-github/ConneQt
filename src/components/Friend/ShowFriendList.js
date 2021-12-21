@@ -11,12 +11,14 @@ export const ShowFriendList = (props) => {
    * @param {string} target 
    * @returns 
    */
-  const getSpecifiedUserDocsByUid = (target) => {
+  const getSpecifiedUserDocsByUidArr = (targetArr) => {
     let result = [];
-    if (props.nowUserDoc[target].length === 0) return result;
+
+
+    if (targetArr.length === 0) return result;
 
     for (const userDoc of props.allUserDocs) {
-      for (const targetUid of props.nowUserDoc[target]) {
+      for (const targetUid of targetArr) {
 
         if (targetUid === userDoc.uid) {
           result.push(userDoc);
@@ -28,7 +30,7 @@ export const ShowFriendList = (props) => {
 
       // 取得したフレンドのDocsの数 === 登録してあるフレンドのuidの数
       //   >> 全取得完了、処理を処理を終了
-      if (result.length === props.nowUserDoc[target].length) break;
+      if (result.length === targetArr.length) break;
     }
     return result;
 
@@ -70,10 +72,21 @@ export const ShowFriendList = (props) => {
 
   // AppState: userData, allUserDocsStateが変更された時にフレンドリストを更新
   useEffect(() => {
-    setFriendDocsState(getSpecifiedUserDocsByUid("friend"));
-    setReq_receivedUserDocsState(getSpecifiedUserDocsByUid("request_received"));
-    setReq_sentUserDocsState(getSpecifiedUserDocsByUid("request_sent"));
-    setReq_rejectedUserDocsState(getSpecifiedUserDocsByUid("request_rejected"));
+    setFriendDocsState(getSpecifiedUserDocsByUidArr(
+      props.nowUserDoc.friend.map(val => val.uid))
+    );
+
+    setReq_receivedUserDocsState(
+      getSpecifiedUserDocsByUidArr(props.nowUserDoc.request_received.map(val => val))
+    );
+
+    setReq_sentUserDocsState(
+      getSpecifiedUserDocsByUidArr(props.nowUserDoc.request_sent.map(val => val))
+    );
+
+    setReq_rejectedUserDocsState(
+      getSpecifiedUserDocsByUidArr(props.nowUserDoc.request_rejected.map(val => val))
+    );
   }, [props.nowUserDoc, props.allUserDocs]);
 
   return (
