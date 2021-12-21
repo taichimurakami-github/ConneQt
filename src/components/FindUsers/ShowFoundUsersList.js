@@ -4,7 +4,7 @@ import { Header } from "../UI/Header";
 import { UsersList } from "../UI/UsersList";
 import cmpConfig from "./config";
 
-export const ShowUsersList = (props) => {
+export const ShowFoundUsersList = (props) => {
 
   /**
    * parentArr内に、targetValueが存在するかをチェック
