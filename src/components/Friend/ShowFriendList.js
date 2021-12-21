@@ -65,13 +65,14 @@ export const ShowFriendList = (props) => {
   const [friendDocsState, setFriendDocsState] = useState([]);
   const [req_receivedUserDocsState, setReq_receivedUserDocsState] = useState([]);
   const [req_sentUserDocsState, setReq_sentUserDocsState] = useState([]);
+  const [req_rejectedUserDocsState, setReq_rejectedUserDocsState] = useState([]);
 
   // AppState: userData, allUserDocsStateが変更された時にフレンドリストを更新
   useEffect(() => {
-    console.log("props changed")
     setFriendDocsState(getSpecifiedUserDocsByUid("friend"));
     setReq_receivedUserDocsState(getSpecifiedUserDocsByUid("request_received"));
     setReq_sentUserDocsState(getSpecifiedUserDocsByUid("request_sent"));
+    setReq_rejectedUserDocsState(getSpecifiedUserDocsByUid("request_rejected"));
   }, [props.nowUserDoc, props.allUserDocs]);
 
   return (
@@ -129,6 +130,32 @@ export const ShowFriendList = (props) => {
               </li>)
             :
             <p>現在、承認待ちのリクエストはありません。</p>
+        }
+      </ul>
+      <p style={{ margin: "100px auto 10px", background: "red", color: "white" }}>あなたが拒否された・拒否したリクエスト一覧</p>
+      <ul className="req-sent-users-list-wrapper">
+        {
+          req_rejectedUserDocsState.length !== 0 ?
+            req_rejectedUserDocsState.map((val, index) =>
+              <li
+                id={`user-req-sent_${index}`}
+                className="user-list"
+              >
+                <img className="user-icon" src={val.photo} />
+                <div className="text-container">
+                  <p className="name">{val.name}</p>
+                  <p className="profile">{val.profile}</p>
+                </div>
+                <button
+                  className="btn-orange"
+                  onClick={handleShowProfileOnRequestSent}
+                >
+
+                  プロフィールを見る
+                </button>
+              </li>)
+            :
+            <p>現在、拒否されたリクエストはありません。</p>
         }
       </ul>
       <p style={{ margin: "100px auto 10px", background: "black", color: "white" }}>あなたのフレンド一覧</p>

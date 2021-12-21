@@ -70,13 +70,12 @@ export const FindUserHandler = (props) => {
       ]
     };
 
-    console.log(senderData);
-    console.log(receiverData);
+    // console.log(senderData);
+    // console.log(receiverData);
 
     (async () => {
       await registerRequest(senderData, receiverData);
       setViewState(cmpConfig.state.view["001"]);
-
     })();
   }
 

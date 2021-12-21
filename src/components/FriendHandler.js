@@ -7,6 +7,7 @@ import { ShowChatRoom } from "./Friend/ShowChatRoom";
 import cmpConfig from "./Friend/config";
 import { ShowUserProfileOnRequestReceived } from "./Friend/ShowUserProfileOnRequestReceived";
 import { ShowUserProfileOnRequestSent } from "./Friend/ShowUserProfileOnRequestSent";
+import { registerRequest } from "../fn/db/firestore.handler";
 
 export const FriendHandler = (props) => {
 
@@ -18,12 +19,70 @@ export const FriendHandler = (props) => {
     viewState === cmpConfig.state.view["001"] && setSelectedUserDocState(null);
   }, [viewState])
 
-  const handleRejectRequest = (targetUserDoc) => {
+  /**
+   * リクエスト拒否を処理する
+   */
+  const handleRejectRequest = () => {
 
+    if (selectedUserDocState === null) throw new Error("handleRejectRequest Error: リクエストをハンドルする対象ユーザーのデータがありません。");
+
+    // リクエストを拒否する側のデータを用意
+    // こっちのアカウントにはリクエストの拒否の履歴は保存しない
+    const nowUserDoc_newData = {
+      ...props.nowUserDoc,
+      //request_received: selectedUserのuidを削除
+      request_received: props.nowUserDoc.request_received.filter(val => val !== selectedUserDocState.uid),
+      request_rejected: [...props.nowUserDoc.request_rejected, selectedUserDocState.uid],
+    };
+
+    // リクエストを拒否される側のデータを用意
+    // リクエストの拒否の履歴を保存する
+    //   >> findUserのユーザー検索時に表示されないようにすればよいため
+    const targetUserDoc_newData = {
+      ...selectedUserDocState,
+      //request_sent: nowUserのuidを削除
+      //request_rejected: nowUserのuidを追加 
+      request_sent: selectedUserDocState.request_sent.filter(val => val !== props.nowUserDoc.uid),
+      request_rejected: [...selectedUserDocState.request_rejected, props.nowUserDoc.uid],
+    };
+
+    (async () => {
+      await registerRequest(nowUserDoc_newData, targetUserDoc_newData);
+      setViewState(cmpConfig.state.view["001"]);
+    })();
   }
 
-  const handleApproveRequest = (targetUserDoc) => {
+  /**
+   * リクエスト許可を処理する
+   */
+  const handleApproveRequest = () => {
 
+    if (selectedUserDocState === null) throw new Error("handleRejectRequest Error: リクエストをハンドルする対象ユーザーのデータがありません。");
+
+    // リクエストを許可する側のデータを用意
+    const nowUserDoc_newData = {
+      ...props.nowUserDoc,
+      //request_received: selectedUserのuidを削除
+      //friend: selectedUserのuidを追加
+      request_received: props.nowUserDoc.request_received.filter(val => val !== selectedUserDocState.uid),
+      friend: [...props.nowUserDoc.friend, selectedUserDocState.uid],
+    };
+
+    // リクエストを拒否される側のデータを用意
+    // リクエストの拒否の履歴を保存する
+    //   >> findUserのユーザー検索時に表示されないようにすればよいため
+    const targetUserDoc_newData = {
+      ...selectedUserDocState,
+      //request_sent: nowUserのuidを削除
+      //request_rejected: nowUserのuidを追加 
+      request_sent: selectedUserDocState.request_sent.filter(val => val !== props.nowUserDoc.uid),
+      friend: [...selectedUserDocState.friend, props.nowUserDoc.uid],
+    };
+
+    (async () => {
+      await registerRequest(nowUserDoc_newData, targetUserDoc_newData);
+      setViewState(cmpConfig.state.view["001"]);
+    })();
   }
 
   const handleView = () => {
