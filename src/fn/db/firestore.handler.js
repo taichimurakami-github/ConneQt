@@ -144,15 +144,21 @@ const registerUpdateHookForUsers = (uid, setter) => {
   //   }))
 };
 
-const registerUpdateHookForChatroom = (chatroomIDArr, setter) => {
+const registerUpdateHookForChatroom = (chatRoomID, setter) => {
 
-  if (!setter) return;
+  if (!setter) {
+    console.log("UPDATE HOOK SETTER MUST BE A FUNCTION");
+    return null
+  }
 
-  return chatroomIDArr.map((chatroomID) => onSnapshot(
-    doc(db, "chatroom", chatroomID),
-    doc => {
-      setter(doc.data());
-    }));
+  console.log(chatRoomID);
+
+  return onSnapshot(doc(db, "chatRoom", chatRoomID), (doc) => {
+    console.log("chatroom id=" + chatRoomID + " data updated.");
+    console.log(doc.data());
+    setter(doc.data());
+  });
+
 }
 
 

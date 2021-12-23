@@ -41,6 +41,20 @@ export const ShowFriendList = (props) => {
     return Number(splitArr.pop());
   }
 
+  const getTargetChatRoomID = (targetUid) => {
+    for (const friendData of props.nowUserDoc.friend) {
+      if (friendData.uid === targetUid) return friendData.chatRoomID;
+    }
+  }
+
+  const getTopMessageFromChatRoomData = (targetUid) => {
+    const chatRoomID = getTargetChatRoomID(targetUid);
+    const chatRoomData = { ...props.chatRoomData[chatRoomID] };
+    const topMessageData = chatRoomData[props.nowUserDoc.uid][0];
+    return topMessageData.text;
+  }
+
+
 
   const handleShowProfileOnRequestSent = (e) => {
 
@@ -53,7 +67,6 @@ export const ShowFriendList = (props) => {
     props.handleViewState(cmpConfig.state.view["004"]);
   }
 
-
   const handleShowProfileOnRequestReceived = (e) => {
 
     // selectedUserDocStateを設定
@@ -63,6 +76,23 @@ export const ShowFriendList = (props) => {
 
     // showUserProfile画面を表示
     props.handleViewState(cmpConfig.state.view["003"]);
+  }
+
+  const handleShowChatRoom = (e) => {
+    const friendDocsStateArrTargetIndex = getNumberFromStringID(e.target.id);
+
+    props.handleTargetChatRoomData({
+      doc: {
+        me: props.nowUserDoc,
+        with: friendDocsState[friendDocsStateArrTargetIndex],
+      },
+      chatRoomID: getTargetChatRoomID(
+        friendDocsState[friendDocsStateArrTargetIndex].uid
+      )
+    });
+
+    // showChatRoom画面を表示
+    props.handleViewState(cmpConfig.state.view["002"]);
   }
 
   const [friendDocsState, setFriendDocsState] = useState([]);
@@ -128,12 +158,30 @@ export const ShowFriendList = (props) => {
         noUserMessage="現在、拒否された・したリクエストはありません。"
       >
       </UsersList>
+      <ul className="users-list-wrapper">
+        {
+          (friendDocsState && friendDocsState.length !== 0)
+            ? friendDocsState.map((val, index) => {
+              return (
+                <li
+                  id={`${val.uid}_${index}`}
+                  className={`user-list clickable`}
+                  key={val.uid}
+                  onClick={handleShowChatRoom}
+                >
+                  <img className="user-icon" src={val?.photo} />
+                  <div className="text-container">
+                    <p className="name">{val?.name}</p>
+                    <p>{getTopMessageFromChatRoomData(val.uid)}</p>
+                  </div>
 
-      <p style={{ margin: "100px auto 10px", background: "black", color: "white" }}>あなたのフレンド一覧</p>
-      <UsersList
-        userDocs={friendDocsState}
-        noUserMessage={<>下部メニューの「見つける」から、<br></br>新しい友達を探しましょう！</>}
-      ></UsersList>
+                </li>
+              )
+            })
+
+            : <p>"見つける" から友達を探しましょう！</p>
+        }
+      </ul>
     </>
   )
 }

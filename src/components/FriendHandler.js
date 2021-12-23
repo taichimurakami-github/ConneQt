@@ -13,29 +13,16 @@ export const FriendHandler = (props) => {
 
   const [viewState, setViewState] = useState(cmpConfig.state.view["001"]);
   const [selectedUserDocState, setSelectedUserDocState] = useState(null);
-  const [chatRoomDataState, setChatRoomDataState] = useState(null);
-
-  // chatRoomを監視するHookを起動
-  // AuthState上にunsubscribe()を保存
-  useEffect(() => {
-    console.log("CCCCCCCCCCCCCC");
-    // chatRoomDataState === null && setChatRoomDataState &&
-    // props.handleAuthState({
-    //   ...props.authState,
-    //   onSnapshot_unsubscribe: [
-    //     ...props.authState.onSnapshot_unsubscribe,
-    //     registerUpdateHookForChatroom(
-    //       props.nowUserDoc.friend.map(val => val.chatRoomID),
-    //       setChatRoomDataState
-    //     )
-    //   ]
-    // });
-  }, []);
+  const [selectedChatRoomDataState, setSelectedChatRoomDataState] = useState(null);
 
   // フレンドリスト画面に戻ってきたらselectedUserDocStateを初期化
   useEffect(() => {
-    viewState === cmpConfig.state.view["001"] && setSelectedUserDocState(null);
+    if (viewState === cmpConfig.state.view["001"]) {
+      setSelectedUserDocState(null)
+      setSelectedChatRoomDataState(null);
+    }
   }, [viewState]);
+
 
   /**
    * リクエスト拒否を処理する
@@ -121,11 +108,15 @@ export const FriendHandler = (props) => {
           allUserDocs={props.allUserDocs}
           handleSelectedUserDoc={setSelectedUserDocState}
           handleViewState={setViewState}
+          handleTargetChatRoomData={setSelectedChatRoomDataState}
+          chatRoomData={props.chatRoomData}
         />;
 
       case cmpConfig.state.view["002"]:
         return <ShowChatRoom
           handleViewState={setViewState}
+          chatData={props.chatRoomData}
+          metaData={selectedChatRoomDataState}
         />;
 
       case cmpConfig.state.view["003"]:

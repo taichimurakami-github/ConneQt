@@ -21,6 +21,7 @@ import { getAuthUserDoc, registerAuthUserDoc, registerUpdateHookForChatroom, reg
 import "./styles/App.scss";
 import { generateDummyUserDocs } from "./devTools/dummyUserListData";
 import { signOut } from "./fn/auth/firebase.auth";
+import { collection, doc, getDocs, getFirestore, onSnapshot } from "firebase/firestore";
 
 export const App = () => {
 
@@ -38,6 +39,7 @@ export const App = () => {
   const [allUserDocsState, setAllUserDocsState] = useState([]);
   const [modalState, setModalState] = useState({ ...appConfig.initialState.App.modalState });
   const [pageContentState, setPageContentState] = useState(appConfig.pageContents["001"]);
+  const [chatRoomDataState, setChatRoomDataState] = useState({});
 
 
   /**
@@ -62,49 +64,6 @@ export const App = () => {
     signOut();
   }
 
-
-  /**
-   * handle Page Content(Main content) by appConfig.pageContents data
-   * @param {string} id 
-   * @returns 
-   */
-  const handlePageContent = (id) => {
-    switch (id) {
-      //SIGN_UP
-      case appConfig.pageContents["001"]:
-        return <SignUp />;
-
-      //USERS_LIST
-      case appConfig.pageContents["002"]:
-        return <FindUserHandler
-          user={userData}
-          allUserDocs={allUserDocsState}
-          handleAllUserDocsState={setAllUserDocsState}
-          handlePageContent={setPageContentState}
-          handleModalState={setModalState}
-        />;
-
-      case appConfig.pageContents["003"]:
-        return <FriendHandler
-          nowUserDoc={userData}
-          allUserDocs={allUserDocsState}
-          authState={authState}
-          handleAuthState={setAuthState}
-        />;
-
-      case appConfig.pageContents["004"]:
-        return <MypageHandler
-          handleModalState={setModalState}
-          eraceModal={eraceModal}
-          authData={authState}
-          user={userData}
-          signOut={signOutFromApp}
-        />;
-
-      default:
-        return undefined;
-    }
-  }
 
 
   /**
@@ -144,6 +103,8 @@ export const App = () => {
         // AuthStateを更新
         setAuthState(user);
 
+        eraceModal();
+
       } else {
         // User is signed out
         // ...
@@ -154,10 +115,10 @@ export const App = () => {
 
         // Signed Inを表示コンテンツに指定
         setPageContentState(appConfig.pageContents["001"]);
+
+        eraceModal();
       }
 
-      //loadingエフェクトを終了
-      eraceModal();
     });
   }, []);
 
@@ -165,16 +126,10 @@ export const App = () => {
 
     /**
      * ログイン処理
+     * ! 認証が通ってなかったら処理しない
      */
-    (async () => {
+    authState && (async () => {
       // await fetchAndRenewUserData({ init: true });
-
-      //認証が通ってなかったら処理しない
-      if (!authState) return;
-
-      //loadingをつける
-      createLoadingModal();
-
       //authを通ったユーザーを指定
       //返り値は Object(見つかった) or null(見つからなかった)
       const isUserStateExists = userData ? true : false;
@@ -184,8 +139,12 @@ export const App = () => {
         return;
       }
 
+      //loadingをつける
+      createLoadingModal();
+
       const user = isUserStateExists ? { ...userData } : await getAuthUserDoc(authState);
       console.log(`isUsersStateExists?: ${isUserStateExists}`);
+
 
       //見つからなかったらDBに登録して改めてusedataを取得・登録 >> Mypageを表示 & ようこそ！モーダルを表示
       //見つかったらそのままuserdataを登録 >> 表示するページはいじらない
@@ -198,20 +157,35 @@ export const App = () => {
         //ユーザー登録済み
         console.log("you're registered.");
 
-        setUserData(user);
+        //chatRoomDataStateのUpdateHookを登録
+        const db = getFirestore();
 
-        const chatRoomNewDataArr = await registerUpdateHookForChatroom(user.friend.map(val => val.chatRoomID));
+        const unsub_chatroom_onSnapshot = user.friend.map(val => {
+          return onSnapshot(doc(db, "chatRoom", val.chatRoomID), (doc) => {
+            console.log("chatroom " + val.chatRoomID + " has been updated.");
 
-        chatRoomNewDataArr && chatRoomNewDataArr.length > 0 &&
-          setAuthState(
-            {
-              ...authState,
-              onSnapshot_unsubscribe: [
-                ...authState.onSnapshot_unsubscribe,
-                ...chatRoomNewDataArr
-              ]
+            const newData = {
+              ...chatRoomDataState
             }
-          );
+            newData[val.chatRoomID] = doc.data();
+
+            console.log(newData);
+
+            setChatRoomDataState(newData);
+          })
+        });
+
+        console.log(unsub_chatroom_onSnapshot);
+
+        setAuthState({
+          ...authState,
+          onSnapshot_unsubscribe: [
+            ...authState.onSnapshot_unsubscribe,
+            ...unsub_chatroom_onSnapshot
+          ]
+        });
+
+        setUserData(user);
 
         eraceModal();
 
@@ -234,6 +208,51 @@ export const App = () => {
     })();
 
   }, [authState]);
+
+
+  /**
+   * handle Page Content(Main content) by appConfig.pageContents data
+   * @param {string} id 
+   * @returns 
+   */
+  const handlePageContent = (id) => {
+    switch (id) {
+      //SIGN_UP
+      case appConfig.pageContents["001"]:
+        return <SignUp />;
+
+      //USERS_LIST
+      case appConfig.pageContents["002"]:
+        return <FindUserHandler
+          user={userData}
+          allUserDocs={allUserDocsState}
+          handleAllUserDocsState={setAllUserDocsState}
+          handlePageContent={setPageContentState}
+          handleModalState={setModalState}
+        />;
+
+      case appConfig.pageContents["003"]:
+        return <FriendHandler
+          nowUserDoc={userData}
+          allUserDocs={allUserDocsState}
+          authState={authState}
+          handleAuthState={setAuthState}
+          chatRoomData={chatRoomDataState}
+        />;
+
+      case appConfig.pageContents["004"]:
+        return <MypageHandler
+          handleModalState={setModalState}
+          eraceModal={eraceModal}
+          authData={authState}
+          user={userData}
+          signOut={signOutFromApp}
+        />;
+
+      default:
+        return undefined;
+    }
+  }
 
 
   /**
