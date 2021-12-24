@@ -1,4 +1,13 @@
-import { collection, doc, getDoc, getDocs, getFirestore, setDoc, updateDoc, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  getFirestore,
+  setDoc,
+  updateDoc,
+  onSnapshot,
+} from "firebase/firestore";
 import { userDocTemplate } from "../../firebase.config";
 import "./firestore.ready";
 import "./cloudfunctions.ready";
@@ -7,16 +16,13 @@ import { document } from "firebase-functions";
 //get Cloud Firestore
 const db = getFirestore();
 
-
-
 /**
  * user docs から、認証情報に合致するユーザーを取得
  * ただし、見つからなかった場合、nullを返す
- * @param {authData} authData 
+ * @param {authData} authData
  * @returns {null | Object}
  */
 const getAuthUserDoc = async (authData) => {
-
   console.log(`searching user docs ... where uid = ${authData.uid}`);
 
   const docRef = doc(db, "users", authData.uid);
@@ -25,7 +31,7 @@ const getAuthUserDoc = async (authData) => {
 
   if (result.exists()) return result.data();
   else return null;
-}
+};
 
 /**
  * user docs から、すべての登録ユーザーを取得
@@ -40,10 +46,9 @@ const getAllUserDocs = async () => {
     result.push(doc.data());
   });
   return result;
-}
+};
 
 const registerAuthUserDoc = async (authData) => {
-
   console.log(`now creating new User docs ... DocId = ${authData.uid}`);
 
   //create template
@@ -57,12 +62,12 @@ const registerAuthUserDoc = async (authData) => {
   const docRef = collection(db, "users");
   await setDoc(doc(docRef, authData.uid), template);
   return template;
-}
+};
 
 const updateUserData = async (authData, updateData) => {
   const docRef = doc(db, "users", authData.uid);
   await updateDoc(docRef, updateData);
-}
+};
 
 const registerRequest = async (...dataArr) => {
   // console.log(`sending request from ${senderData.email} to ${receiverData.uid}`);
@@ -76,21 +81,41 @@ const registerRequest = async (...dataArr) => {
     await setDoc(docRef, data);
   }
   console.log("...done!");
-}
+};
 
+const registerChatroom = async (user01Doc, user02Doc) => {
+  const chatRoomID =
+    new Date().getTime().toString(16) +
+    Math.floor(1000 * Math.random()).toString(16);
 
+  const chatRoomInitialTemplate = {};
+
+  chatRoomInitialTemplate.data = [];
+  chatRoomInitialTemplate.metaData = {
+    user01: user01Doc.uid,
+    user02: user02Doc.uid,
+  };
+
+  await setDoc(doc(db, "chatRoom", chatRoomID), chatRoomInitialTemplate);
+  return chatRoomID;
+};
 
 const registerUpdateHookForUsers = (uid, setter) => {
   console.log("registered updateHook for firestore.");
 
   if (!uid || typeof uid !== "string") {
-    throw new Error("registerUpdateHookForUser Error: uidを引数に正しく指定してください.");
+    throw new Error(
+      "registerUpdateHookForUser Error: uidを引数に正しく指定してください."
+    );
   }
 
   if (!setter) {
-    throw new Error("registerUpdateHookUser Error: UserDocを保持するstate用のsetterを正しく指定してください。")
+    throw new Error(
+      "registerUpdateHookUser Error: UserDocを保持するstate用のsetterを正しく指定してください。"
+    );
   }
 
+  console.log(uid);
   /**
    * onSnapshot with doc
    * 該当ユーザーのデータベースの読み込みを行う
@@ -102,7 +127,6 @@ const registerUpdateHookForUsers = (uid, setter) => {
     console.log(doc.data());
     setter(doc.data());
   });
-
 
   /**
    * onSnapshot with collection
@@ -135,6 +159,20 @@ const registerUpdateHookForUsers = (uid, setter) => {
   //   }))
 };
 
+const registerUpdateHookForChatroom = (chatRoomID, setter) => {
+  if (!setter) {
+    console.log("UPDATE HOOK SETTER MUST BE A FUNCTION");
+    return null;
+  }
+
+  console.log(chatRoomID);
+
+  return onSnapshot(doc(db, "chatRoom", chatRoomID), (doc) => {
+    console.log("chatroom id=" + chatRoomID + " data updated.");
+    console.log(doc.data());
+    setter(doc.data());
+  });
+};
 
 export {
   getAuthUserDoc,
@@ -143,4 +181,6 @@ export {
   updateUserData,
   registerRequest,
   registerUpdateHookForUsers,
+  registerUpdateHookForChatroom,
+  registerChatroom,
 };
