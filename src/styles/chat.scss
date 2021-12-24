@@ -1,0 +1,25 @@
+@import "./common/assets";
+
+.chat-list-view-container {
+  $icon-size: 50px;
+  display: flex;
+  align-items: center;
+  column-gap: 15px;
+  margin-bottom: 15px;
+
+  .user-icon {
+    width: $icon-size;
+    height: $icon-size;
+  }
+
+  .text-container {
+    background: $yellow;
+    padding: 10px;
+    border-radius: 5px;
+    max-width: 60%;
+  }
+
+  &.right {
+    flex-direction: row-reverse;
+  }
+}

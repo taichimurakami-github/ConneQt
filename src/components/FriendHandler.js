@@ -115,7 +115,7 @@ export const FriendHandler = (props) => {
       case cmpConfig.state.view["002"]:
         return <ShowChatRoom
           handleViewState={setViewState}
-          chatData={props.chatRoomData}
+          chatRoomData={props.chatRoomData}
           metaData={selectedChatRoomDataState}
         />;
 
