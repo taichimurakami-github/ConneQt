@@ -7,6 +7,9 @@ import {
   setDoc,
   updateDoc,
   onSnapshot,
+  serverTimestamp,
+  arrayUnion,
+  Timestamp,
 } from "firebase/firestore";
 import { userDocTemplate } from "../../firebase.config";
 import "./firestore.ready";
@@ -174,11 +177,27 @@ const registerUpdateHookForChatroom = (chatRoomID, setter) => {
   });
 };
 
+const updateChatRoomData = async (sendData) => {
+  const docRef = doc(db, "chatRoom", sendData.chatRoomID);
+  const dateTime = Timestamp.now();
+
+  //set user doc
+  await updateDoc(docRef, {
+    data: arrayUnion({
+      uid: sendData.uid,
+      text: sendData.text,
+      sentAt: dateTime,
+    }),
+  });
+  console.log("...done!");
+};
+
 export {
   getAuthUserDoc,
   registerAuthUserDoc,
   getAllUserDocs,
   updateUserData,
+  updateChatRoomData,
   registerRequest,
   registerUpdateHookForUsers,
   registerUpdateHookForChatroom,
