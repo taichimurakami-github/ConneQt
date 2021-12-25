@@ -7,17 +7,12 @@ import {
   setDoc,
   updateDoc,
   onSnapshot,
-  serverTimestamp,
   arrayUnion,
   Timestamp,
 } from "firebase/firestore";
 import { userDocTemplate } from "../../firebase.config";
 import "./firestore.ready";
 import "./cloudfunctions.ready";
-import { document } from "firebase-functions";
-
-//get Cloud Firestore
-const db = getFirestore();
 
 /**
  * user docs から、認証情報に合致するユーザーを取得
@@ -70,20 +65,6 @@ const registerAuthUserDoc = async (authData) => {
 const updateUserData = async (authData, updateData) => {
   const docRef = doc(db, "users", authData.uid);
   await updateDoc(docRef, updateData);
-};
-
-const registerRequest = async (...dataArr) => {
-  // console.log(`sending request from ${senderData.email} to ${receiverData.uid}`);
-  console.log("registerRequest(): targetUser is " + dataArr);
-
-  for (const data of dataArr) {
-    // create doc ref
-    const docRef = doc(db, "users", data.uid);
-
-    //set user doc
-    await setDoc(docRef, data);
-  }
-  console.log("...done!");
 };
 
 const registerChatroom = async (user01Doc, user02Doc) => {
@@ -198,7 +179,6 @@ export {
   getAllUserDocs,
   updateUserData,
   updateChatRoomData,
-  registerRequest,
   registerUpdateHookForUsers,
   registerUpdateHookForChatroom,
   registerChatroom,

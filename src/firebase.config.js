@@ -4,20 +4,22 @@ const firebaseConfig = {
   projectId: "gls-conneqt-hey-demo002",
   storageBucket: "gls-conneqt-hey-demo002.appspot.com",
   messagingSenderId: "685488696857",
-  appId: "1:685488696857:web:cec235e5c4056f4dd24488"
-}
+  appId: "1:685488696857:web:cec235e5c4056f4dd24488",
+};
 
 const userDocTemplate = {
-  uid: '',
-  name: '',
-  email: '',
-  photo: '',
-  profile: 'これはあなたのプロフィールです。早速編集してみましょう！',
-  state: '1',
-  request_received: [],
-  request_rejected: [],
-  request_sent: [],
+  uid: "",
+  name: "",
+  email: "",
+  photo: "",
+  profile: "これはあなたのプロフィールです。早速編集してみましょう！",
+  state: "1",
+  request: {
+    received: [],
+    sent: [],
+    rejected: [],
+  },
   friend: [],
-}
+};
 
-export { firebaseConfig, userDocTemplate }
+export { firebaseConfig, userDocTemplate };
