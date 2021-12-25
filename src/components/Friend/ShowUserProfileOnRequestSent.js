@@ -1,10 +1,9 @@
 import "../../styles/userProfile.scss";
 import cmpConfig from "./config";
 import { Header } from "../UI/Header";
+import { UserProfile } from "../UI/UserProfile";
 
 export const ShowUserProfileOnRequestSent = (props) => {
-
-
   return (
     <>
       <Header
@@ -13,18 +12,14 @@ export const ShowUserProfileOnRequestSent = (props) => {
         handleBack={() => props.handleViewState(cmpConfig.state.view["001"])}
       />
 
-      <div className="user-profile-wrapper">
-        <img className="user-icon" src={props.targetUserDoc?.photo}></img>
-        <p className="name">{props.targetUserDoc?.name}</p>
-        <p className="status">
-          {props.targetUserDoc?.status === "1" ? "online" : "offline"}
-        </p>
-        <p className="profile card">{props.targetUserDoc?.profile}</p>
-      </div>
+      <UserProfile userDoc={props.targetUserDoc} />
 
-      <button className="btn-gray" onClick={() => props.handleViewState(cmpConfig.state.view["001"])}>
+      <button
+        className="btn-gray"
+        onClick={() => props.handleViewState(cmpConfig.state.view["001"])}
+      >
         前のページに戻る
       </button>
     </>
-  )
-}
+  );
+};
