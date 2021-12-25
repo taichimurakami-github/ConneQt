@@ -43,7 +43,7 @@ export const FindUserHandler = (props) => {
    * sendRequest
    */
   const handleSendRequest = () => {
-    const senderUid = props.user.uid;
+    const senderUid = props.nowUserDoc.uid;
     const receiverUid = selectedUserState.uid;
 
     console.log(senderUid, receiverUid);
@@ -65,7 +65,7 @@ export const FindUserHandler = (props) => {
         return (
           <ShowFoundUsersList
             allUserDocs={props.allUserDocs}
-            nowUserDoc={props.user}
+            nowUserDoc={props.nowUserDoc}
             handleSelectedUser={setSelectedUserState}
             handleViewState={setViewState}
             handleFetchAndRenewAllUserDocs={fetchAndRenewAllUserDocs}
@@ -75,7 +75,7 @@ export const FindUserHandler = (props) => {
       case cmpConfig.state.view["002"]:
         return (
           <ShowUserProfile
-            nowUserDoc={props.user}
+            nowUserDoc={props.nowUserDoc}
             targetUserDoc={selectedUserState}
             handleViewState={setViewState}
           />
