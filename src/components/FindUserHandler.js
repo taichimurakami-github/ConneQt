@@ -9,7 +9,8 @@ import { ShowUserProfile } from "./FindUsers/ShowUserProfile";
 import { ShowRequestForm } from "./FindUsers/ShowRequestForm";
 
 //import firebase fn
-import { getAllUserDocs, sendRequest } from "../fn/db/firestore.handler";
+import { getAllUserDocs } from "../fn/db/firestore.handler";
+import { sendRequest } from "../fn/db/requestHandler";
 
 //import config
 import cmpConfig from "./FindUsers/config";
@@ -41,26 +42,11 @@ export const FindUserHandler = (props) => {
   /**
    * sendRequest
    */
-  const sendRequest = () => {
-    // 送信元の新たなユーザーデータを作成
-    // request_sentに受信者のユーザーデータを追加
-    const senderData = {
-      ...props.user, //送信者のデータをコピー
-      request_sent: [
-        ...props.user.request_sent, //送信者のrequest_sentデータをコピー
-        selectedUserState.uid, //送信者のrequest_sentに、受信者のuidを追加
-      ],
-    };
+  const handleSendRequest = () => {
+    const senderUid = props.user.uid;
+    const receiverUid = selectedUserState.uid;
 
-    // 受信者の新たなユーザーデータを作成
-    // request_receivedに送信者のユーザーデータを追加
-    const receiverData = {
-      ...selectedUserState,
-      request_received: [...selectedUserState.request_received, props.user.uid],
-    };
-
-    const senderUid = selectedUserState.uid;
-    const receiverUid = props.user.uid;
+    console.log(senderUid, receiverUid);
 
     (async () => {
       await sendRequest(senderUid, receiverUid);
@@ -99,7 +85,7 @@ export const FindUserHandler = (props) => {
         return (
           <ShowRequestForm
             targetUserDoc={selectedUserState}
-            handleRequest={sendRequest}
+            handleRequest={handleSendRequest}
             handleViewState={setViewState}
           />
         );

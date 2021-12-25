@@ -32,34 +32,6 @@ export const FriendHandler = (props) => {
         "handleRejectRequest Error: リクエストをハンドルする対象ユーザーのデータがありません。"
       );
 
-    // リクエストを拒否する側のデータを用意
-    const nowUserDoc_newData = {
-      ...props.nowUserDoc,
-      //request_received: selectedUserのuidを削除
-      request_received: props.nowUserDoc.request_received.filter(
-        (val) => val !== selectedUserDocState.uid
-      ),
-      request_rejected: [
-        ...props.nowUserDoc.request_rejected,
-        selectedUserDocState.uid,
-      ],
-    };
-
-    // リクエストを拒否される側のデータを用意
-    // リクエストの拒否の履歴を保存する
-    const targetUserDoc_newData = {
-      ...selectedUserDocState,
-      //request_sent: nowUserのuidを削除
-      //request_rejected: nowUserのuidを追加
-      request_sent: selectedUserDocState.request_sent.filter(
-        (val) => val !== props.nowUserDoc.uid
-      ),
-      request_rejected: [
-        ...selectedUserDocState.request_rejected,
-        props.nowUserDoc.uid,
-      ],
-    };
-
     // リクエスト拒否操作を行う側のユーザーデータ
     const rejectingUserUid = props.nowUserDoc.uid;
 
@@ -80,40 +52,6 @@ export const FriendHandler = (props) => {
       throw new Error(
         "handleRejectRequest Error: リクエストをハンドルする対象ユーザーのデータがありません。"
       );
-
-    // リクエストを許可する側のデータを用意
-    const nowUserDoc_newData = {
-      ...props.nowUserDoc,
-      //request_received: selectedUserのuidを削除
-      //friend: selectedUserの[uid, chatroomID] arrayを追加
-      request_received: props.nowUserDoc.request_received.filter(
-        (val) => val !== selectedUserDocState.uid
-      ),
-      friend: [
-        ...props.nowUserDoc.friend,
-        {
-          uid: selectedUserDocState.uid,
-          chatRoomID: chatRoomID,
-        },
-      ],
-    };
-
-    // リクエストを許可される側のデータを用意
-    const targetUserDoc_newData = {
-      ...selectedUserDocState,
-      //request_sent: nowUserのuidを削除
-      //friend: nowUserの[uid, chatroomID] arrayを追加
-      request_sent: selectedUserDocState.request_sent.filter(
-        (val) => val !== props.nowUserDoc.uid
-      ),
-      friend: [
-        ...selectedUserDocState.friend,
-        {
-          uid: props.nowUserDoc.uid,
-          chatRoomID: chatRoomID,
-        },
-      ],
-    };
 
     const approvingUserUid = props.nowUserDoc.uid;
     const approvedUserUid = selectedUserDocState.uid;

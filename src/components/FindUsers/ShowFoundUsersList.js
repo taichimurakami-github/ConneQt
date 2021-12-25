@@ -43,10 +43,7 @@ export const ShowFoundUsersList = (props) => {
       props.nowUserDoc.friend,
     ];
 
-    console.log(checkTargetParents);
-
     for (const checkTargetParent of checkTargetParents) {
-      console.log(checkTargetParent);
       if (checkTargetParent.length === 0) continue;
 
       let judgeResult;
