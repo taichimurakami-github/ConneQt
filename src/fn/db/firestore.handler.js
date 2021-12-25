@@ -14,6 +14,8 @@ import { userDocTemplate } from "../../firebase.config";
 import "./firestore.ready";
 import "./cloudfunctions.ready";
 
+const db = getFirestore();
+
 /**
  * user docs から、認証情報に合致するユーザーを取得
  * ただし、見つからなかった場合、nullを返す
@@ -65,23 +67,6 @@ const registerAuthUserDoc = async (authData) => {
 const updateUserData = async (authData, updateData) => {
   const docRef = doc(db, "users", authData.uid);
   await updateDoc(docRef, updateData);
-};
-
-const registerChatroom = async (user01Doc, user02Doc) => {
-  const chatRoomID =
-    new Date().getTime().toString(16) +
-    Math.floor(1000 * Math.random()).toString(16);
-
-  const chatRoomInitialTemplate = {};
-
-  chatRoomInitialTemplate.data = [];
-  chatRoomInitialTemplate.metaData = {
-    user01: user01Doc.uid,
-    user02: user02Doc.uid,
-  };
-
-  await setDoc(doc(db, "chatRoom", chatRoomID), chatRoomInitialTemplate);
-  return chatRoomID;
 };
 
 const registerUpdateHookForUsers = (uid, setter) => {
@@ -181,5 +166,4 @@ export {
   updateChatRoomData,
   registerUpdateHookForUsers,
   registerUpdateHookForChatroom,
-  registerChatroom,
 };

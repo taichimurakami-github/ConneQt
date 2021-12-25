@@ -44,6 +44,7 @@ export const ShowFoundUsersList = (props) => {
     ];
 
     for (const checkTargetParent of checkTargetParents) {
+      console.log(checkTargetParent);
       if (checkTargetParent.length === 0) continue;
 
       let judgeResult;

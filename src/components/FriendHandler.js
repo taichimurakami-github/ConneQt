@@ -7,7 +7,6 @@ import { ShowChatRoom } from "./Friend/ShowChatRoom";
 import cmpConfig from "./Friend/config";
 import { ShowUserProfileOnRequestReceived } from "./Friend/ShowUserProfileOnRequestReceived";
 import { ShowUserProfileOnRequestSent } from "./Friend/ShowUserProfileOnRequestSent";
-import { registerChatroom } from "../fn/db/firestore.handler";
 import { approveRequest, rejectRequest } from "../fn/db/requestHandler";
 
 export const FriendHandler = (props) => {
@@ -82,11 +81,6 @@ export const FriendHandler = (props) => {
         "handleRejectRequest Error: リクエストをハンドルする対象ユーザーのデータがありません。"
       );
 
-    const chatRoomID = await registerChatroom(
-      props.nowUserDoc,
-      selectedUserDocState
-    );
-
     // リクエストを許可する側のデータを用意
     const nowUserDoc_newData = {
       ...props.nowUserDoc,
@@ -121,8 +115,11 @@ export const FriendHandler = (props) => {
       ],
     };
 
+    const approvingUserUid = props.nowUserDoc.uid;
+    const approvedUserUid = selectedUserDocState.uid;
+
     (async () => {
-      await registerRequest(nowUserDoc_newData, targetUserDoc_newData);
+      await approveRequest(approvingUserUid, approvedUserUid);
       setViewState(cmpConfig.state.view["001"]);
     })();
   };
