@@ -1,6 +1,6 @@
 @import "./assets";
 
-button{
+button {
   display: block;
   border-radius: 5px;
   color: white;
@@ -10,33 +10,39 @@ button{
   margin: 30px auto;
   box-shadow: 2px 2px 5px 3px lightgray;
 
-  &:hover{
+  &:hover {
     cursor: pointer;
   }
 
-  &.btn-gray{
+  &.btn-gray {
     background: $darkgray;
   }
 
-  &.btn-orange{
+  &.btn-orange {
     background: $orange;
+  }
+
+  &.btn-img {
+    background: none;
+    box-shadow: none;
+    color: black;
   }
 }
 
-.clickable:hover{
+.clickable:hover {
   cursor: pointer;
 }
 
-.user-icon{
+.user-icon {
   object-fit: contain;
   border-radius: 10000px;
 }
 
-.name{
-    font-weight: bold;
+.name {
+  font-weight: bold;
 }
 
-.profile.card{
+.profile.card {
   text-align: left;
   background: $yellow;
   border-radius: 10px;
@@ -54,6 +60,22 @@ button{
   transform: translateY(-50%);
 }
 
-.p-events-none{
+.p-events-none {
   pointer-events: none;
+}
+
+.flex {
+  display: flex;
+  &.xyc {
+    justify-content: center;
+    align-items: center;
+  }
+
+  &.xc {
+    justify-content: center;
+  }
+
+  &.yc {
+    align-items: center;
+  }
 }

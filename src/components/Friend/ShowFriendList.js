@@ -45,8 +45,6 @@ export const ShowFriendList = (props) => {
     const chatRoomID = getTargetChatRoomID(targetUid);
     const chatRoomData = { ...props.chatRoomData[chatRoomID] };
 
-    console.log();
-
     // friendList上に表示される、一番新しいメッセージを表示
     // ただし、リクエスト許可直後は
     let topMessageText = "";
@@ -82,7 +80,6 @@ export const ShowFriendList = (props) => {
 
   const handleShowChatRoom = (e) => {
     const friendDocsStateArrTargetIndex = getNumberFromStringID(e.target.id);
-    console.log(friendDocsState[friendDocsStateArrTargetIndex]);
 
     props.handleTargetChatRoomData({
       doc: {

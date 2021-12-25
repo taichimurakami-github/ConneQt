@@ -1,11 +1,60 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useReducer } from "react";
 import { Header } from "../UI/Header";
 import cmpConfig from "./config";
 
 import "../../styles/chat.scss";
 import { updateChatRoomData } from "../../fn/db/firestore.handler";
+import { useEffect } from "react/cjs/react.development";
+import { UserProfile } from "../UI/UserProfile";
+import { deleteFriend } from "../../fn/db/deleteHandler";
 
 export const ShowChatRoom = (props) => {
+  const headerMetaDataReducerFunc = (state, action) => {
+    switch (action.type) {
+      case cmpConfig.ShowChatRoom.headerMetaDataAction["001"]:
+        return {
+          ...state,
+          title: "チャットメニュー",
+          handleBack: () => {
+            setHeaderMenuViewState(false);
+          },
+          handleMenu: () => {
+            setHeaderMenuViewState(false);
+          },
+        };
+
+      case cmpConfig.ShowChatRoom.headerMetaDataAction["002"]:
+        return {
+          ...state,
+          title: props.metaData.doc.with.name,
+          handleBack: () => {
+            props.handleViewState(cmpConfig.state.view["001"]);
+          },
+          handleMenu: () => {
+            setHeaderMenuViewState(true);
+          },
+        };
+
+      default:
+        return { ...state };
+    }
+  };
+
+  const [headerMenuViewState, setHeaderMenuViewState] = useState(false);
+  const [headerMetaDataState, dispatchHeaderMetaData] = useReducer(
+    headerMetaDataReducerFunc,
+    {
+      backable: true,
+      title: props.metaData.doc.with.name,
+      handleBack: () => {
+        props.handleViewState(cmpConfig.state.view["001"]);
+      },
+      handleMenu: () => {
+        setHeaderMenuViewState(true);
+      },
+    }
+  );
+
   console.log(props.metaData);
   /**
    * チャットデータ内容をコンポーネント上に出力できる形に整形
@@ -32,39 +81,95 @@ export const ShowChatRoom = (props) => {
     });
   };
 
+  /**
+   * チャット画面の友人を消去
+   */
+  const handleDeleteThisFriend = async () => {
+    const chatRoomID = props.metaData.chatRoomID;
+    const nowUserData = {
+      uid: props.metaData.doc.me.uid,
+      friend: props.metaData.doc.me.friend.filter(
+        (val) => val.uid !== props.metaData.doc.with.uid
+      ),
+    };
+    const targetUserData = {
+      uid: props.metaData.doc.with.uid,
+      friend: props.metaData.doc.with.friend.filter(
+        (val) => val.uid !== props.metaData.doc.me.uid
+      ),
+    };
+
+    props.handleViewState(cmpConfig.state.view["001"]);
+    await deleteFriend(chatRoomID, nowUserData, targetUserData);
+  };
+
+  /**
+   * チャット画面のコンポーネント
+   * @returns {React.ReactElement}
+   */
+  const ChatViewComponent = () => {
+    return (
+      <>
+        <ul>
+          {chatData.map((val) => {
+            return (
+              <>
+                <div
+                  className={`chat-list-view-container ${
+                    val.uid === props.metaData.doc.me.uid ? "right" : "left"
+                  }`}
+                >
+                  <img
+                    className="user-icon"
+                    src={
+                      val.uid === props.metaData.doc.me.uid
+                        ? props.metaData.doc.me.photo
+                        : props.metaData.doc.with.photo
+                    }
+                  ></img>
+                  <p className="text-container">{val.text}</p>
+                </div>
+              </>
+            );
+          })}
+        </ul>
+        <InputChatText handleOnSubmit={handleOnSend} />
+      </>
+    );
+  };
+
+  const HeaderMenuComponent = () => {
+    return (
+      <>
+        <h2>{props.metaData.doc.with.name} さんのプロフィール</h2>
+        <UserProfile userDoc={props.metaData.doc.with} />
+        <button className="btn-orange" onClick={handleDeleteThisFriend}>
+          この友達を削除する
+        </button>
+      </>
+    );
+  };
+
+  useEffect(() => {
+    headerMenuViewState
+      ? dispatchHeaderMetaData({
+          headerMetaDataState,
+          type: cmpConfig.ShowChatRoom.headerMetaDataAction["001"],
+        })
+      : dispatchHeaderMetaData({
+          type: cmpConfig.ShowChatRoom.headerMetaDataAction["002"],
+        });
+  }, [headerMenuViewState]);
+
   return (
     <>
       <Header
-        backable={true}
-        handleBack={() => {
-          props.handleViewState(cmpConfig.state.view["001"]);
-        }}
-        title={`${props.metaData.doc.with.name}`}
+        backable={headerMetaDataState.backable}
+        handleBack={headerMetaDataState.handleBack}
+        title={headerMetaDataState.title}
+        handleMenu={headerMetaDataState.handleMenu}
       />
-      <ul>
-        {chatData.map((val) => {
-          return (
-            <>
-              <div
-                className={`chat-list-view-container ${
-                  val.uid === props.metaData.doc.me.uid ? "right" : "left"
-                }`}
-              >
-                <img
-                  className="user-icon"
-                  src={
-                    val.uid === props.metaData.doc.me.uid
-                      ? props.metaData.doc.me.photo
-                      : props.metaData.doc.with.photo
-                  }
-                ></img>
-                <p className="text-container">{val.text}</p>
-              </div>
-            </>
-          );
-        })}
-      </ul>
-      <InputChatText handleOnSubmit={handleOnSend} />
+      {headerMenuViewState ? <HeaderMenuComponent /> : <ChatViewComponent />}
     </>
   );
 };
