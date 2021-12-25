@@ -118,19 +118,19 @@ export const ShowFriendList = (props) => {
 
     setReq_receivedUserDocsState(
       getSpecifiedUserDocsByUidArr(
-        props.nowUserDoc.request_received.map((val) => val)
+        props.nowUserDoc.request.received.map((val) => val)
       )
     );
 
     setReq_sentUserDocsState(
       getSpecifiedUserDocsByUidArr(
-        props.nowUserDoc.request_sent.map((val) => val)
+        props.nowUserDoc.request.sent.map((val) => val)
       )
     );
 
     setReq_rejectedUserDocsState(
       getSpecifiedUserDocsByUidArr(
-        props.nowUserDoc.request_rejected.map((val) => val)
+        props.nowUserDoc.request.rejected.map((val) => val)
       )
     );
   }, [props.nowUserDoc, props.allUserDocs]);
