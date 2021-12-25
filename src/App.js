@@ -186,14 +186,49 @@ export const App = () => {
             });
           });
 
-          console.log(unsub_chatroom_onSnapshot);
-
           setAuthState({
             ...authState,
             onSnapshot_unsubscribe: [
               ...authState.onSnapshot_unsubscribe,
               ...unsub_chatroom_onSnapshot,
             ],
+          });
+
+          onSnapshot(collection(db, "users"), (snapshot) => {
+            snapshot.docChanges().forEach((change) => {
+              if (change.type === "added") {
+                console.log("New UserDoc: ", change.doc.data());
+                const newAllUserDocs = [...allUserDocsState];
+                const changedDocData = change.doc.data();
+                newAllUserDocs[changedDocData.uid] = changedDocData;
+                for (let i = 0; i < newAllUserDocs.length; i++) {
+                  if (newAllUserDocs[i].uid === changedDocData.uid) {
+                    newAllUserDocs[i] = changedDocData;
+                    break;
+                  }
+                }
+                setAllUserDocsState(newAllUserDocs);
+              }
+              if (change.type === "modified") {
+                const newAllUserDocs = [...allUserDocsState];
+                const changedDocData = change.doc.data();
+                newAllUserDocs[changedDocData.uid] = changedDocData;
+                for (let i = 0; i < newAllUserDocs.length; i++) {
+                  if (newAllUserDocs[i].uid === changedDocData.uid) {
+                    newAllUserDocs[i] = changedDocData;
+                    break;
+                  }
+                }
+                console.log("Modified UserDoc: ", change.doc.data());
+                setAllUserDocsState(newAllUserDocs);
+              }
+              if (change.type === "removed") {
+                console.log("Removed UserDoc: ", change.doc.data());
+                const newAllUserDocs = [...allUserDocsState];
+                delete newAllUserDocs[change.doc.data().uid];
+                setAllUserDocsState(newAllUserDocs);
+              }
+            });
           });
 
           setUserData(user);

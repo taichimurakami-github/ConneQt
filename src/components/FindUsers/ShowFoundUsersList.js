@@ -6,6 +6,35 @@ import cmpConfig from "./config";
 
 export const ShowFoundUsersList = (props) => {
   /**
+   * ２つのUserDoc.locationのデータから、
+   * 両者の距離をkmで求める
+   * @param {locationObject} loc1
+   * @param {locationObject} loc2
+   * @returns
+   */
+  const calcKmDistance = (location1, location2) => {
+    const R = Math.PI / 180;
+
+    const loc1 = { ...location1 };
+    const loc2 = { ...location2 };
+
+    loc1.lat = R * loc1.lat;
+    loc1.lng = R * loc1.lng;
+    loc2.lat = R * loc2.lat;
+    loc2.lng = R * loc2.lng;
+
+    return (
+      6371 *
+      Math.acos(
+        Math.cos(loc1.lat) *
+          Math.cos(loc2.lat) *
+          Math.cos(loc2.lng - loc1.lng) +
+          Math.sin(loc1.lat) * Math.sin(loc2.lat)
+      )
+    );
+  };
+
+  /**
    * parentArr内に、targetValueが存在するかをチェック
    * 存在していたらtrue, 存在していなかったらfalse
    *
@@ -62,7 +91,18 @@ export const ShowFoundUsersList = (props) => {
       if (judgeResult) return false;
     }
 
-    return true;
+    // 両者の距離を測定、一定距離以内であればtrueを返す
+    const KM_BOUNDARY = 10;
+    if (
+      calcKmDistance(props.nowUserDoc.location, targetUserDoc.location) <
+      KM_BOUNDARY
+    ) {
+      //一定距離以内にいる
+      return true;
+    } else {
+      //一定距離にはいない
+      return false;
+    }
   };
 
   /**
