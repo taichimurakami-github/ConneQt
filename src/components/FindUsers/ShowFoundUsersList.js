@@ -37,11 +37,13 @@ export const ShowFoundUsersList = (props) => {
    */
   const isAbleToSendRequest = (targetUserDoc) => {
     const checkTargetParents = [
-      props.nowUserDoc.request_received,
-      props.nowUserDoc.request_sent,
-      props.nowUserDoc.request_rejected,
+      props.nowUserDoc.request.received,
+      props.nowUserDoc.request.sent,
+      props.nowUserDoc.request.rejected,
       props.nowUserDoc.friend,
     ];
+
+    console.log(checkTargetParents);
 
     for (const checkTargetParent of checkTargetParents) {
       console.log(checkTargetParent);

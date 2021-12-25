@@ -33,7 +33,10 @@ const sendRequest = async (senderUid, receiverUid) => {
 };
 
 const approveRequest = async (approvingUserUid, approvedUserUid) => {
-  //チャットルームを作成する準備
+  /**
+   * チャットルームを作成する準備
+   */
+
   //チャットルームIDを作成
   const chatRoomID =
     new Date().getTime().toString(16) +
@@ -50,6 +53,10 @@ const approveRequest = async (approvingUserUid, approvedUserUid) => {
 
   //チャットルームを開設
   await setDoc(doc(db, "chatRoom", chatRoomID), chatRoomInitialTemplate);
+
+  /**
+   * userDocを更新する準備
+   */
 
   // create ref
   const approvingUserDoc = doc(db, "users", approvingUserUid);
@@ -78,6 +85,10 @@ const approveRequest = async (approvingUserUid, approvedUserUid) => {
 };
 
 const rejectRequest = async (rejectingUserUid, rejectedUserUid) => {
+  /**
+   * userDocを更新する準備
+   */
+
   // create ref
   const rejectingUserDocRef = doc(db, "users", rejectingUserUid);
   const rejectedUserDocRef = doc(db, "users", rejectedUserUid);
