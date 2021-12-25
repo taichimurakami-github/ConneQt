@@ -6,6 +6,7 @@ import "../../styles/chat.scss";
 import { updateChatRoomData } from "../../fn/db/firestore.handler";
 
 export const ShowChatRoom = (props) => {
+  console.log(props.metaData);
   /**
    * チャットデータ内容をコンポーネント上に出力できる形に整形
    */

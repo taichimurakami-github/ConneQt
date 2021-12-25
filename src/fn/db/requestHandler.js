@@ -64,7 +64,7 @@ const approveRequest = async (approvingUserUid, approvedUserUid) => {
   await updateDoc(approvingUserDoc, {
     "request.received": arrayRemove(approvedUserUid),
     friend: arrayUnion({
-      uid: approvingUserUid,
+      uid: approvedUserUid,
       chatRoomID: chatRoomID,
     }),
   });
@@ -74,7 +74,7 @@ const approveRequest = async (approvingUserUid, approvedUserUid) => {
   await updateDoc(approvedUserDoc, {
     "request.sent": arrayRemove(approvingUserUid),
     friend: arrayUnion({
-      uid: approvedUserUid,
+      uid: approvingUserUid,
       chatRoomID: chatRoomID,
     }),
   });

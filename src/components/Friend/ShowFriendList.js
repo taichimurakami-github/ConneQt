@@ -57,8 +57,6 @@ export const ShowFriendList = (props) => {
         chatRoomData.data[chatRoomData.data.length - 1].text;
     }
 
-    console.log(topMessageText);
-
     return topMessageText;
   };
 
@@ -84,6 +82,7 @@ export const ShowFriendList = (props) => {
 
   const handleShowChatRoom = (e) => {
     const friendDocsStateArrTargetIndex = getNumberFromStringID(e.target.id);
+    console.log(friendDocsState[friendDocsStateArrTargetIndex]);
 
     props.handleTargetChatRoomData({
       doc: {
