@@ -13,7 +13,10 @@ const userDocTemplate = {
   email: "",
   photo: "",
   profile: "これはあなたのプロフィールです。早速編集してみましょう！",
-  state: "1",
+  location: {
+    lat: "",
+    lng: "",
+  },
   request: {
     received: [],
     sent: [],

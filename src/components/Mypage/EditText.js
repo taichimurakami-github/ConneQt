@@ -2,9 +2,7 @@ import { useState } from "react";
 import { Header } from "../UI/Header";
 import { cmpConfig } from "./config";
 
-
 export const EditText = (props) => {
-
   const [inputState, setInputState] = useState("");
 
   const generateHeaderTitle = () => {
@@ -20,16 +18,13 @@ export const EditText = (props) => {
       default:
         return "";
     }
-  }
-
-
+  };
 
   const handleInput = (e) => {
     setInputState(e.target.value);
-  }
+  };
 
-  const handleSubmit = () => props.handleSubmit(props.type, inputState);
-
+  const handleSubmit = () => props.handleSubmit(inputState);
 
   return (
     <>
@@ -45,10 +40,15 @@ export const EditText = (props) => {
         value={inputState}
         className="text-input"
       />
-      <button className="btn-orange" onClick={handleSubmit}>この内容に変更する</button>
-      <button className="btn-gray" onClick={() => props.handleViewState(cmpConfig.state.view["001"])}>
+      <button className="btn-orange" onClick={handleSubmit}>
+        この内容に変更する
+      </button>
+      <button
+        className="btn-gray"
+        onClick={() => props.handleViewState(cmpConfig.state.view["001"])}
+      >
         前のページに戻る
       </button>
     </>
-  )
-}
+  );
+};

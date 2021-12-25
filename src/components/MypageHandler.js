@@ -3,65 +3,15 @@ import { appConfig } from "../app.config";
 
 import "../styles/mypage.scss";
 
-
 import { updateUserData } from "../fn/db/firestore.handler";
 
 import { cmpConfig } from "./Mypage/config";
 import { MypageTop } from "./Mypage/MyPageTop";
 import { EditText } from "./Mypage/EditText";
-
-
+import { EditLocation } from "./Mypage/EditLocation";
 
 export const MypageHandler = (props) => {
-
   const [viewState, setViewState] = useState(cmpConfig.state.view["001"]);
-
-  const handleComponent = () => {
-
-    switch (viewState) {
-
-      case cmpConfig.state.view["001"]:
-        return <MypageTop
-          handleViewState={setViewState}
-          handleSubmit={handleSubmitToDB}
-          user={props.user}
-          signOut={props.signOut}
-        />;
-
-      case cmpConfig.state.view["002"]:
-        return <EditText
-          viewState={viewState}
-          handleViewState={setViewState}
-          handleSubmit={handleSubmitToDB}
-        />;
-
-      case cmpConfig.state.view["003"]:
-        return <EditText
-          viewState={viewState}
-          handleViewState={setViewState}
-          handleSubmit={handleSubmitToDB}
-        />;
-
-      case cmpConfig.state.view["004"]:
-        return <EditText
-          viewState={viewState}
-          handleViewState={setViewState}
-          handleSubmit={handleSubmitToDB}
-        />;
-
-      case cmpConfig.state.view["005"]:
-        return <EditText
-          viewState={viewState}
-          handleViewState={setViewState}
-          handleSubmit={handleSubmitToDB}
-        />;
-
-      default:
-        return undefined;
-
-    }
-
-  }
 
   // const handleOnClick = (e) => {
   //   let target;
@@ -71,15 +21,14 @@ export const MypageHandler = (props) => {
 
   // }
 
-
-  const handleSubmitToDB = (type, data) => {
+  const handleSubmitToDB = (data) => {
     (async () => {
       //loading 画面を表示
       props.handleModalState({
         display: true,
         closable: false,
         type: appConfig.components.modal.type["001"],
-        content: null
+        content: null,
       });
 
       let updateData;
@@ -90,11 +39,11 @@ export const MypageHandler = (props) => {
           break;
 
         case cmpConfig.state.view["004"]:
-          updateData = { state: data };
+          updateData = { location: data };
           break;
 
         case cmpConfig.state.view["005"]:
-          updateData = { profile: data }
+          updateData = { profile: data };
           break;
 
         default:
@@ -113,11 +62,61 @@ export const MypageHandler = (props) => {
       //myPageTopに遷移
       setViewState(cmpConfig.state.view["001"]);
     })();
-  }
+  };
 
-  return (
-    <>
-      {handleComponent()}
-    </>
-  )
-}
+  const handleComponent = () => {
+    switch (viewState) {
+      case cmpConfig.state.view["001"]:
+        return (
+          <MypageTop
+            handleViewState={setViewState}
+            handleSubmit={handleSubmitToDB}
+            user={props.nowUserDoc}
+            signOut={props.signOut}
+          />
+        );
+
+      case cmpConfig.state.view["002"]:
+        return (
+          <EditText
+            viewState={viewState}
+            handleViewState={setViewState}
+            handleSubmit={handleSubmitToDB}
+          />
+        );
+
+      case cmpConfig.state.view["003"]:
+        return (
+          <EditText
+            viewState={viewState}
+            handleViewState={setViewState}
+            handleSubmit={handleSubmitToDB}
+          />
+        );
+
+      case cmpConfig.state.view["004"]:
+        return (
+          <EditLocation
+            viewState={viewState}
+            nowLocation={props.nowUserDoc.location}
+            handleViewState={setViewState}
+            handleSubmit={handleSubmitToDB}
+          />
+        );
+
+      case cmpConfig.state.view["005"]:
+        return (
+          <EditText
+            viewState={viewState}
+            handleViewState={setViewState}
+            handleSubmit={handleSubmitToDB}
+          />
+        );
+
+      default:
+        return undefined;
+    }
+  };
+
+  return <>{handleComponent()}</>;
+};
