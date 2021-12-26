@@ -1,19 +1,14 @@
 @import "./common/assets";
 
-$back-to-before-component-width: 100px;
+$back-to-before-component-width: 60px;
 
 header {
   background: $yellow;
   position: relative;
   text-align: center;
-  padding: 20px 10px;
+  padding: 15px 10px;
   box-shadow: 0 2px 10px 1px $darkgray;
   margin-bottom: 30px;
-
-  h1 {
-    margin: 0;
-    font-size: 22px;
-  }
 }
 
 .header-menu-button {
@@ -27,6 +22,15 @@ header {
   align-items: center;
 }
 
+.header-title {
+  margin: 0 auto;
+  font-size: 1.6rem;
+  max-width: calc(100% - #{$back-to-before-component-width} - 50px);
+  .inline-block {
+    display: inline-block;
+  }
+}
+
 .back-to-before-component {
   $arrow-width: 15px;
 
@@ -35,19 +39,19 @@ header {
   top: 0;
   width: $back-to-before-component-width;
   height: 100%;
-  padding-left: 10px;
+  padding-left: 5px;
 
   display: flex;
   align-items: center;
-  column-gap: 10px;
+  column-gap: 5px;
 
   .arrow-lt {
-    height: 30px;
+    height: 20px;
   }
 
   .text {
     font-weight: bold;
-    font-size: 1.8rem;
+    // font-size: 1.rem;
   }
 
   &:not(.active) {

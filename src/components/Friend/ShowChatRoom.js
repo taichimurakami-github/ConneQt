@@ -18,9 +18,7 @@ export const ShowChatRoom = (props) => {
           handleBack: () => {
             setHeaderMenuViewState(false);
           },
-          handleMenu: () => {
-            setHeaderMenuViewState(false);
-          },
+          handleMenu: null,
         };
 
       case cmpConfig.ShowChatRoom.headerMetaDataAction["002"]:
@@ -141,7 +139,7 @@ export const ShowChatRoom = (props) => {
   const HeaderMenuComponent = () => {
     return (
       <>
-        <h2>{props.metaData.doc.with.name} さんのプロフィール</h2>
+        <h2 className="chatroom-menu-title">プロフィール</h2>
         <UserProfile userDoc={props.metaData.doc.with} />
         <button className="btn-orange" onClick={handleDeleteThisFriend}>
           この友達を削除する

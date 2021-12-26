@@ -134,77 +134,69 @@ export const ShowFriendList = (props) => {
   return (
     <>
       <Header title="フレンドリスト" backable={false} />
-
-      <p
-        style={{
-          margin: "15px auto 10px",
-          background: "green",
-          color: "white",
-        }}
-      >
-        あなたが受け取ったリクエスト一覧
-      </p>
-      <UsersList
-        userDocs={req_receivedUserDocsState}
-        noUserMessage="現在、あなたが受け取ったリクエストはありません。"
-      >
-        <button
-          className="btn-orange"
-          onClick={handleShowProfileOnRequestReceived}
+      <div className="request-users-container received">
+        <h3 className="title">あなた宛ての友達リクエスト</h3>
+        <UsersList
+          userDocs={req_receivedUserDocsState}
+          noUserMessage="現在、あなたが受け取ったリクエストはありません。"
         >
-          プロフィールを見る
-        </button>
-      </UsersList>
+          <button
+            className="btn-orange"
+            onClick={handleShowProfileOnRequestReceived}
+          >
+            プロフィールを見る
+          </button>
+        </UsersList>
+      </div>
 
-      <p
-        style={{
-          margin: "100px auto 10px",
-          background: "darkorange",
-          color: "white",
-        }}
-      >
-        あなたが送ったリクエスト一覧
-      </p>
-      <UsersList
-        userDocs={req_sentUserDocsState}
-        noUserMessage="現在、あなたが送ったリクエストはありません。"
-      >
-        <button className="btn-orange" onClick={handleShowProfileOnRequestSent}>
-          プロフィールを見る
-        </button>
-      </UsersList>
+      <div className="request-users-container sent">
+        <h3 className="title">友達リクエスト送信済みのユーザー</h3>
+        <UsersList
+          userDocs={req_sentUserDocsState}
+          noUserMessage="現在、あなたが送ったリクエストはありません。"
+        >
+          <button
+            className="btn-orange"
+            onClick={handleShowProfileOnRequestSent}
+          >
+            プロフィールを見る
+          </button>
+        </UsersList>
+      </div>
 
-      <p
-        style={{ margin: "100px auto 10px", background: "red", color: "white" }}
-      >
-        あなたが拒否された・拒否したリクエスト一覧
+      <p style={{ margin: "0 auto 10px", background: "red", color: "white" }}>
+        あなたが拒否された・拒否したリクエスト一覧(デバッグ用)
       </p>
       <UsersList
         userDocs={req_rejectedUserDocsState}
         noUserMessage="現在、拒否された・したリクエストはありません。"
       ></UsersList>
-      <ul className="users-list-wrapper">
-        {friendDocsState && friendDocsState.length !== 0 ? (
-          friendDocsState.map((val, index) => {
-            return (
-              <li
-                id={`${val.uid}_${index}`}
-                className={`user-list clickable`}
-                key={val.uid}
-                onClick={handleShowChatRoom}
-              >
-                <img className="user-icon" src={val?.photo} />
-                <div className="text-container">
-                  <p className="name">{val?.name}</p>
-                  <p>{getTopMessageFromChatRoomData(val.uid)}</p>
-                </div>
-              </li>
-            );
-          })
-        ) : (
-          <p>"見つける" から友達を探しましょう！</p>
-        )}
-      </ul>
+
+      <div className="friend-users-container">
+        <h3 className="title">あなたの友達一覧</h3>
+        <ul className="users-list-wrapper">
+          {friendDocsState && friendDocsState.length !== 0 ? (
+            friendDocsState.map((val, index) => {
+              return (
+                <li
+                  id={`${val.uid}_${index}`}
+                  className={`user-list clickable`}
+                  key={val.uid}
+                  onClick={handleShowChatRoom}
+                >
+                  <img className="user-icon" src={val?.photo} />
+                  <div className="text-container">
+                    <p className="name">{val?.name}</p>
+                    <p>{getTopMessageFromChatRoomData(val.uid)}</p>
+                  </div>
+                </li>
+              );
+            })
+          ) : (
+            <p>"見つける" から友達を探しましょう！</p>
+          )}
+        </ul>
+      </div>
     </>
   );
 };
