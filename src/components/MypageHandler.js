@@ -110,6 +110,7 @@ export const MypageHandler = (props) => {
             viewState={viewState}
             handleViewState={setViewState}
             handleSubmit={handleSubmitToDB}
+            inputMode="textarea"
           />
         );
 

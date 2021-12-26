@@ -4,11 +4,19 @@ import { Header } from "../UI/Header";
 import { UserProfile } from "../UI/UserProfile";
 
 export const ShowUserProfile = (props) => {
+  const HeaderTitle = () => {
+    return (
+      <>
+        <span className="inline-block">{props.targetUserDoc?.name} さん</span>
+        <span className="inline-block">のプロフィール</span>
+      </>
+    );
+  };
   return (
     <>
       <Header
         backable={true}
-        title={`${props.targetUserDoc?.name} さんのプロフィール`}
+        title={<HeaderTitle />}
         handleBack={() => props.handleViewState(cmpConfig.state.view["001"])}
       />
 

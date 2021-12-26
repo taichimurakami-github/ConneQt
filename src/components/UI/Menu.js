@@ -71,7 +71,7 @@ const MenuItem = (props) => {
         src={props.isActivated ? props.img.active : props.img.unactive}
         alt=""
       ></img>
-      <span className="p-events-none text">{props.text}</span>
+      <p className="p-events-none text">{props.text}</p>
     </li>
   );
 };

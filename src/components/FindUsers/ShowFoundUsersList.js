@@ -163,7 +163,11 @@ export const ShowFoundUsersList = (props) => {
   return (
     <>
       <Header title="ユーザーを探す" backable={false} />
-      <UsersList userDocs={showableUserDocs} handleOnClick={handleSelectUser} />
+      <UsersList
+        userDocs={showableUserDocs}
+        handleOnClick={handleSelectUser}
+        className={{ userList: "found-user" }}
+      />
     </>
   );
 };

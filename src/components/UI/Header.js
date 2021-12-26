@@ -13,7 +13,7 @@ export const Header = (props) => {
         <img className="arrow-lt" src={arrow_lt}></img>
         <span className="text">戻る</span>
       </div>
-      <h1>{props?.title}</h1>
+      <h2 className="header-title">{props?.title}</h2>
       {props?.handleMenu && (
         <button
           className="header-menu-button btn-img"

@@ -34,12 +34,21 @@ export const EditText = (props) => {
         handleBack={() => props.handleViewState(cmpConfig.state.view["001"])}
       />
       <h2 className="input-target-title">{props.title}</h2>
-      <input
-        onChange={handleInput}
-        placeholder={props.title}
-        value={inputState}
-        className="text-input"
-      />
+      {props?.inputMode === "textarea" ? (
+        <textarea
+          onChange={handleInput}
+          placeholder={props.title}
+          value={inputState}
+          className="text-input"
+        />
+      ) : (
+        <input
+          onChange={handleInput}
+          placeholder={props.title}
+          value={inputState}
+          className="text-input"
+        />
+      )}
       <button className="btn-orange" onClick={handleSubmit}>
         この内容に変更する
       </button>
