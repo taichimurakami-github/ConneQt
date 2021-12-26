@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import { App } from "./App";
+import { SignUp } from "./components/SignUp";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { signOut } from "./fn/auth/firebase.auth";
 
 export const AuthHandler = () => {
   const [authState, setAuthState] = useState(null);
