@@ -64,18 +64,15 @@ button {
   pointer-events: none;
 }
 
-.flex {
+.flex-xyc {
   display: flex;
-  &.xyc {
-    justify-content: center;
-    align-items: center;
-  }
+  justify-content: center;
+  align-items: center;
+}
 
-  &.xc {
-    justify-content: center;
-  }
-
-  &.yc {
-    align-items: center;
-  }
+.flex-col-xyc {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }

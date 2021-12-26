@@ -2,11 +2,10 @@
 import { appConfig } from "./app.config";
 
 // lib imports
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+
 import { useState, useEffect } from "react";
 
 // components imports
-import { SignUp } from "./components/SignUp";
 import { FindUserHandler } from "./components/FindUserHandler";
 import { FriendHandler } from "./components/FriendHandler";
 import { MypageHandler } from "./components/MypageHandler";
@@ -25,7 +24,7 @@ import {
 // app common style imports
 import "./styles/App.scss";
 import { generateDummyUserDocs } from "./devTools/dummyUserListData";
-import { signOut } from "./fn/auth/firebase.auth";
+
 import {
   collection,
   doc,
