@@ -2,14 +2,13 @@
   "name": "gls-conneqt-hey",
   "version": "0.1.0",
   "private": true,
+  "homepage": "./",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
     "firebase": "^9.6.1",
-    "firebase-admin": "^10.0.1",
     "firebase-functions": "^3.16.0",
-    "firebase-tools": "^9.23.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
@@ -40,6 +39,8 @@
     ]
   },
   "devDependencies": {
+    "firebase-admin": "^10.0.1",
+    "firebase-tools": "^10.0.1",
     "sass": "^1.45.0"
   }
 }

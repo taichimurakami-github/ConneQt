@@ -12,7 +12,7 @@ import {
 } from "firebase/firestore";
 import { userDocTemplate } from "../../firebase.config";
 import "./firestore.ready";
-import "./cloudfunctions.ready";
+// import "./cloudfunctions.ready";
 
 const db = getFirestore();
 

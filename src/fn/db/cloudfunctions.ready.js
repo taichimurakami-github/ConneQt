@@ -1,2 +1,2 @@
-const admin = require('firebase-admin');
-admin.initializeApp();
+// const admin = require('firebase-admin');
+// admin.initializeApp();
