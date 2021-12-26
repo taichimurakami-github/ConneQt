@@ -35,15 +35,15 @@ export const MypageHandler = (props) => {
 
       switch (viewState) {
         case cmpConfig.state.view["003"]:
-          updateData = { name: data };
+          updateData = { uid: props.nowUserDoc.uid, name: data };
           break;
 
         case cmpConfig.state.view["004"]:
-          updateData = { location: data };
+          updateData = { uid: props.nowUserDoc.uid, location: data };
           break;
 
         case cmpConfig.state.view["005"]:
-          updateData = { profile: data };
+          updateData = { uid: props.nowUserDoc.uid, profile: data };
           break;
 
         default:
@@ -51,7 +51,7 @@ export const MypageHandler = (props) => {
       }
 
       //アップデートを実行
-      await updateUserData(props.authData, updateData);
+      await updateUserData(updateData);
 
       //loadingモーダルを隠す
       props.eraceModal();
