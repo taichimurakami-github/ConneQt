@@ -37,13 +37,13 @@ export const App = (props) => {
   /**
    * setState definitions
    */
-  // const [userData, setUserData] = useState(
+  // const [authUserDoc, setAuthUserDoc] = useState(
   //   generateDummyUserDocs()[0]
   // );
   // const [allUserDocsState, setAllUserDocsState] = useState(
   //   generateDummyUserDocs()
   // );
-  const [userData, setUserData] = useState(null);
+  const [authUserDoc, setAuthUserDoc] = useState(null);
   const [allUserDocsState, setAllUserDocsState] = useState([]);
   const [modalState, setModalState] = useState({
     ...appConfig.initialState.App.modalState,
@@ -69,17 +69,18 @@ export const App = (props) => {
   /**
    * useEffect functions
    */
+
+  /**
+   * ログイン処理
+   * ! 認証が通ってなかったら処理しない
+   */
   useEffect(() => {
-    /**
-     * ログイン処理
-     * ! 認証が通ってなかったら処理しない
-     */
     props.authState &&
       (async () => {
         // await fetchAndRenewUserData({ init: true });
         //authを通ったユーザーを指定
         //返り値は Object(見つかった) or null(見つからなかった)
-        const isUserStateExists = userData ? true : false;
+        const isUserStateExists = authUserDoc ? true : false;
         if (isUserStateExists) {
           //既にuserDocStateが存在しているかどうか判定
           console.log("your userdata has already exist.");
@@ -102,32 +103,7 @@ export const App = (props) => {
           //ユーザー登録済み
           console.log("you're registered.");
 
-          //chatRoomDataStateのUpdateHookを登録
           const db = getFirestore();
-
-          const unsub_chatroom_onSnapshot = user.friend.map((val) => {
-            return onSnapshot(doc(db, "chatRoom", val.chatRoomID), (doc) => {
-              console.log("chatroom " + val.chatRoomID + " has been updated.");
-
-              const newData = {
-                ...chatRoomDataState,
-              };
-              newData[val.chatRoomID] = doc.data();
-
-              console.log(newData);
-
-              setChatRoomDataState(newData);
-            });
-          });
-
-          props.setAuthState({
-            ...props.authState,
-            onSnapshot_unsubscribe: [
-              registerUpdateHookForUsers(user.uid, setUserData),
-              ...unsub_chatroom_onSnapshot,
-            ],
-          });
-
           onSnapshot(collection(db, "users"), (snapshot) => {
             snapshot.docChanges().forEach((change) => {
               if (change.type === "added") {
@@ -165,7 +141,7 @@ export const App = (props) => {
             });
           });
 
-          setUserData(user);
+          setAuthUserDoc(user);
 
           eraceModal();
 
@@ -177,7 +153,7 @@ export const App = (props) => {
           console.log("you're NOT registered.");
 
           //ユーザー未登録
-          setUserData(await registerAuthUserDoc(authState));
+          setAuthUserDoc(await registerAuthUserDoc(authState));
           setPageContentState(appConfig.pageContents["004"]);
 
           eraceModal();
@@ -185,6 +161,35 @@ export const App = (props) => {
         }
       })();
   }, []);
+
+  useEffect(() => {
+    //chatRoomDataStateのUpdateHookを登録
+
+    const db = getFirestore();
+
+    const unsub_chatroom_onSnapshot = user.friend.map((val) => {
+      return onSnapshot(doc(db, "chatRoom", val.chatRoomID), (doc) => {
+        console.log("chatroom " + val.chatRoomID + " has been updated.");
+
+        const newData = {
+          ...chatRoomDataState,
+        };
+        newData[val.chatRoomID] = doc.data();
+
+        console.log(newData);
+
+        setChatRoomDataState(newData);
+      });
+    });
+
+    props.setAuthState({
+      ...props.authState,
+      onSnapshot_unsubscribe: [
+        registerUpdateHookForUsers(user.uid, setAuthUserDoc),
+        ...unsub_chatroom_onSnapshot,
+      ],
+    });
+  }, [authUserDoc.friend]);
 
   /**
    * handle Page Content(Main content) by appConfig.pageContents data
@@ -201,7 +206,7 @@ export const App = (props) => {
       case appConfig.pageContents["002"]:
         return (
           <FindUserHandler
-            nowUserDoc={userData}
+            nowUserDoc={authUserDoc}
             allUserDocs={allUserDocsState}
             handleAllUserDocsState={setAllUserDocsState}
             handlePageContent={setPageContentState}
@@ -212,9 +217,10 @@ export const App = (props) => {
       case appConfig.pageContents["003"]:
         return (
           <FriendHandler
-            nowUserDoc={userData}
+            nowUserDoc={authUserDoc}
             allUserDocs={allUserDocsState}
             chatRoomData={chatRoomDataState}
+            authState
           />
         );
 
@@ -223,7 +229,7 @@ export const App = (props) => {
           <MypageHandler
             handleModalState={setModalState}
             eraceModal={eraceModal}
-            nowUserDoc={userData}
+            nowUserDoc={authUserDoc}
             signOut={props.signOutFromApp}
           />
         );
@@ -240,7 +246,7 @@ export const App = (props) => {
     <div className="App">
       {handlePageContent(pageContentState)}
       <div className="spacer" style={{ height: "100px" }}></div>
-      {userData && (
+      {authUserDoc && (
         <Menu
           pageContentState={pageContentState}
           handlePageContent={setPageContentState}
