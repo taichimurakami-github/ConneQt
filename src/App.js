@@ -34,11 +34,10 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 
-export const App = () => {
+export const App = (props) => {
   /**
    * setState definitions
    */
-  const [authState, setAuthState] = useState(null);
   // const [userData, setUserData] = useState(
   //   generateDummyUserDocs()[0]
   // );
@@ -69,75 +68,14 @@ export const App = () => {
     });
 
   /**
-   * execute signOut
-   */
-  const signOutFromApp = () => {
-    // onSnapshot のリスナーを削除
-    authState.onSnapshot_unsubscribe.map((func) => func());
-
-    // sign outを実行
-    signOut();
-  };
-
-  /**
    * useEffect functions
    */
-
-  //ログイン状態を判定・処理
-  useEffect(() => {
-    //loadingエフェクトを起動
-    setModalState({
-      display: true,
-      closable: false,
-      type: appConfig.components.modal.type["001"],
-      content: null,
-    });
-
-    const auth = getAuth();
-    // setPageContentState(appConfig.pageContents["002"]);
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // User is signed in, see docs for a list of available properties
-        // https://firebase.google.com/docs/reference/js/firebase.User
-        console.log("you have signed in as : " + user.email);
-
-        /**
-         * firestoreのusers > nowUser.uid のdocの変更をhookする関数を起動
-         * ログイン時に１回だけ起動できれば良い？はず
-         * 以後、ログアウトするまで自動でuserDocの更新時にsetStateしてくれる
-         */
-        user.onSnapshot_unsubscribe = [
-          registerUpdateHookForUsers(user.uid, setUserData),
-        ];
-        console.log(user);
-
-        // AuthStateを更新
-        setAuthState(user);
-
-        eraceModal();
-      } else {
-        // User is signed out
-        // ...
-        console.log("you have signed out!");
-
-        // AuthStateを更新
-        setAuthState(null);
-
-        // Signed Inを表示コンテンツに指定
-        setPageContentState(appConfig.pageContents["001"]);
-
-        eraceModal();
-      }
-    });
-  }, []);
-
   useEffect(() => {
     /**
      * ログイン処理
      * ! 認証が通ってなかったら処理しない
      */
-    authState &&
+    props.authState &&
       (async () => {
         // await fetchAndRenewUserData({ init: true });
         //authを通ったユーザーを指定
@@ -152,10 +90,7 @@ export const App = () => {
         //loadingをつける
         createLoadingModal();
 
-        const user = isUserStateExists
-          ? { ...userData }
-          : await getAuthUserDoc(authState);
-        console.log(`isUsersStateExists?: ${isUserStateExists}`);
+        const user = await getAuthUserDoc(props.authState);
 
         //見つからなかったらDBに登録して改めてusedataを取得・登録 >> Mypageを表示 & ようこそ！モーダルを表示
         //見つかったらそのままuserdataを登録 >> 表示するページはいじらない
@@ -186,10 +121,10 @@ export const App = () => {
             });
           });
 
-          setAuthState({
-            ...authState,
+          props.setAuthState({
+            ...props.authState,
             onSnapshot_unsubscribe: [
-              ...authState.onSnapshot_unsubscribe,
+              registerUpdateHookForUsers(user.uid, setUserData),
               ...unsub_chatroom_onSnapshot,
             ],
           });
@@ -250,7 +185,7 @@ export const App = () => {
           return;
         }
       })();
-  }, [authState]);
+  }, []);
 
   /**
    * handle Page Content(Main content) by appConfig.pageContents data
@@ -260,8 +195,8 @@ export const App = () => {
   const handlePageContent = (id) => {
     switch (id) {
       //SIGN_UP
-      case appConfig.pageContents["001"]:
-        return <SignUp />;
+      // case appConfig.pageContents["001"]:
+      //   return <SignUp />;
 
       //USERS_LIST
       case appConfig.pageContents["002"]:
@@ -280,8 +215,6 @@ export const App = () => {
           <FriendHandler
             nowUserDoc={userData}
             allUserDocs={allUserDocsState}
-            authState={authState}
-            handleAuthState={setAuthState}
             chatRoomData={chatRoomDataState}
           />
         );
@@ -291,9 +224,8 @@ export const App = () => {
           <MypageHandler
             handleModalState={setModalState}
             eraceModal={eraceModal}
-            authData={authState}
             nowUserDoc={userData}
-            signOut={signOutFromApp}
+            signOut={props.signOutFromApp}
           />
         );
 
@@ -309,7 +241,7 @@ export const App = () => {
     <div className="App">
       {handlePageContent(pageContentState)}
       <div className="spacer" style={{ height: "100px" }}></div>
-      {authState && userData && (
+      {userData && (
         <Menu
           pageContentState={pageContentState}
           handlePageContent={setPageContentState}
