@@ -104,6 +104,19 @@ export const AuthHandler = () => {
     }
   };
 
+  const handleAuthUserDoc = (user) => {
+    const db = getFirestore();
+    const authUserDoc_unSubFunc = onSnapshot(
+      doc(db, "users", user.uid),
+      (doc) => {
+        setAuthUserDoc(doc.data());
+        console.log(doc.data());
+        setViewState(appConfig.routePageContents["003"]);
+      }
+    );
+    return registerUnsubFunc([authUserDoc_unSubFunc]);
+  };
+
   //ログイン状態を判定・処理
   useEffect(() => {
     //loadingエフェクトを起動
@@ -137,9 +150,8 @@ export const AuthHandler = () => {
         // AuthStateを初期化
         setAuthState(null);
         setViewState(appConfig.routePageContents["001"]);
+        eraceModal();
       }
-
-      eraceModal();
     });
   }, []);
 
@@ -160,23 +172,16 @@ export const AuthHandler = () => {
 
         if (fetchedAuthUserData) {
           //userDocが存在した：登録済み
-          const db = getFirestore();
-
           //authUserのsnapShot登録 & 変更を検知したらsetAuthUserDocを自動実行
-          const authUserDoc_unSubFunc = onSnapshot(
-            doc(db, "users", fetchedAuthUserData.uid),
-            (doc) => {
-              setAuthUserDoc(doc.data());
-              setViewState(appConfig.routePageContents["003"]);
-            }
-          );
-          registerUnsubFunc([authUserDoc_unSubFunc]);
+          handleAuthUserDoc(fetchedAuthUserData);
         } else {
           //fetchedAuthUserData == nullだった
           //初回登録へ
           console.log("you are new here.");
           setViewState(appConfig.routePageContents["002"]);
         }
+
+        eraceModal();
       })();
   }, [authState]);
 
@@ -200,7 +205,7 @@ export const AuthHandler = () => {
         return (
           <RegisterHandler
             handleSignOut={signOutFromApp}
-            handleAuthUserDoc={setAuthUserDoc}
+            handleAuthUserDoc={handleAuthUserDoc}
             authState={authState}
           />
         );

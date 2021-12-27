@@ -48,9 +48,15 @@ export const RegisterHandler = (props) => {
     //DB登録後、登録したデータを取得
     (async () => {
       showLoadingModal();
-      const result = await registerAuthUserDoc({ ...registerUserData });
-      props.handleAuthUserDoc(result);
-      eraceModal();
+      await registerAuthUserDoc({ ...registerUserData });
+      props.handleAuthUserDoc(props.authState);
+      showConfirmModal({
+        title: "ようこそ、" + registerUserData.name + " さん！",
+        text: [
+          "アカウントを登録しました",
+          "まずは近くのユーザーを探してみましょう",
+        ],
+      });
     })();
   };
 
@@ -213,7 +219,7 @@ export const RegisterHandler = (props) => {
           required={true}
         />
 
-        <button
+        <div
           className="getNowLocation btn-gray"
           onClick={() => {
             setGeolocation((value) => {
@@ -227,7 +233,7 @@ export const RegisterHandler = (props) => {
           }}
         >
           現在地を取得
-        </button>
+        </div>
         <p>
           現在地：
           {`${
