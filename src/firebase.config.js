@@ -12,7 +12,15 @@ const userDocTemplate = {
   name: "",
   email: "",
   photo: "",
-  profile: "これはあなたのプロフィールです。早速編集してみましょう！",
+  hometown: {
+    pref: "",
+    city: "",
+    town: "",
+  },
+  history: {
+    university: "",
+  },
+  profile: "",
   location: {
     lat: "",
     lng: "",
@@ -23,6 +31,7 @@ const userDocTemplate = {
     rejected: [],
   },
   friend: [],
+  meta: [], //firestoreでOR検索するための苦肉の策として入れる。
 };
 
 export { firebaseConfig, userDocTemplate };

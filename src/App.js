@@ -61,6 +61,66 @@ export const App = (props) => {
    * useEffect functions
    */
 
+  const register = async () => {
+    setAuthUserDoc(await registerAuthUserDoc(authState));
+  };
+
+  const ready = async () => {
+    /**
+     * ここでfirestoreの変更をhookする関数を起動しておきたい
+     * ログイン時に１回だけ起動できれば良い？はず
+     */
+
+    setAuthUserDoc(user);
+
+    // FInd Usersを表示コンテンツに指定
+    setPageContentState(appConfig.pageContents["002"]);
+
+    // すべてのユーザーをfirestoreから取得 && authStateにunsubFuncを登録
+    const allUserDocs_unsubFunc = getAllUserDocs(setAllUserDocsState);
+    props.registerUnsubFunc([allUserDocs_unsubFunc]);
+  };
+
+  const getAllUserDocs = async (setter) => {
+    const db = getFirestore();
+    return onSnapshot(collection(db, "users"), (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === "added") {
+          console.log("New UserDoc: ", change.doc.data());
+          const newAllUserDocs = [...allUserDocsState];
+          const changedDocData = change.doc.data();
+          newAllUserDocs[changedDocData.uid] = changedDocData;
+          for (let i = 0; i < newAllUserDocs.length; i++) {
+            if (newAllUserDocs[i].uid === changedDocData.uid) {
+              newAllUserDocs[i] = changedDocData;
+              break;
+            }
+          }
+          setter(newAllUserDocs);
+        }
+        if (change.type === "modified") {
+          const newAllUserDocs = [...allUserDocsState];
+          const changedDocData = change.doc.data();
+          newAllUserDocs[changedDocData.uid] = changedDocData;
+          for (let i = 0; i < newAllUserDocs.length; i++) {
+            if (newAllUserDocs[i].uid === changedDocData.uid) {
+              newAllUserDocs[i] = changedDocData;
+              break;
+            }
+          }
+          console.log("Modified UserDoc: ", change.doc.data());
+          setter(newAllUserDocs);
+        }
+        if (change.type === "removed") {
+          console.log("Removed UserDoc: ", change.doc.data());
+          const newAllUserDocs = [...allUserDocsState];
+          delete newAllUserDocs[change.doc.data().uid];
+          setter(newAllUserDocs);
+        }
+      });
+    });
+  };
+
   /**
    * ログイン処理
    * ! 認証が通ってなかったら処理しない
@@ -78,78 +138,24 @@ export const App = (props) => {
           return;
         }
 
-        //loadingをつける
         createLoadingModal();
 
+        // userDocをfirestore上で検索
         const user = await getAuthUserDoc(props.authState);
 
         //見つからなかったらDBに登録して改めてusedataを取得・登録 >> Mypageを表示 & ようこそ！モーダルを表示
         //見つかったらそのままuserdataを登録 >> 表示するページはいじらない
-        if (user) {
-          /**
-           * ここでfirestoreの変更をhookする関数を起動しておきたい
-           * ログイン時に１回だけ起動できれば良い？はず
-           */
 
+        if (user) {
           //ユーザー登録済み
           console.log("you're registered.");
-
-          const db = getFirestore();
-          onSnapshot(collection(db, "users"), (snapshot) => {
-            snapshot.docChanges().forEach((change) => {
-              if (change.type === "added") {
-                console.log("New UserDoc: ", change.doc.data());
-                const newAllUserDocs = [...allUserDocsState];
-                const changedDocData = change.doc.data();
-                newAllUserDocs[changedDocData.uid] = changedDocData;
-                for (let i = 0; i < newAllUserDocs.length; i++) {
-                  if (newAllUserDocs[i].uid === changedDocData.uid) {
-                    newAllUserDocs[i] = changedDocData;
-                    break;
-                  }
-                }
-                setAllUserDocsState(newAllUserDocs);
-              }
-              if (change.type === "modified") {
-                const newAllUserDocs = [...allUserDocsState];
-                const changedDocData = change.doc.data();
-                newAllUserDocs[changedDocData.uid] = changedDocData;
-                for (let i = 0; i < newAllUserDocs.length; i++) {
-                  if (newAllUserDocs[i].uid === changedDocData.uid) {
-                    newAllUserDocs[i] = changedDocData;
-                    break;
-                  }
-                }
-                console.log("Modified UserDoc: ", change.doc.data());
-                setAllUserDocsState(newAllUserDocs);
-              }
-              if (change.type === "removed") {
-                console.log("Removed UserDoc: ", change.doc.data());
-                const newAllUserDocs = [...allUserDocsState];
-                delete newAllUserDocs[change.doc.data().uid];
-                setAllUserDocsState(newAllUserDocs);
-              }
-            });
-          });
-
-          setAuthUserDoc(user);
-
-          eraceModal();
-
-          // FInd Usersを表示コンテンツに指定
-          setPageContentState(appConfig.pageContents["002"]);
-
-          return;
+          ready();
         } else {
           console.log("you're NOT registered.");
-
           //ユーザー未登録
-          setAuthUserDoc(await registerAuthUserDoc(authState));
           setPageContentState(appConfig.pageContents["004"]);
-
-          eraceModal();
-          return;
         }
+        eraceModal();
       })();
   }, []);
 
