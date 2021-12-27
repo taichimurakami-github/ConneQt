@@ -8,10 +8,10 @@ import { ShowUserProfileOnRequestReceived } from "./Friend/ShowUserProfileOnRequ
 import { ShowUserProfileOnRequestSent } from "./Friend/ShowUserProfileOnRequestSent";
 import { approveRequest, rejectRequest } from "../fn/db/requestHandler";
 
-import { AppModal } from "../AppRoute";
+import { AppRouteContext } from "../AppRoute";
 
 export const FriendHandler = (props) => {
-  const { modalState, setModalState, eraceModal } = useContext(AppModal);
+  const { modalState, setModalState, eraceModal } = useContext(AppRouteContext);
   const [viewState, setViewState] = useState(cmpConfig.state.view["001"]);
   const [selectedUserDocState, setSelectedUserDocState] = useState(null);
   const [selectedChatRoomDataState, setSelectedChatRoomDataState] =

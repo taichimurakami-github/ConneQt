@@ -15,10 +15,10 @@ import { sendRequest } from "../fn/db/requestHandler";
 //import config
 import cmpConfig from "./FindUsers/config";
 
-import { AppModal } from "../AppRoute";
+import { AppRouteContext } from "../AppRoute";
 
 export const FindUserHandler = (props) => {
-  const { modalState, setModalState, eraceModal } = useContext(AppModal);
+  const { setModalState, eraceModal } = useContext(AppRouteContext);
   const [selectedUserState, setSelectedUserState] = useState(null);
   const [viewState, setViewState] = useState(cmpConfig.state.view["001"]);
 

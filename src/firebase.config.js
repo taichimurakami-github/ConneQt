@@ -10,12 +10,12 @@ const firebaseConfig = {
 const userDocTemplate = {
   uid: "",
   name: "",
+  age: "",
   email: "",
   photo: "",
   hometown: {
-    pref: "",
+    prefecture: "",
     city: "",
-    town: "",
   },
   history: {
     university: "",

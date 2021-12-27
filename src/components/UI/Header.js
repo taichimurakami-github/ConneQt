@@ -6,12 +6,14 @@ export const Header = (props) => {
     <header>
       <div
         className={`back-to-before-component ${
-          props?.backable ? "active" : ""
+          props?.handleBack ? "active" : ""
         } clickable`}
         onClick={props?.handleBack}
       >
         <img className="arrow-lt" src={arrow_lt}></img>
-        <span className="text">戻る</span>
+        <span className="text">
+          {props?.text?.backToButton ? props.text.backToButton : "戻る"}
+        </span>
       </div>
       <h2 className="header-title">{props?.title}</h2>
       {props?.handleMenu && (
@@ -19,7 +21,7 @@ export const Header = (props) => {
           className="header-menu-button btn-img"
           onClick={props.handleMenu}
         >
-          MENU
+          {props?.text?.menuButton ? props.text.menuButton : "MENU"}
         </button>
       )}
     </header>

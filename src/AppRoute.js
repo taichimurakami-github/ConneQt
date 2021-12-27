@@ -5,21 +5,56 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { signOut } from "./fn/auth/firebase.auth";
 import { appConfig } from "./app.config";
 import { ModalHandler } from "./components/ModalHandler";
+import { RegisterHandler } from "./components/RegisterHandler";
+import { getAuthUserDoc } from "./fn/db/firestore.handler";
+import { doc, getFirestore, onSnapshot } from "firebase/firestore";
 
-export const AppModal = createContext();
+export const AppRouteContext = createContext();
 
 export const AuthHandler = () => {
   const [authState, setAuthState] = useState(null);
+  const [authUserDoc, setAuthUserDoc] = useState(null);
   const [modalState, setModalState] = useState({
     ...appConfig.initialState.modalState,
   });
-  console.log("authHandler");
 
   /**
    * Modal util functions
    */
   const eraceModal = () =>
     setModalState({ ...appConfig.initialState.modalState });
+
+  const showLoadingModal = () => {
+    setModalState({
+      display: true,
+      type: appConfig.components.modal.type["001"],
+      closeable: false,
+    });
+  };
+
+  const showConfirmModal = (content = { title: "", text: "" }) => {
+    setModalState({
+      display: true,
+      type: appConfig.components.modal.type["002"],
+      closable: true,
+      content: {
+        title: content.title,
+        text: content.text,
+      },
+    });
+  };
+
+  const showErrorModal = (content = { title: "", text: "" }) => {
+    setModalState({
+      display: true,
+      type: appConfig.components.modal.type["003"],
+      closable: true,
+      content: {
+        title: content.title,
+        text: content.text,
+      },
+    });
+  };
 
   /**
    * execute signOut
@@ -50,12 +85,7 @@ export const AuthHandler = () => {
   //ログイン状態を判定・処理
   useEffect(() => {
     //loadingエフェクトを起動
-    // setModalState({
-    //   display: true,
-    //   closable: false,
-    //   type: appConfig.components.modal.type["001"],
-    //   content: null,
-    // });
+    showLoadingModal();
 
     const auth = getAuth();
     // setPageContentState(appConfig.pageContents["002"]);
@@ -72,14 +102,44 @@ export const AuthHandler = () => {
          * 以後、ログアウトするまで自動でuserDocの更新時にsetStateしてくれる
          */
 
-        const authStateData = {
-          ...user,
-          onSnapshot_unsubFuncArr: [],
-        };
-        // AuthStateを更新
-        setAuthState(authStateData);
+        (async () => {
+          const authStateData = {
+            ...user,
+            onSnapshot_unsubFuncArr: [],
+          };
+          // AuthStateを設定
+          setAuthState(authStateData);
 
-        // eraceModal();
+          //authを通ったユーザーを指定
+          //返り値は Object(見つかった) or null(見つからなかった)
+          const isUserStateExists = authUserDoc ? true : false;
+          if (isUserStateExists) {
+            //既にuserDocStateが存在しているかどうか判定
+            console.log("your userdata has already exist.");
+            return;
+          }
+
+          // userDocをfirestore上で検索
+          const fetchedAuthUserData = await getAuthUserDoc(user);
+
+          if (fetchedAuthUserData) {
+            //userDocが存在した：登録済み
+            const db = getFirestore();
+
+            //authUserのsnapShot登録 & 変更を検知したらsetAuthUserDocを自動実行
+            const authUserDoc_unSubFunc = onSnapshot(
+              doc(db, "users", fetchedAuthUserData.uid),
+              (doc) => {
+                setAuthUserDoc(...doc.data());
+              }
+            );
+            registerUnsubFunc(authUserDoc_unSubFunc);
+          } else {
+            //fetchedAuthUserData == nullだった
+            //初回登録へ
+            console.log("you are new here.");
+          }
+        })();
       } else {
         // User is signed out
         console.log("you have signed out!");
@@ -89,25 +149,58 @@ export const AuthHandler = () => {
 
         // eraceModal();
       }
+
+      eraceModal();
     });
   }, []);
 
   return (
     <>
-      <AppModal.Provider value={{ modalState, setModalState, eraceModal }}>
+      <AppRouteContext.Provider
+        value={{
+          modalState,
+          setModalState,
+          eraceModal,
+          authUserDoc,
+          setAuthUserDoc,
+          signOutFromApp,
+          showLoadingModal,
+          showConfirmModal,
+          showErrorModal,
+        }}
+      >
         {authState ? (
-          <App
-            authState={authState}
-            setAuthState={setAuthState}
-            signOutFromApp={signOutFromApp}
-            registerUnsubFunc={registerUnsubFunc}
-          />
+          authUserDoc ? (
+            /**
+             * authStateが存在かつauthUserDocが取得できた
+             *  >> ログイン完了、アプリ開始処理
+             */
+            <App
+              authState={authState}
+              setAuthState={setAuthState}
+              signOutFromApp={signOutFromApp}
+              registerUnsubFunc={registerUnsubFunc}
+            />
+          ) : (
+            /**
+             * authSStateが存在かつauthUserDocが取得できなかった
+             *  >> アカウント初回登録処理
+             */
+            <RegisterHandler
+              handleSignOut={signOutFromApp}
+              handleAuthUserDoc={setAuthUserDoc}
+              authState={authState}
+            />
+          )
         ) : (
+          /**
+           * authUserDocが取得できなかった
+           *  >> ログイン前画面表示
+           */
           <SignUp />
         )}
-      </AppModal.Provider>
-
-      <ModalHandler state={modalState} />
+        <ModalHandler />
+      </AppRouteContext.Provider>
     </>
   );
 };

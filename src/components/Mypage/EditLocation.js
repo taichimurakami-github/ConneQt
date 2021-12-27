@@ -1,27 +1,13 @@
 import { Header } from "../UI/Header";
 import { useState } from "react";
 import { cmpConfig } from "./config";
+import { setGeolocation } from "../../fn/app/geolocation";
 
 export const EditLocation = (props) => {
   const [locationState, setLocationState] = useState({
     lat: 0,
     lng: 0,
   });
-
-  const getGeolocation = () => {
-    const successCallback = (pos) => {
-      setLocationState({
-        lat: pos.coords.latitude,
-        lng: pos.coords.longitude,
-      });
-    };
-
-    const errorCallback = () => {
-      console.log("failed to fetch geolocation");
-    };
-
-    navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
-  };
 
   const handleUpdateLocation = () => {
     if (
@@ -69,7 +55,12 @@ export const EditLocation = (props) => {
         {locationState.lat + ", " + locationState.lng})
       </p>
 
-      <button className="btn-gray" onClick={getGeolocation}>
+      <button
+        className="btn-gray"
+        onClick={() => {
+          setGeolocation(setLocationState);
+        }}
+      >
         現在の位置情報を取得
       </button>
       <button className="btn-orange" onClick={handleUpdateLocation}>
