@@ -1,5 +1,4 @@
-import { Header } from "./UI/Header";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 
 import { ShowFriendList } from "./Friend/ShowFriendList";
 import { ShowChatRoom } from "./Friend/ShowChatRoom";
@@ -9,7 +8,10 @@ import { ShowUserProfileOnRequestReceived } from "./Friend/ShowUserProfileOnRequ
 import { ShowUserProfileOnRequestSent } from "./Friend/ShowUserProfileOnRequestSent";
 import { approveRequest, rejectRequest } from "../fn/db/requestHandler";
 
+import { AppModal } from "../AppRoute";
+
 export const FriendHandler = (props) => {
+  const { modalState, setModalState, eraceModal } = useContext(AppModal);
   const [viewState, setViewState] = useState(cmpConfig.state.view["001"]);
   const [selectedUserDocState, setSelectedUserDocState] = useState(null);
   const [selectedChatRoomDataState, setSelectedChatRoomDataState] =
@@ -58,6 +60,7 @@ export const FriendHandler = (props) => {
 
     (async () => {
       await approveRequest(approvingUserUid, approvedUserUid);
+
       setViewState(cmpConfig.state.view["001"]);
     })();
   };

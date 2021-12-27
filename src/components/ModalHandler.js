@@ -8,41 +8,44 @@ import { ConfirmModal } from "./Modal/ConfirmModal";
 //style import
 import "../styles/modal.scss";
 
-
-export const Modal = (props) => {
-
+export const ModalHandler = (props) => {
   const [modalState, setModalState] = useState(props.state);
 
   const handleModal = () => {
-
     switch (modalState.type) {
       case appConfig.components.modal.type["001"]:
-        return <LoadingModal/>;
+        return <LoadingModal />;
 
       case appConfig.components.modal.type["002"]:
-        return <ConfirmModal
-          title={modalState.content.title}
-          text={modalState.content.text}
-        />
+        return (
+          <ConfirmModal
+            title={modalState.content.title}
+            text={modalState.content.text}
+          />
+        );
 
       default:
         return undefined;
     }
-  }
+  };
 
   const handleClose = () => {
-    modalState.closable && props.handleModalState(appConfig.initialState.App.modalState);
-  }
+    modalState.closable &&
+      props.handleModalState(appConfig.initialState.App.modalState);
+  };
 
   useEffect(() => {
     setModalState(props.state);
-  }, [props.state])
+  }, [props.state]);
 
   return (
     <>
-      <div className={`modal-wrapper ${props.state.display && "active"}`} onClick={handleClose}>
+      <div
+        className={`modal-wrapper ${props.state.display && "active"}`}
+        onClick={handleClose}
+      >
         {props.state.display && handleModal()}
       </div>
     </>
-  )
-}
+  );
+};

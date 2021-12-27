@@ -5,14 +5,12 @@ export const appConfig = {
     "002": "DEV_TEST",
   },
   initialState: {
-    App: {
-      modalState: {
-        display: false,
-        type: null,
-        closeable: false,
-        content: null
-      }
-    }
+    modalState: {
+      display: false,
+      type: null,
+      closeable: false,
+      content: null,
+    },
   },
   components: {
     modal: {
@@ -20,7 +18,7 @@ export const appConfig = {
         "001": "LOADING",
         "002": "CONFIRM",
         "003": "ERROR",
-      }
+      },
     },
   },
   pageContents: {
@@ -28,5 +26,5 @@ export const appConfig = {
     "002": "FIND_USERS",
     "003": "CHAT",
     "004": "MY_PAGE",
-  }
-}
+  },
+};
