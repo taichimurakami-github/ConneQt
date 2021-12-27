@@ -50,10 +50,6 @@ export const App = (props) => {
       // FInd Usersを表示コンテンツに指定
       setPageContentState(appConfig.pageContents["002"]);
 
-      // すべてのユーザーをfirestoreから取得 && authStateにunsubFuncを登録
-      // const allUserDocs_unsubFunc = getAllUserDocsSnapshot(setAllUserDocsState);
-      // props.registerUnsubFunc([allUserDocs_unsubFunc]);
-
       setAllUserDocsState(await getAllUserDocs(authUserDoc));
     })();
   }, []);
@@ -61,7 +57,7 @@ export const App = (props) => {
   useEffect(() => {
     //chatRoomDataStateのUpdateHookを登録
 
-    authUserDoc?.friend &&
+    authUserDoc.friend.length > 0 &&
       (async () => {
         const db = getFirestore();
 
@@ -80,17 +76,8 @@ export const App = (props) => {
           });
         });
 
-        // authUserDocのunsubscribeを登録
-        const authUserDoc_unSubFunc = registerUpdateHookForUsers(
-          authUserDoc.uid,
-          setAuthUserDoc
-        );
-
         //authUserStateにunsubFuncを登録
-        props.registerUnsubFunc([
-          ...chatroom_unSubFuncArr,
-          authUserDoc_unSubFunc,
-        ]);
+        props.registerUnsubFunc(chatroom_unSubFuncArr, "chatRoom");
       })();
   }, [authUserDoc.friend]);
 

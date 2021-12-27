@@ -21,6 +21,11 @@ export const appConfig = {
       },
     },
   },
+  routePageContents: {
+    "001": "NOT_SIGNED_IN",
+    "002": "REGISTRATION",
+    "003": "APP",
+  },
   pageContents: {
     "001": "NOT_SIGNED_IN",
     "002": "FIND_USERS",
