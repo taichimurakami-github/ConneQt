@@ -3,7 +3,7 @@ import { appConfig } from "../app.config";
 
 import { updateUserData } from "../fn/db/firestore.handler";
 
-import { AppModal } from "../AppRoute";
+import { AppRouteContext } from "../AppRoute";
 
 import { cmpConfig } from "./Mypage/config";
 import { MypageTop } from "./Mypage/MyPageTop";
@@ -13,7 +13,7 @@ import "../styles/mypage.scss";
 
 export const MypageHandler = (props) => {
   const [viewState, setViewState] = useState(cmpConfig.state.view["001"]);
-  const { modalState, setModalState, eraceModal } = useContext(AppModal);
+  const { modalState, setModalState, eraceModal } = useContext(AppRouteContext);
 
   const handleSubmitToDB = (data) => {
     (async () => {

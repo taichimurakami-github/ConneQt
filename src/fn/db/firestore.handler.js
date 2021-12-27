@@ -48,20 +48,17 @@ const getAllUserDocs = async () => {
   return result;
 };
 
-const registerAuthUserDoc = async (authData) => {
-  console.log(`now creating new User docs ... DocId = ${authData.uid}`);
-
-  //create template
-  const template = { ...userDocTemplate };
-  template.name = authData.displayName;
-  template.uid = authData.uid;
-  template.email = authData.email;
-  template.photo = authData.photoURL;
+const registerAuthUserDoc = async (registerDataWithoutMetaArr) => {
+  console.log("creating your account...");
+  const template = { ...registerDataWithoutMetaArr };
+  template.meta = [
+    registerDataWithoutMetaArr.hometown.prefecture,
+    registerDataWithoutMetaArr.hometown.city,
+    registerDataWithoutMetaArr.history.university,
+  ];
 
   //create user doc
-  const docRef = collection(db, "users");
-  await setDoc(doc(docRef, authData.uid), template);
-  return template;
+  return await setDoc(doc(db, "users", template.uid), template);
 };
 
 const updateUserData = async (updateData) => {

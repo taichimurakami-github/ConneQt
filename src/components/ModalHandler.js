@@ -1,15 +1,17 @@
 import { appConfig } from "../app.config";
-import { useState, useEffect } from "react/cjs/react.development";
+import { useContext } from "react";
 
 //modal import
 import { LoadingModal } from "./Modal/LoadingModal";
 import { ConfirmModal } from "./Modal/ConfirmModal";
+import { ErrorModal } from "./Modal/ErrorModal";
+import { AppRouteContext } from "../AppRoute";
 
 //style import
 import "../styles/modal.scss";
 
-export const ModalHandler = (props) => {
-  const [modalState, setModalState] = useState(props.state);
+export const ModalHandler = () => {
+  const { modalState, eraceModal } = useContext(AppRouteContext);
 
   const handleModal = () => {
     switch (modalState.type) {
@@ -23,6 +25,13 @@ export const ModalHandler = (props) => {
             text={modalState.content.text}
           />
         );
+      case appConfig.components.modal.type["003"]:
+        return (
+          <ErrorModal
+            title={modalState.content.title}
+            text={modalState.content.text}
+          />
+        );
 
       default:
         return undefined;
@@ -30,21 +39,16 @@ export const ModalHandler = (props) => {
   };
 
   const handleClose = () => {
-    modalState.closable &&
-      props.handleModalState(appConfig.initialState.App.modalState);
+    modalState.closable && eraceModal();
   };
-
-  useEffect(() => {
-    setModalState(props.state);
-  }, [props.state]);
 
   return (
     <>
       <div
-        className={`modal-wrapper ${props.state.display && "active"}`}
+        className={`modal-wrapper ${modalState.display && "active"}`}
         onClick={handleClose}
       >
-        {props.state.display && handleModal()}
+        {modalState.display && handleModal()}
       </div>
     </>
   );

@@ -1,6 +1,6 @@
 @import "./common/assets";
 
-.modal-wrapper{
+.modal-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -11,14 +11,14 @@
   left: 0;
 
   z-index: 100;
-  background: rgba(0,0,0,0.8);
+  background: rgba(0, 0, 0, 0.8);
 
-  &:not(.active){
+  &:not(.active) {
     display: none;
   }
 }
 
-.loading-wrapper{
+.loading-wrapper {
   width: 200px;
   height: 200px;
   border-radius: 100px;
@@ -29,27 +29,32 @@
   align-items: center;
 }
 
-.modal-container{
-
+.modal-container {
   border-radius: 20px;
   padding: 30px 15px;
+  max-width: 95%;
 
-  &.white {
+  &.confirm {
     background: white;
   }
 
-  .title{
+  &.error {
+    background: white;
+    border: 3px solid $orange;
     color: $orange;
+  }
+
+  .title {
     font-weight: bold;
     font-size: 2rem;
     margin-bottom: 20px;
   }
 
-  .text{
+  .text {
     line-height: 1.7;
   }
 
-  .btn-close{
+  .btn-close {
     margin: 30px auto 0;
   }
 }

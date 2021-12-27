@@ -13,6 +13,7 @@ import { Menu } from "./components/UI/Menu";
 
 // fn imports
 import {
+  getAllUserDocs,
   getAuthUserDoc,
   registerAuthUserDoc,
   registerUpdateHookForChatroom,
@@ -26,20 +27,14 @@ import { generateDummyUserDocs } from "./devTools/dummyUserListData";
 
 import { collection, doc, getFirestore, onSnapshot } from "firebase/firestore";
 
-import { AppModal } from "./AppRoute";
+import { AppRouteContext } from "./AppRoute";
 
 export const App = (props) => {
   /**
    * setState definitions
    */
-  // const [authUserDoc, setAuthUserDoc] = useState(
-  //   generateDummyUserDocs()[0]
-  // );
-  // const [allUserDocsState, setAllUserDocsState] = useState(
-  //   generateDummyUserDocs()
-  // );
-  const { modalState, setModalState, eraceModal } = useContext(AppModal);
-  const [authUserDoc, setAuthUserDoc] = useState(null);
+  const { setModalState, eraceModal, authUserDoc, setAuthUserDoc } =
+    useContext(AppRouteContext);
   const [allUserDocsState, setAllUserDocsState] = useState([]);
   const [pageContentState, setPageContentState] = useState(
     appConfig.pageContents["001"]
@@ -47,123 +42,22 @@ export const App = (props) => {
   const [chatRoomDataState, setChatRoomDataState] = useState({});
 
   /**
-   * modal state functions
-   */
-  const createLoadingModal = () =>
-    setModalState({
-      ...modalState,
-      display: true,
-      closeable: false,
-      type: appConfig.components.modal.type["001"],
-    });
-
-  /**
    * useEffect functions
    */
 
-  const register = async () => {
-    setAuthUserDoc(await registerAuthUserDoc(authState));
-  };
-
-  const ready = async () => {
-    /**
-     * ここでfirestoreの変更をhookする関数を起動しておきたい
-     * ログイン時に１回だけ起動できれば良い？はず
-     */
-
-    setAuthUserDoc(user);
-
-    // FInd Usersを表示コンテンツに指定
-    setPageContentState(appConfig.pageContents["002"]);
-
-    // すべてのユーザーをfirestoreから取得 && authStateにunsubFuncを登録
-    const allUserDocs_unsubFunc = getAllUserDocs(setAllUserDocsState);
-    props.registerUnsubFunc([allUserDocs_unsubFunc]);
-  };
-
-  const getAllUserDocs = async (setter) => {
-    const db = getFirestore();
-    return onSnapshot(collection(db, "users"), (snapshot) => {
-      snapshot.docChanges().forEach((change) => {
-        if (change.type === "added") {
-          console.log("New UserDoc: ", change.doc.data());
-          const newAllUserDocs = [...allUserDocsState];
-          const changedDocData = change.doc.data();
-          newAllUserDocs[changedDocData.uid] = changedDocData;
-          for (let i = 0; i < newAllUserDocs.length; i++) {
-            if (newAllUserDocs[i].uid === changedDocData.uid) {
-              newAllUserDocs[i] = changedDocData;
-              break;
-            }
-          }
-          setter(newAllUserDocs);
-        }
-        if (change.type === "modified") {
-          const newAllUserDocs = [...allUserDocsState];
-          const changedDocData = change.doc.data();
-          newAllUserDocs[changedDocData.uid] = changedDocData;
-          for (let i = 0; i < newAllUserDocs.length; i++) {
-            if (newAllUserDocs[i].uid === changedDocData.uid) {
-              newAllUserDocs[i] = changedDocData;
-              break;
-            }
-          }
-          console.log("Modified UserDoc: ", change.doc.data());
-          setter(newAllUserDocs);
-        }
-        if (change.type === "removed") {
-          console.log("Removed UserDoc: ", change.doc.data());
-          const newAllUserDocs = [...allUserDocsState];
-          delete newAllUserDocs[change.doc.data().uid];
-          setter(newAllUserDocs);
-        }
-      });
-    });
-  };
-
-  /**
-   * ログイン処理
-   * ! 認証が通ってなかったら処理しない
-   */
   useEffect(() => {
-    props.authState &&
-      (async () => {
-        // await fetchAndRenewUserData({ init: true });
-        //authを通ったユーザーを指定
-        //返り値は Object(見つかった) or null(見つからなかった)
-        const isUserStateExists = authUserDoc ? true : false;
-        if (isUserStateExists) {
-          //既にuserDocStateが存在しているかどうか判定
-          console.log("your userdata has already exist.");
-          return;
-        }
+    (async () => {
+      // FInd Usersを表示コンテンツに指定
+      setPageContentState(appConfig.pageContents["002"]);
 
-        createLoadingModal();
-
-        // userDocをfirestore上で検索
-        const user = await getAuthUserDoc(props.authState);
-
-        //見つからなかったらDBに登録して改めてusedataを取得・登録 >> Mypageを表示 & ようこそ！モーダルを表示
-        //見つかったらそのままuserdataを登録 >> 表示するページはいじらない
-
-        if (user) {
-          //ユーザー登録済み
-          console.log("you're registered.");
-          ready();
-        } else {
-          console.log("you're NOT registered.");
-          //ユーザー未登録
-          setPageContentState(appConfig.pageContents["004"]);
-        }
-        eraceModal();
-      })();
+      setAllUserDocsState(await getAllUserDocs(authUserDoc));
+    })();
   }, []);
 
   useEffect(() => {
     //chatRoomDataStateのUpdateHookを登録
 
-    authUserDoc &&
-      authUserDoc.friend &&
+    authUserDoc.friend.length > 0 &&
       (async () => {
         const db = getFirestore();
 
@@ -182,19 +76,10 @@ export const App = (props) => {
           });
         });
 
-        // authUserDocの
-        const authUserDoc_unSubFunc = registerUpdateHookForUsers(
-          authUserDoc.uid,
-          setAuthUserDoc
-        );
-
         //authUserStateにunsubFuncを登録
-        props.registerUnsubFunc([
-          ...chatroom_unSubFuncArr,
-          authUserDoc_unSubFunc,
-        ]);
+        props.registerUnsubFunc(chatroom_unSubFuncArr, "chatRoom");
       })();
-  }, [authUserDoc]);
+  }, [authUserDoc.friend]);
 
   /**
    * handle Page Content(Main content) by appConfig.pageContents data
@@ -257,3 +142,43 @@ export const App = (props) => {
     </div>
   );
 };
+
+// const getAllUserDocsSnapshot = async (setter) => {
+//   const db = getFirestore();
+//   return onSnapshot(collection(db, "users"), (snapshot) => {
+//     snapshot.docChanges().forEach((change) => {
+//       if (change.type === "added") {
+//         console.log("New UserDoc: ", change.doc.data());
+//         const newAllUserDocs = [...allUserDocsState];
+//         const changedDocData = change.doc.data();
+//         newAllUserDocs[changedDocData.uid] = changedDocData;
+//         for (let i = 0; i < newAllUserDocs.length; i++) {
+//           if (newAllUserDocs[i].uid === changedDocData.uid) {
+//             newAllUserDocs[i] = changedDocData;
+//             break;
+//           }
+//         }
+//         setter(newAllUserDocs);
+//       }
+//       if (change.type === "modified") {
+//         const newAllUserDocs = [...allUserDocsState];
+//         const changedDocData = change.doc.data();
+//         newAllUserDocs[changedDocData.uid] = changedDocData;
+//         for (let i = 0; i < newAllUserDocs.length; i++) {
+//           if (newAllUserDocs[i].uid === changedDocData.uid) {
+//             newAllUserDocs[i] = changedDocData;
+//             break;
+//           }
+//         }
+//         console.log("Modified UserDoc: ", change.doc.data());
+//         setter(newAllUserDocs);
+//       }
+//       if (change.type === "removed") {
+//         console.log("Removed UserDoc: ", change.doc.data());
+//         const newAllUserDocs = [...allUserDocsState];
+//         delete newAllUserDocs[change.doc.data().uid];
+//         setter(newAllUserDocs);
+//       }
+//     });
+//   });
+// };
