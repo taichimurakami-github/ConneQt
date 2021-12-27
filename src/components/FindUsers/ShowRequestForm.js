@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { Header } from "../UI/Header";
 import cmpConfig from "./config";
 

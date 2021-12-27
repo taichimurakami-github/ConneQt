@@ -18,7 +18,7 @@ import cmpConfig from "./FindUsers/config";
 import { AppRouteContext } from "../AppRoute";
 
 export const FindUserHandler = (props) => {
-  const { setModalState, eraceModal } = useContext(AppRouteContext);
+  const { eraceModal, showLoadingModal } = useContext(AppRouteContext);
   const [selectedUserState, setSelectedUserState] = useState(null);
   const [viewState, setViewState] = useState(cmpConfig.state.view["001"]);
 
@@ -26,11 +26,7 @@ export const FindUserHandler = (props) => {
     console.log("handle fetch");
 
     //モーダルを表示
-    setModalState({
-      display: true,
-      closable: false,
-      type: appConfig.components.modal.type["001"],
-    });
+    showLoadingModal();
 
     //すべてのユーザーデータを取得し、App.allUserDocsStateを変更
     const fetchResult = await getAllUserDocs();

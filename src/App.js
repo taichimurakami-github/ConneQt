@@ -12,20 +12,13 @@ import { MypageHandler } from "./components/MypageHandler";
 import { Menu } from "./components/UI/Menu";
 
 // fn imports
-import {
-  getAllUserDocs,
-  getAuthUserDoc,
-  registerAuthUserDoc,
-  registerUpdateHookForChatroom,
-  registerUpdateHookForUsers,
-} from "./fn/db/firestore.handler";
+import { getAllUserDocs } from "./fn/db/firestore.handler";
 // import handleOnWriteHook from "../functions";
 
 // app common style imports
 import "./styles/App.scss";
-import { generateDummyUserDocs } from "./devTools/dummyUserListData";
 
-import { collection, doc, getFirestore, onSnapshot } from "firebase/firestore";
+import { doc, getFirestore, onSnapshot } from "firebase/firestore";
 
 import { AppRouteContext } from "./AppRoute";
 

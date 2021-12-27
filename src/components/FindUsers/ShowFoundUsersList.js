@@ -146,19 +146,6 @@ export const ShowFoundUsersList = (props) => {
     props.nowUserDoc,
     props.allUserDocs,
   ]);
-  // const [showableUserDocs, setShowableUserDocs] = useState([]);
-
-  useEffect(() => {
-    // AllUserDocsが空だったらfetchを実行
-    if (props.allUserDocs.length === 0) {
-      console.log("allUserDocs is empty.");
-      (async () => {
-        await props.handleFetchAndRenewAllUserDocs();
-      })();
-    }
-
-    // setState([...props.allUserDocs]);
-  }, [props.allUserDocs]);
 
   return (
     <>
