@@ -13,10 +13,23 @@ export const AuthHandler = () => {
    */
   const signOutFromApp = () => {
     // onSnapshot のリスナーを削除
-    authState.onSnapshot_unsubscribe.map((func) => func());
+    authState.onSnapshot_unsubFuncArr.map((func) => func());
 
     // sign outを実行
     signOut();
+  };
+
+  const registerUnsubFunc = (funcArr) => {
+    if (!Array.isArray(funcArr)) {
+      throw new Error("registerUnsubFunc arg is needed to be an Array.");
+    }
+    setAuthState({
+      ...authState,
+      onSnapshot_unsubFuncArr: [
+        ...authState.onSnapshot_unsubFuncArr,
+        ...funcArr,
+      ],
+    });
   };
 
   // signOutFromApp();
@@ -46,10 +59,12 @@ export const AuthHandler = () => {
          * 以後、ログアウトするまで自動でuserDocの更新時にsetStateしてくれる
          */
 
-        console.log(user);
-
+        const authStateData = {
+          ...user,
+          onSnapshot_unsubFuncArr: [],
+        };
         // AuthStateを更新
-        setAuthState(user);
+        setAuthState(authStateData);
 
         // eraceModal();
       } else {
@@ -58,9 +73,6 @@ export const AuthHandler = () => {
 
         // AuthStateを更新
         setAuthState(null);
-
-        // Signed Inを表示コンテンツに指定
-        // setPageContentState(appConfig.pageContents["001"]);
 
         // eraceModal();
       }
@@ -74,6 +86,7 @@ export const AuthHandler = () => {
           authState={authState}
           setAuthState={setAuthState}
           signOutFromApp={signOutFromApp}
+          registerUnsubFunc={registerUnsubFunc}
         />
       ) : (
         <SignUp />

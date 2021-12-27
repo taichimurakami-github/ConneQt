@@ -165,31 +165,39 @@ export const App = (props) => {
   useEffect(() => {
     //chatRoomDataStateのUpdateHookを登録
 
-    const db = getFirestore();
+    authUserDoc &&
+      authUserDoc.friend &&
+      (async () => {
+        const db = getFirestore();
 
-    const unsub_chatroom_onSnapshot = user.friend.map((val) => {
-      return onSnapshot(doc(db, "chatRoom", val.chatRoomID), (doc) => {
-        console.log("chatroom " + val.chatRoomID + " has been updated.");
+        const chatroom_unSubFuncArr = authUserDoc.friend.map((val) => {
+          return onSnapshot(doc(db, "chatRoom", val.chatRoomID), (doc) => {
+            console.log("chatroom " + val.chatRoomID + " has been updated.");
 
-        const newData = {
-          ...chatRoomDataState,
-        };
-        newData[val.chatRoomID] = doc.data();
+            const newData = {
+              ...chatRoomDataState,
+            };
+            newData[val.chatRoomID] = doc.data();
 
-        console.log(newData);
+            console.log(newData);
 
-        setChatRoomDataState(newData);
-      });
-    });
+            setChatRoomDataState(newData);
+          });
+        });
 
-    props.setAuthState({
-      ...props.authState,
-      onSnapshot_unsubscribe: [
-        registerUpdateHookForUsers(user.uid, setAuthUserDoc),
-        ...unsub_chatroom_onSnapshot,
-      ],
-    });
-  }, [authUserDoc.friend]);
+        // authUserDocの
+        const authUserDoc_unSubFunc = registerUpdateHookForUsers(
+          authUserDoc.uid,
+          setAuthUserDoc
+        );
+
+        //authUserStateにunsubFuncを登録
+        props.registerUnsubFunc([
+          ...chatroom_unSubFuncArr,
+          authUserDoc_unSubFunc,
+        ]);
+      })();
+  }, [authUserDoc]);
 
   /**
    * handle Page Content(Main content) by appConfig.pageContents data
