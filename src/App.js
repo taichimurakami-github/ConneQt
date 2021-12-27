@@ -3,13 +3,12 @@ import { appConfig } from "./app.config";
 
 // lib imports
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 
 // components imports
 import { FindUserHandler } from "./components/FindUserHandler";
 import { FriendHandler } from "./components/FriendHandler";
 import { MypageHandler } from "./components/MypageHandler";
-import { Modal } from "./components/Modal";
 import { Menu } from "./components/UI/Menu";
 
 // fn imports
@@ -25,13 +24,9 @@ import {
 import "./styles/App.scss";
 import { generateDummyUserDocs } from "./devTools/dummyUserListData";
 
-import {
-  collection,
-  doc,
-  getDocs,
-  getFirestore,
-  onSnapshot,
-} from "firebase/firestore";
+import { collection, doc, getFirestore, onSnapshot } from "firebase/firestore";
+
+import { AppModal } from "./AppRoute";
 
 export const App = (props) => {
   /**
@@ -43,11 +38,9 @@ export const App = (props) => {
   // const [allUserDocsState, setAllUserDocsState] = useState(
   //   generateDummyUserDocs()
   // );
+  const { modalState, setModalState, eraceModal } = useContext(AppModal);
   const [authUserDoc, setAuthUserDoc] = useState(null);
   const [allUserDocsState, setAllUserDocsState] = useState([]);
-  const [modalState, setModalState] = useState({
-    ...appConfig.initialState.App.modalState,
-  });
   const [pageContentState, setPageContentState] = useState(
     appConfig.pageContents["001"]
   );
@@ -56,8 +49,6 @@ export const App = (props) => {
   /**
    * modal state functions
    */
-  const eraceModal = () =>
-    setModalState({ ...appConfig.initialState.App.modalState });
   const createLoadingModal = () =>
     setModalState({
       ...modalState,
@@ -218,7 +209,6 @@ export const App = (props) => {
             allUserDocs={allUserDocsState}
             handleAllUserDocsState={setAllUserDocsState}
             handlePageContent={setPageContentState}
-            handleModalState={setModalState}
           />
         );
 
@@ -228,14 +218,12 @@ export const App = (props) => {
             nowUserDoc={authUserDoc}
             allUserDocs={allUserDocsState}
             chatRoomData={chatRoomDataState}
-            authState
           />
         );
 
       case appConfig.pageContents["004"]:
         return (
           <MypageHandler
-            handleModalState={setModalState}
             eraceModal={eraceModal}
             nowUserDoc={authUserDoc}
             signOut={props.signOutFromApp}
@@ -260,7 +248,6 @@ export const App = (props) => {
           handlePageContent={setPageContentState}
         />
       )}
-      <Modal state={modalState} handleModalState={setModalState} />
     </div>
   );
 };

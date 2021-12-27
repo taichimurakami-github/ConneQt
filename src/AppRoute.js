@@ -1,12 +1,25 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext, createContext } from "react";
 import { App } from "./App";
 import { SignUp } from "./components/SignUp";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { signOut } from "./fn/auth/firebase.auth";
+import { appConfig } from "./app.config";
+import { ModalHandler } from "./components/ModalHandler";
+
+export const AppModal = createContext();
 
 export const AuthHandler = () => {
   const [authState, setAuthState] = useState(null);
+  const [modalState, setModalState] = useState({
+    ...appConfig.initialState.modalState,
+  });
   console.log("authHandler");
+
+  /**
+   * Modal util functions
+   */
+  const eraceModal = () =>
+    setModalState({ ...appConfig.initialState.modalState });
 
   /**
    * execute signOut
@@ -81,16 +94,20 @@ export const AuthHandler = () => {
 
   return (
     <>
-      {authState ? (
-        <App
-          authState={authState}
-          setAuthState={setAuthState}
-          signOutFromApp={signOutFromApp}
-          registerUnsubFunc={registerUnsubFunc}
-        />
-      ) : (
-        <SignUp />
-      )}
+      <AppModal.Provider value={{ modalState, setModalState, eraceModal }}>
+        {authState ? (
+          <App
+            authState={authState}
+            setAuthState={setAuthState}
+            signOutFromApp={signOutFromApp}
+            registerUnsubFunc={registerUnsubFunc}
+          />
+        ) : (
+          <SignUp />
+        )}
+      </AppModal.Provider>
+
+      <ModalHandler state={modalState} />
     </>
   );
 };

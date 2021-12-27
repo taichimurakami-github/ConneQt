@@ -1,30 +1,24 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { appConfig } from "../app.config";
 
-import "../styles/mypage.scss";
-
 import { updateUserData } from "../fn/db/firestore.handler";
+
+import { AppModal } from "../AppRoute";
 
 import { cmpConfig } from "./Mypage/config";
 import { MypageTop } from "./Mypage/MyPageTop";
 import { EditText } from "./Mypage/EditText";
 import { EditLocation } from "./Mypage/EditLocation";
+import "../styles/mypage.scss";
 
 export const MypageHandler = (props) => {
   const [viewState, setViewState] = useState(cmpConfig.state.view["001"]);
-
-  // const handleOnClick = (e) => {
-  //   let target;
-  //   Object.keys(cmpConfig).map((val) => {
-  //     (cmpConfig[val].id === e.target.id) && setMyPageState(cmpConfig[val]);;
-  //   });
-
-  // }
+  const { modalState, setModalState, eraceModal } = useContext(AppModal);
 
   const handleSubmitToDB = (data) => {
     (async () => {
       //loading 画面を表示
-      props.handleModalState({
+      setModalState({
         display: true,
         closable: false,
         type: appConfig.components.modal.type["001"],
@@ -54,7 +48,7 @@ export const MypageHandler = (props) => {
       await updateUserData(updateData);
 
       //loadingモーダルを隠す
-      props.eraceModal();
+      eraceModal();
 
       //appState: userDataを更新 >> registerUpdateHookForUsersにより自動化
       // props.fetchAndRenewUserData();

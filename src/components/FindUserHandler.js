@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { appConfig } from "../app.config";
 
 import "../styles/usersList.scss";
@@ -15,7 +15,10 @@ import { sendRequest } from "../fn/db/requestHandler";
 //import config
 import cmpConfig from "./FindUsers/config";
 
+import { AppModal } from "../AppRoute";
+
 export const FindUserHandler = (props) => {
+  const { modalState, setModalState, eraceModal } = useContext(AppModal);
   const [selectedUserState, setSelectedUserState] = useState(null);
   const [viewState, setViewState] = useState(cmpConfig.state.view["001"]);
 
@@ -23,7 +26,7 @@ export const FindUserHandler = (props) => {
     console.log("handle fetch");
 
     //モーダルを表示
-    props.handleModalState({
+    setModalState({
       display: true,
       closable: false,
       type: appConfig.components.modal.type["001"],
@@ -34,7 +37,7 @@ export const FindUserHandler = (props) => {
     props.handleAllUserDocsState(fetchResult);
 
     //モーダルを消去
-    props.handleModalState({ display: false });
+    eraceModal();
 
     return true;
   };
