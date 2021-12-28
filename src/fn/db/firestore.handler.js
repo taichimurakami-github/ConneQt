@@ -11,8 +11,10 @@ import {
   Timestamp,
   arrayRemove,
   deleteDoc,
+  query,
+  where,
 } from "firebase/firestore";
-import { db_name } from "../../firebase.config";
+import { db_name, firestoreQueryConfig } from "../../firebase.config";
 import "./firestore.ready";
 // import "./cloudfunctions.ready";
 
@@ -40,13 +42,43 @@ const getAuthUserDoc = async (authData) => {
  * 見つからなかったら、空の配列を返す
  * @returns {Array}
  */
-const getAllUserDocs = async () => {
-  console.log("getting all user docs from firestore...");
-  const result = [];
-  const querySnapshot = await getDocs(collection(db, db_name.user));
+const getRelatedUserDocs = async (userDoc) => {
+  console.log("getting related user docs from firestore...");
+  const result = {};
+  const queryMetaData = [...userDoc.meta];
+  const max_arr_length = firestoreQueryConfig.array_contains_any.max_length;
+
+  //metaDataがもしもfirestoreのarray_contains_any配列の上限を超える長さだったら
+  //上限を超えた分の要素を除外する（pop()を使用、後ろから除外）
+  if (userDoc.meta.length > max_arr_length) {
+    const overLength = userDoc.meta.length - 1 - max_arr_length;
+
+    for (let i = 0; i < overLength; i++) {
+      queryMetaData.pop();
+    }
+  }
+
+  /**
+   * fetch phase 1
+   * userDoc.meta配列内にある要素が一つでも含まれているuserDocを取得
+   * 自身に関係があり、friendやrequestと関係のないユーザーを取得する
+   */
+  const q = query(
+    collection(db, db_name.user),
+    where("meta", "array-contains-any", queryMetaData)
+  );
+
+  const querySnapshot = await getDocs(q);
+
   querySnapshot.forEach((doc) => {
-    result.push(doc.data());
+    const data = doc.data();
+    // reqest.rejectedに含まれていないもののみresultに入れる
+    if (!userDoc.request.rejected.includes(data.uid)) {
+      result.others[data.uid] = data;
+    }
   });
+
+  console.log(result);
   return result;
 };
 
@@ -164,7 +196,7 @@ const updateChatRoomData = async (sendData) => {
 export {
   getAuthUserDoc,
   registerAuthUserDoc,
-  getAllUserDocs,
+  getRelatedUserDocs,
   updateUserData,
   updateChatRoomData,
   registerUpdateHookForUsers,
