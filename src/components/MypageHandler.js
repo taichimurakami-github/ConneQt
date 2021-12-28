@@ -57,7 +57,7 @@ export const MypageHandler = (props) => {
           <MypageTop
             handleViewState={setViewState}
             handleSubmit={handleSubmitToDB}
-            user={props.nowUserDoc}
+            nowUserDoc={props.nowUserDoc}
             signOut={props.signOut}
           />
         );

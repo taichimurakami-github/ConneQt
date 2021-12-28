@@ -4,21 +4,27 @@ import { ListMenu } from "../UI/Menu";
 import { AppRouteContext } from "../../AppRoute";
 import { useContext } from "react";
 import { ModalConfirmButton } from "../UI/Button";
+import { deleteAuthUserDoc } from "../../fn/db/firestore.handler";
 
 export const MypageTop = (props) => {
-  const { eraceModal, showConfirmModal, signOutFromApp } =
+  const { eraceModal, showLoadingModal, showConfirmModal, signOutFromApp } =
     useContext(AppRouteContext);
 
-  const handleDeleteAccount = (e) => {
-    console.log("deleted!");
-    signOutFromApp();
+  const handleDeleteAccount = async () => {
+    eraceModal();
+    return;
+    // showLoadingModal();
+    // console.log("deleting your account...");
+    // await deleteAuthUserDoc(props.nowUserDoc);
+    // eraceModal();
+    // signOutFromApp();
   };
 
   const confirmDeleteAccount = () => {
     showConfirmModal({
       closable: false,
       content: {
-        title: "アカウントを削除しますか？",
+        title: "アカウントを削除しますか？(実装準備中です,動きません)",
         text: ["この操作は取り消せません。", "本当に実行しますか？"],
       },
       children: (

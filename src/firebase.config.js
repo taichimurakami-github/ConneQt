@@ -7,6 +7,11 @@ const firebaseConfig = {
   appId: "1:685488696857:web:cec235e5c4056f4dd24488",
 };
 
+const db_name = {
+  user: "users",
+  chatRoom: "chatRoom",
+};
+
 const userDocTemplate = {
   uid: "",
   name: "",
@@ -34,4 +39,4 @@ const userDocTemplate = {
   meta: [], //firestoreでOR検索するための苦肉の策として入れる。
 };
 
-export { firebaseConfig, userDocTemplate };
+export { firebaseConfig, userDocTemplate, db_name };

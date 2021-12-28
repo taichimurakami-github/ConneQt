@@ -9,8 +9,10 @@ import {
   onSnapshot,
   arrayUnion,
   Timestamp,
+  arrayRemove,
+  deleteDoc,
 } from "firebase/firestore";
-import { userDocTemplate } from "../../firebase.config";
+import { db_name } from "../../firebase.config";
 import "./firestore.ready";
 // import "./cloudfunctions.ready";
 
@@ -25,7 +27,7 @@ const db = getFirestore();
 const getAuthUserDoc = async (authData) => {
   console.log(`searching user docs ... where uid = ${authData.uid}`);
 
-  const docRef = doc(db, "users", authData.uid);
+  const docRef = doc(db, db_name.user, authData.uid);
   const result = await getDoc(docRef);
   console.log(result.data());
 
@@ -41,7 +43,7 @@ const getAuthUserDoc = async (authData) => {
 const getAllUserDocs = async () => {
   console.log("getting all user docs from firestore...");
   const result = [];
-  const querySnapshot = await getDocs(collection(db, "users"));
+  const querySnapshot = await getDocs(collection(db, db_name.user));
   querySnapshot.forEach((doc) => {
     result.push(doc.data());
   });
@@ -58,11 +60,11 @@ const registerAuthUserDoc = async (registerDataWithoutMetaArr) => {
   ];
 
   //create user doc
-  return await setDoc(doc(db, "users", template.uid), template);
+  return await setDoc(doc(db, db_name.user, template.uid), template);
 };
 
 const updateUserData = async (updateData) => {
-  const docRef = doc(db, "users", updateData.uid);
+  const docRef = doc(db, db_name.user, updateData.uid);
   await updateDoc(docRef, updateData);
 };
 
@@ -88,41 +90,45 @@ const registerUpdateHookForUsers = (uid, setter) => {
    * 初回起動時はユーザーデータが "added" 扱いで取得される。
    * それ以降はユーザーデータに変更があったときのみ該当データが取得される。
    */
-  return onSnapshot(doc(db, "users", uid), (doc) => {
+  return onSnapshot(doc(db, db_name.user, uid), (doc) => {
     console.log("user data updated.");
     console.log(doc.data());
     setter(doc.data());
   });
+};
 
-  /**
-   * onSnapshot with collection
-   * users collection内のすべてのデータの読み込みを行う
-   * 初回起動時はすべてのユーザーが "added" 扱いで取得されるよう。
-   * つまり、
-   * 初回起動時 -> change.type="added" && getAllUserData()
-   * それ以降 -> users collection 内のデータが更新されたら、更新されたデータを自動でとってくる
-   */
+const deleteAuthUserDoc = async (userDoc) => {
+  //friend, request系に登録していたユーザーのuserDocに対し、
+  //アカウント削除側のuserDoc.uidを該当箇所から削除する
+  //ついでにchatRoomの削除も行う
+  userDoc.friend.map(async (val) => {
+    await updateDoc(doc(db, db_name.user, val.uid), {
+      friend: arrayRemove(userDoc.uid),
+    });
+    //chatRoomの削除
+    await deleteDoc(doc(db, db_name.chatRoom, val.chatRoomID));
+  });
 
-  // return onSnapshot(collection(db, "users"), (snapshot) => {
-  //   snapshot.docChanges().forEach((change) => {
-  //     if (change.type === "added") {
-  //       console.log("New city: ", change.doc.data());
-  //     }
-  //     if (change.type === "modified") {
-  //       console.log("Modified city: ", change.doc.data());
-  //     }
-  //     if (change.type === "removed") {
-  //       console.log("Removed city: ", change.doc.data());
-  //     }
-  //   });
-  // });
+  userDoc.request.received.map((uid) => {
+    updateDoc(doc(db, db_name.user, uid), {
+      "request.received": arrayRemove(userDoc.uid),
+    });
+  });
 
-  // document(targetDoc)
-  //   .onWrite(((changedDocSnapshot, context) => {
-  //     console.log("registerUpdateHook.js")
-  //     console.log(changedDocSnapshot.data());
-  //     console.log(context);
-  //   }))
+  userDoc.request.sent.map((uid) => {
+    updateDoc(doc(db, db_name.user, uid), {
+      "request.sent": arrayRemove(userDoc.uid),
+    });
+  });
+
+  userDoc.request.rejected.map((uid) => {
+    updateDoc(doc(db, db_name.user, uid), {
+      "request.rejected": arrayRemove(userDoc.uid),
+    });
+  });
+
+  //authUserDoc削除
+  return await deleteDoc(doc(db, db_name.user, userDoc.uid));
 };
 
 const registerUpdateHookForChatroom = (chatRoomID, setter) => {
@@ -133,7 +139,7 @@ const registerUpdateHookForChatroom = (chatRoomID, setter) => {
 
   console.log(chatRoomID);
 
-  return onSnapshot(doc(db, "chatRoom", chatRoomID), (doc) => {
+  return onSnapshot(doc(db, db_name.chatRoom, chatRoomID), (doc) => {
     console.log("chatroom id=" + chatRoomID + " data updated.");
     console.log(doc.data());
     setter(doc.data());
@@ -141,7 +147,7 @@ const registerUpdateHookForChatroom = (chatRoomID, setter) => {
 };
 
 const updateChatRoomData = async (sendData) => {
-  const docRef = doc(db, "chatRoom", sendData.chatRoomID);
+  const docRef = doc(db, db_name.chatRoom, sendData.chatRoomID);
   const dateTime = Timestamp.now();
 
   //set user doc
@@ -163,4 +169,5 @@ export {
   updateChatRoomData,
   registerUpdateHookForUsers,
   registerUpdateHookForChatroom,
+  deleteAuthUserDoc,
 };

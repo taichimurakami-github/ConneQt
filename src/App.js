@@ -46,26 +46,46 @@ export const App = (props) => {
     })();
   }, []);
 
+  //chatRoomDataStateが登録されているときは、
+  //chatRoomのデータ削除を検知して自動的に削除
   useEffect(() => {
-    //chatRoomDataStateのUpdateHookを登録
+    if (Object.keys(chatRoomDataState).length > 0) {
+      const validatedChatRoomDataState = { ...chatRoomDataState };
+      for (const prop in chatRoomDataState) {
+        !chatRoomDataState[prop] && delete validatedChatRoomDataState[prop];
+        console.log(chatRoomDataState[prop]);
+      }
+      setChatRoomDataState(validatedChatRoomDataState);
+    }
+  }, [chatRoomDataState]);
 
+  //chatRoomDataStateのUpdateHookを登録
+  useEffect(() => {
     authUserDoc.friend.length > 0 &&
       (async () => {
         const db = getFirestore();
 
         const chatroom_unSubFuncArr = authUserDoc.friend.map((val) => {
-          return onSnapshot(doc(db, "chatRoom", val.chatRoomID), (doc) => {
-            console.log("chatroom " + val.chatRoomID + " has been updated.");
+          return onSnapshot(
+            doc(db, "chatRoom", val.chatRoomID),
+            //success callback
+            (doc) => {
+              // console.log("chatroom " + val.chatRoomID + " has been updated.");
 
-            const newData = {
-              ...chatRoomDataState,
-            };
-            newData[val.chatRoomID] = doc.data();
-
-            console.log(newData);
-
-            setChatRoomDataState(newData);
-          });
+              const newData = {
+                ...chatRoomDataState,
+              };
+              const data = doc.data();
+              if (data) {
+                newData[val.chatRoomID] = data;
+                setChatRoomDataState(newData);
+              }
+            },
+            //error callback
+            (error) => {
+              console.log(error);
+            }
+          );
         });
 
         //authUserStateにunsubFuncを登録
