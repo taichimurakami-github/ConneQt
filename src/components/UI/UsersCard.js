@@ -11,7 +11,9 @@ export const UsersCard = (props) => {
   return (
     <div className="carousel-wrapper">
       <div
-        className={`navigation left ${nowDisplay > 0 ? "active" : ""}`}
+        className={`navigation left clickable ${
+          nowDisplay > 0 ? "active" : ""
+        }`}
         onClick={() => {
           setNowDisplay(nowDisplay - 1);
         }}
@@ -19,7 +21,7 @@ export const UsersCard = (props) => {
         &lt;
       </div>
       <div
-        className={`navigation right ${
+        className={`navigation right clickable ${
           nowDisplay < props.userDocs.length - 1 ? "active" : ""
         }`}
         onClick={() => {
@@ -48,11 +50,18 @@ export const UsersCard = (props) => {
                 <img className="user-icon" src={val?.photo} />
 
                 <p className="name">{val?.name}</p>
-                <p className="age">{val?.age + " 歳"}</p>
-                <p className="hometown">
-                  {val?.hometown?.prefecture} {val?.hometown?.city} 出身
+                <p className="age">
+                  <b>{val?.age}</b> 歳
                 </p>
-                <p>出身大学：{val?.history.university}</p>
+                <p className="hometown">
+                  出身地：
+                  <b>
+                    {val?.hometown?.prefecture} {val?.hometown?.city}
+                  </b>
+                </p>
+                <p className="university">
+                  出身大学：<b>{val?.history.university}</b>
+                </p>
                 <p className="profile">{curStrLength(val?.profile, 35)}</p>
 
                 <button

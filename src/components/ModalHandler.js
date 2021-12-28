@@ -1,5 +1,5 @@
 import { appConfig } from "../app.config";
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 
 //modal import
 import { LoadingModal } from "./Modal/LoadingModal";
@@ -12,6 +12,7 @@ import "../styles/modal.scss";
 
 export const ModalHandler = () => {
   const { modalState, eraceModal } = useContext(AppRouteContext);
+  const backgroundRef = useRef(null);
 
   const handleModal = () => {
     switch (modalState.type) {
@@ -21,16 +22,22 @@ export const ModalHandler = () => {
       case appConfig.components.modal.type["002"]:
         return (
           <ConfirmModal
-            title={modalState.content.title}
-            text={modalState.content.text}
-          />
+            title={modalState?.content?.title}
+            text={modalState?.content?.text}
+            options={modalState?.options}
+          >
+            {modalState?.children}
+          </ConfirmModal>
         );
       case appConfig.components.modal.type["003"]:
         return (
           <ErrorModal
-            title={modalState.content.title}
-            text={modalState.content.text}
-          />
+            title={modalState?.content?.title}
+            text={modalState?.content?.text}
+            options={modalState?.options}
+          >
+            {modalState?.children}
+          </ErrorModal>
         );
 
       default:
@@ -38,7 +45,8 @@ export const ModalHandler = () => {
     }
   };
 
-  const handleClose = () => {
+  const handleClose = (e) => {
+    console.log(e.currentTarget === backgroundRef.current);
     modalState.closable && eraceModal();
   };
 
@@ -47,6 +55,7 @@ export const ModalHandler = () => {
       <div
         className={`modal-wrapper ${modalState.display && "active"}`}
         onClick={handleClose}
+        ref={backgroundRef}
       >
         {modalState.display && handleModal()}
       </div>

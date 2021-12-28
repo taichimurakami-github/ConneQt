@@ -2,12 +2,13 @@ import { useContext, useReducer, useState, useEffect } from "react";
 import { userDocTemplate } from "../firebase.config";
 
 import { Header } from "./UI/Header";
-import { ControlledInput } from "./UI/InputText";
+import { ControlledInputText } from "./UI/InputText";
 
 import { AppRouteContext } from "../AppRoute";
 import { getAddressByZipcode } from "../fn/app/getAddressByZipcode";
 import { setGeolocation } from "../fn/app/geolocation";
 import { registerAuthUserDoc } from "../fn/db/firestore.handler";
+import { AgeOptions } from "./UI/Options";
 
 const userDataReducerFunc = (state, action) => {
   switch (action.type) {
@@ -23,13 +24,8 @@ const userDataReducerFunc = (state, action) => {
 };
 
 export const RegisterHandler = (props) => {
-  const {
-    setModalState,
-    eraceModal,
-    showLoadingModal,
-    showConfirmModal,
-    showErrorModal,
-  } = useContext(AppRouteContext);
+  const { eraceModal, showLoadingModal, showErrorModal } =
+    useContext(AppRouteContext);
   const [registerUserData, dispatchUserData] = useReducer(userDataReducerFunc, {
     // auto complete meta data
     ...userDocTemplate,
@@ -50,13 +46,7 @@ export const RegisterHandler = (props) => {
       showLoadingModal();
       await registerAuthUserDoc({ ...registerUserData });
       props.handleAuthUserDoc(props.authState);
-      showConfirmModal({
-        title: "ようこそ、" + registerUserData.name + " さん！",
-        text: [
-          "アカウントを登録しました",
-          "まずは近くのユーザーを探してみましょう",
-        ],
-      });
+      eraceModal();
     })();
   };
 
@@ -124,7 +114,7 @@ export const RegisterHandler = (props) => {
       <form onSubmit={handleSubmit}>
         <img src={registerUserData.photo} className="user-icon"></img>
 
-        <ControlledInput
+        <ControlledInputText
           id="userName"
           valueState={registerUserData.name}
           setValueState={(inputValue) => {
@@ -140,7 +130,7 @@ export const RegisterHandler = (props) => {
           required={true}
         />
 
-        <ControlledInput
+        <ControlledInputText
           id="userAge"
           element="select"
           valueState={registerUserData.age}
@@ -156,18 +146,10 @@ export const RegisterHandler = (props) => {
           }}
           required={true}
         >
-          <option value="below-22">22歳以下</option>
-          <option value="23">23</option>
-          <option value="24">24</option>
-          <option value="23">25</option>
-          <option value="23">26</option>
-          <option value="23">27</option>
-          <option value="23">28</option>
-          <option value="23">29</option>
-          <option value="over-23">30歳以上</option>
-        </ControlledInput>
+          <AgeOptions />
+        </ControlledInputText>
 
-        <ControlledInput
+        <ControlledInputText
           id="userGraduatedUniversity"
           valueState={registerUserData.history.university}
           setValueState={(value) => {
@@ -183,7 +165,7 @@ export const RegisterHandler = (props) => {
           required={true}
         />
 
-        <ControlledInput
+        <ControlledInputText
           id="userHometownZipcode"
           valueState={hometownZipcode}
           setValueState={setHometownZipcode}
@@ -202,7 +184,7 @@ export const RegisterHandler = (props) => {
             : "郵便番号を正しく入力してください"}
         </p>
 
-        <ControlledInput
+        <ControlledInputText
           id="userProfile"
           element="textarea"
           valueState={registerUserData.profile}

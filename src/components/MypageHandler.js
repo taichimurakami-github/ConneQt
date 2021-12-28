@@ -1,5 +1,4 @@
 import { useContext, useState } from "react";
-import { appConfig } from "../app.config";
 
 import { updateUserData } from "../fn/db/firestore.handler";
 
@@ -8,22 +7,18 @@ import { AppRouteContext } from "../AppRoute";
 import { cmpConfig } from "./Mypage/config";
 import { MypageTop } from "./Mypage/MyPageTop";
 import { EditText } from "./Mypage/EditText";
-import { EditLocation } from "./Mypage/EditLocation";
+// import { EditLocation } from "./Mypage/EditLocation";
 import "../styles/mypage.scss";
+import { AgeOptions } from "./UI/Options";
 
 export const MypageHandler = (props) => {
   const [viewState, setViewState] = useState(cmpConfig.state.view["001"]);
-  const { modalState, setModalState, eraceModal } = useContext(AppRouteContext);
+  const { eraceModal, showLoadingModal } = useContext(AppRouteContext);
 
   const handleSubmitToDB = (data) => {
     (async () => {
       //loading 画面を表示
-      setModalState({
-        display: true,
-        closable: false,
-        type: appConfig.components.modal.type["001"],
-        content: null,
-      });
+      showLoadingModal();
 
       let updateData;
 
@@ -50,9 +45,6 @@ export const MypageHandler = (props) => {
       //loadingモーダルを隠す
       eraceModal();
 
-      //appState: userDataを更新 >> registerUpdateHookForUsersにより自動化
-      // props.fetchAndRenewUserData();
-
       //myPageTopに遷移
       setViewState(cmpConfig.state.view["001"]);
     })();
@@ -70,32 +62,29 @@ export const MypageHandler = (props) => {
           />
         );
 
-      case cmpConfig.state.view["002"]:
-        return (
-          <EditText
-            viewState={viewState}
-            handleViewState={setViewState}
-            handleSubmit={handleSubmitToDB}
-          />
-        );
-
       case cmpConfig.state.view["003"]:
         return (
           <EditText
             viewState={viewState}
             handleViewState={setViewState}
             handleSubmit={handleSubmitToDB}
+            pattern=".*\S+.*"
+            text={{
+              placeholder: "お名前を入力してください。",
+            }}
           />
         );
 
       case cmpConfig.state.view["004"]:
         return (
-          <EditLocation
+          <EditText
             viewState={viewState}
-            nowLocation={props.nowUserDoc.location}
             handleViewState={setViewState}
             handleSubmit={handleSubmitToDB}
-          />
+            inputMode="select"
+          >
+            <AgeOptions />
+          </EditText>
         );
 
       case cmpConfig.state.view["005"]:
@@ -105,6 +94,9 @@ export const MypageHandler = (props) => {
             handleViewState={setViewState}
             handleSubmit={handleSubmitToDB}
             inputMode="textarea"
+            text={{
+              placeholder: "プロフィールを入力してください。",
+            }}
           />
         );
 

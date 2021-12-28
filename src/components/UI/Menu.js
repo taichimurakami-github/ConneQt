@@ -1,8 +1,9 @@
 import { appConfig } from "../../app.config";
 import "../../styles/UI/Menu.scss";
+import darkgrayArrowGt from "../../images/arrow-gt-darkgray.svg";
 import images from "../../images/Menu/_entry";
 
-export const Menu = (props) => {
+export const PageMenu = (props) => {
   const handlePageContent = (e) => {
     props.handlePageContent(e.target.id);
   };
@@ -21,6 +22,23 @@ export const Menu = (props) => {
       default:
         return false;
     }
+  };
+
+  const MenuItem = (props) => {
+    return (
+      <li
+        id={props.id}
+        onClick={props.handleOnClick}
+        className={`menu-item ${props?.isActivated && "active"} clickable`}
+      >
+        <img
+          className="p-events-none icon"
+          src={props.isActivated ? props.img.active : props.img.unactive}
+          alt=""
+        ></img>
+        <p className="p-events-none text">{props.text}</p>
+      </li>
+    );
   };
 
   return (
@@ -59,19 +77,18 @@ export const Menu = (props) => {
   );
 };
 
-const MenuItem = (props) => {
+export const ListMenu = (props) => {
   return (
     <li
       id={props.id}
-      onClick={props.handleOnClick}
-      className={`menu-item ${props?.isActivated && "active"} clickable`}
+      onClick={props.handleClick}
+      className={`edit-menu-container clickable ${
+        props?.className?.container ? props.className.container : ""
+      }`}
     >
-      <img
-        className="p-events-none icon"
-        src={props.isActivated ? props.img.active : props.img.unactive}
-        alt=""
-      ></img>
-      <p className="p-events-none text">{props.text}</p>
+      <h3 className="nav-title">{props.title}</h3>
+      <p className="nav-content">{props?.content}</p>
+      <img className="arrow-gt absolute" src={darkgrayArrowGt}></img>
     </li>
   );
 };

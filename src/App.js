@@ -9,7 +9,7 @@ import { useState, useEffect, useContext } from "react";
 import { FindUserHandler } from "./components/FindUserHandler";
 import { FriendHandler } from "./components/FriendHandler";
 import { MypageHandler } from "./components/MypageHandler";
-import { Menu } from "./components/UI/Menu";
+import { PageMenu } from "./components/UI/Menu";
 
 // fn imports
 import { getAllUserDocs } from "./fn/db/firestore.handler";
@@ -26,8 +26,7 @@ export const App = (props) => {
   /**
    * setState definitions
    */
-  const { setModalState, eraceModal, authUserDoc, setAuthUserDoc } =
-    useContext(AppRouteContext);
+  const { eraceModal, authUserDoc } = useContext(AppRouteContext);
   const [allUserDocsState, setAllUserDocsState] = useState([]);
   const [pageContentState, setPageContentState] = useState(
     appConfig.pageContents["001"]
@@ -108,7 +107,6 @@ export const App = (props) => {
       case appConfig.pageContents["004"]:
         return (
           <MypageHandler
-            eraceModal={eraceModal}
             nowUserDoc={authUserDoc}
             signOut={props.signOutFromApp}
           />
@@ -127,7 +125,7 @@ export const App = (props) => {
       {handlePageContent(pageContentState)}
       <div className="spacer" style={{ height: "100px" }}></div>
       {authUserDoc && (
-        <Menu
+        <PageMenu
           pageContentState={pageContentState}
           handlePageContent={setPageContentState}
         />

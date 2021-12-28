@@ -1,6 +1,6 @@
 import "../../styles/UI/ControlledInput.scss";
 
-export const ControlledInput = (props) => {
+export const ControlledInputText = (props) => {
   const handleChange = (e) => {
     props.setValueState(e.target.value);
   };
