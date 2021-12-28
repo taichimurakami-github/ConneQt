@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
-import { useEffect } from "react/cjs/react.development";
 import { Header } from "../UI/Header";
-import { UsersList } from "../UI/UsersList";
+import { UsersCard } from "../UI/UsersCard";
+// import { UsersList } from "../UI/UsersList";
 import cmpConfig from "./config";
 
 export const ShowFoundUsersList = (props) => {
@@ -149,12 +149,19 @@ export const ShowFoundUsersList = (props) => {
 
   return (
     <>
-      <Header title="ユーザーを探す" backable={false} />
-      <UsersList
+      <Header title="ユーザーを見つける" backable={false} />
+      {showableUserDocs.length > 0 ? (
+        <h2>近くに{showableUserDocs.length}人のユーザーがいます！</h2>
+      ) : (
+        <h2>近くにユーザーが見つかりませんでした。</h2>
+      )}
+      {/* <iframe src="https://maps.google.com/maps?output=embed&ll=${lat},${lng}&t=m&hl=ja&z=18https://www.google.co.jp/maps/@38.2664704,140.8663552&output=svembed,14z?api=1?hl=ja"></iframe> */}
+      {/* <UsersList
         userDocs={showableUserDocs}
         handleOnClick={handleSelectUser}
         className={{ userList: "found-user" }}
-      />
+      /> */}
+      <UsersCard userDocs={showableUserDocs} handleOnClick={handleSelectUser} />
     </>
   );
 };

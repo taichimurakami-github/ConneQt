@@ -1,4 +1,3 @@
-import "../../styles/userProfile.scss";
 import cmpConfig from "./config";
 import { Header } from "../UI/Header";
 import { UserProfile } from "../UI/UserProfile";

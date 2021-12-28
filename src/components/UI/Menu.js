@@ -1,5 +1,5 @@
 import { appConfig } from "../../app.config";
-import "../../styles/menu.scss";
+import "../../styles/UI/Menu.scss";
 import images from "../../images/Menu/_entry";
 
 export const Menu = (props) => {
