@@ -16,16 +16,20 @@
 
   .name {
     font-size: 2rem;
-    margin-bottom: 35px;
+    margin-bottom: 15px;
+  }
+
+  .age,
+  .hometown {
+    font-weight: bold;
+    line-height: 1.7;
   }
 
   .profile {
     text-align: left;
-    background: $yellow;
     border-radius: 10px;
-    box-shadow: 3px 3px 7px 5px lightgray;
-    padding: 30px 10px;
-    margin: 0 auto 50px;
+    padding: 10px;
+    margin: 30px auto 50px;
     width: 95%;
     max-width: 750px;
   }

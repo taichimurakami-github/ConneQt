@@ -149,7 +149,13 @@ export const ShowFoundUsersList = (props) => {
 
   return (
     <>
-      <Header title="ユーザーを探す" backable={false} />
+      <Header title="ユーザーを見つける" backable={false} />
+      {showableUserDocs.length > 0 ? (
+        <h2>近くに{showableUserDocs.length}人のユーザーがいます！</h2>
+      ) : (
+        <h2>近くにユーザーが見つかりませんでした。</h2>
+      )}
+      {/* <iframe src="https://maps.google.com/maps?output=embed&ll=${lat},${lng}&t=m&hl=ja&z=18https://www.google.co.jp/maps/@38.2664704,140.8663552&output=svembed,14z?api=1?hl=ja"></iframe> */}
       {/* <UsersList
         userDocs={showableUserDocs}
         handleOnClick={handleSelectUser}
