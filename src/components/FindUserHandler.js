@@ -1,7 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import { appConfig } from "../app.config";
-
-import "../styles/usersList.scss";
+// import { appConfig } from "../app.config";
 
 //import components
 import { ShowFoundUsersList } from "./FindUsers/ShowFoundUsersList";

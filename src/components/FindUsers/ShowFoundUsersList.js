@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
-import { useEffect } from "react/cjs/react.development";
 import { Header } from "../UI/Header";
-import { UsersList } from "../UI/UsersList";
+import { UsersCard } from "../UI/UsersCard";
+// import { UsersList } from "../UI/UsersList";
 import cmpConfig from "./config";
 
 export const ShowFoundUsersList = (props) => {
@@ -150,11 +150,12 @@ export const ShowFoundUsersList = (props) => {
   return (
     <>
       <Header title="ユーザーを探す" backable={false} />
-      <UsersList
+      {/* <UsersList
         userDocs={showableUserDocs}
         handleOnClick={handleSelectUser}
         className={{ userList: "found-user" }}
-      />
+      /> */}
+      <UsersCard userDocs={showableUserDocs} handleOnClick={handleSelectUser} />
     </>
   );
 };

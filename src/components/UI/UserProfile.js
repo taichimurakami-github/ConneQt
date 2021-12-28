@@ -1,3 +1,5 @@
+import "../../styles/UI/UserProfile.scss";
+
 export const UserProfile = (props) => {
   return (
     <div className="user-profile-wrapper">

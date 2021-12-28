@@ -1,4 +1,4 @@
-import "../../styles/usersList.scss";
+import "../../styles/UI/UsersList.scss";
 
 export const UsersList = (props) => {
   return (
