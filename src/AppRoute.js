@@ -35,27 +35,21 @@ export const AuthHandler = () => {
     });
   };
 
-  const showConfirmModal = (content = { title: "", text: "" }) => {
+  const showConfirmModal = (args) => {
     setModalState({
       display: true,
       type: appConfig.components.modal.type["002"],
       closable: true,
-      content: {
-        title: content.title,
-        text: content.text,
-      },
+      ...args,
     });
   };
 
-  const showErrorModal = (content = { title: "", text: "" }) => {
+  const showErrorModal = (args) => {
     setModalState({
       display: true,
       type: appConfig.components.modal.type["003"],
       closable: true,
-      content: {
-        title: content.title,
-        text: content.text,
-      },
+      ...args,
     });
   };
 
@@ -110,7 +104,6 @@ export const AuthHandler = () => {
       doc(db, "users", user.uid),
       (doc) => {
         setAuthUserDoc(doc.data());
-        console.log(doc.data());
         setViewState(appConfig.routePageContents["003"]);
       }
     );

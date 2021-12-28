@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Header } from "../UI/Header";
+import { ControlledInputText } from "../UI/InputText";
 import { cmpConfig } from "./config";
 
 export const EditText = (props) => {
@@ -12,7 +13,7 @@ export const EditText = (props) => {
       case cmpConfig.state.view["003"]:
         return "お名前を編集";
       case cmpConfig.state.view["004"]:
-        return "状態を編集";
+        return "年齢を編集";
       case cmpConfig.state.view["005"]:
         return "プロフィール編集";
       default:
@@ -20,11 +21,10 @@ export const EditText = (props) => {
     }
   };
 
-  const handleInput = (e) => {
-    setInputState(e.target.value);
+  const handleSubmit = () => {
+    e.preventDefault();
+    props.handleSubmit(inputState);
   };
-
-  const handleSubmit = () => props.handleSubmit(inputState);
 
   return (
     <>
@@ -33,25 +33,24 @@ export const EditText = (props) => {
         backable={true}
         handleBack={() => props.handleViewState(cmpConfig.state.view["001"])}
       />
-      <h2 className="input-target-title">{props.title}</h2>
-      {props?.inputMode === "textarea" ? (
-        <textarea
-          onChange={handleInput}
-          placeholder={props.title}
-          value={inputState}
-          className="text-input"
-        />
-      ) : (
-        <input
-          onChange={handleInput}
-          placeholder={props.title}
-          value={inputState}
-          className="text-input"
-        />
-      )}
-      <button className="btn-orange" onClick={handleSubmit}>
-        この内容に変更する
-      </button>
+
+      <form onSubmit={handleSubmit}>
+        <h2 className="input-target-title">{props.title}</h2>
+        <ControlledInputText
+          id={props.viewState}
+          element={props.inputMode}
+          valueState={inputState}
+          setValueState={setInputState}
+          required={true}
+          {...props}
+        >
+          {props.children}
+        </ControlledInputText>
+        <button className="btn-orange" type="submit">
+          この内容に変更する
+        </button>
+      </form>
+
       <button
         className="btn-gray"
         onClick={() => props.handleViewState(cmpConfig.state.view["001"])}

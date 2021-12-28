@@ -9,7 +9,7 @@ import { useState, useEffect, useContext } from "react";
 import { FindUserHandler } from "./components/FindUserHandler";
 import { FriendHandler } from "./components/FriendHandler";
 import { MypageHandler } from "./components/MypageHandler";
-import { Menu } from "./components/UI/Menu";
+import { PageMenu } from "./components/UI/Menu";
 
 // fn imports
 import { getAllUserDocs } from "./fn/db/firestore.handler";
@@ -26,8 +26,7 @@ export const App = (props) => {
   /**
    * setState definitions
    */
-  const { setModalState, eraceModal, authUserDoc, setAuthUserDoc } =
-    useContext(AppRouteContext);
+  const { eraceModal, authUserDoc } = useContext(AppRouteContext);
   const [allUserDocsState, setAllUserDocsState] = useState([]);
   const [pageContentState, setPageContentState] = useState(
     appConfig.pageContents["001"]
@@ -47,26 +46,46 @@ export const App = (props) => {
     })();
   }, []);
 
+  //chatRoomDataStateが登録されているときは、
+  //chatRoomのデータ削除を検知して自動的に削除
   useEffect(() => {
-    //chatRoomDataStateのUpdateHookを登録
+    if (Object.keys(chatRoomDataState).length > 0) {
+      const validatedChatRoomDataState = { ...chatRoomDataState };
+      for (const prop in chatRoomDataState) {
+        !chatRoomDataState[prop] && delete validatedChatRoomDataState[prop];
+        console.log(chatRoomDataState[prop]);
+      }
+      setChatRoomDataState(validatedChatRoomDataState);
+    }
+  }, [chatRoomDataState]);
 
+  //chatRoomDataStateのUpdateHookを登録
+  useEffect(() => {
     authUserDoc.friend.length > 0 &&
       (async () => {
         const db = getFirestore();
 
         const chatroom_unSubFuncArr = authUserDoc.friend.map((val) => {
-          return onSnapshot(doc(db, "chatRoom", val.chatRoomID), (doc) => {
-            console.log("chatroom " + val.chatRoomID + " has been updated.");
+          return onSnapshot(
+            doc(db, "chatRoom", val.chatRoomID),
+            //success callback
+            (doc) => {
+              // console.log("chatroom " + val.chatRoomID + " has been updated.");
 
-            const newData = {
-              ...chatRoomDataState,
-            };
-            newData[val.chatRoomID] = doc.data();
-
-            console.log(newData);
-
-            setChatRoomDataState(newData);
-          });
+              const newData = {
+                ...chatRoomDataState,
+              };
+              const data = doc.data();
+              if (data) {
+                newData[val.chatRoomID] = data;
+                setChatRoomDataState(newData);
+              }
+            },
+            //error callback
+            (error) => {
+              console.log(error);
+            }
+          );
         });
 
         //authUserStateにunsubFuncを登録
@@ -108,7 +127,6 @@ export const App = (props) => {
       case appConfig.pageContents["004"]:
         return (
           <MypageHandler
-            eraceModal={eraceModal}
             nowUserDoc={authUserDoc}
             signOut={props.signOutFromApp}
           />
@@ -127,7 +145,7 @@ export const App = (props) => {
       {handlePageContent(pageContentState)}
       <div className="spacer" style={{ height: "100px" }}></div>
       {authUserDoc && (
-        <Menu
+        <PageMenu
           pageContentState={pageContentState}
           handlePageContent={setPageContentState}
         />

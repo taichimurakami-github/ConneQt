@@ -7,7 +7,7 @@
   max-width: 500px;
   width: 90%;
   margin: auto;
-  padding: 15px 10px;
+  padding: 30px 10px;
 }
 
 .navigation {
@@ -22,7 +22,9 @@
   width: 35px;
   height: 100px;
   box-shadow: 2px 2px 3px 3px lightgray;
-  display: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &.left {
     left: $space;
@@ -32,21 +34,32 @@
     right: $space;
   }
 
-  &.active {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  &:not(.active) {
+    display: none;
   }
 }
 
 .user-card {
-  .name,
-  .age,
-  .hometown {
+  font-size: 1.6rem;
+
+  &:not(.active) {
+    display: none;
+  }
+  .name .age,
+  .hometown,
+  .university {
     line-height: 2;
   }
 
+  .age {
+    margin-bottom: 15px;
+  }
+
   .profile {
-    margin-top: 15px;
+    margin-top: 30px;
+  }
+
+  button {
+    margin-bottom: 0;
   }
 }

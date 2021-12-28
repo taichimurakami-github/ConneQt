@@ -1,3 +1,4 @@
+import { curStrLength } from "../../fn/util/cutStrLength";
 import "../../styles/UI/UsersList.scss";
 
 export const UsersList = (props) => {
@@ -21,7 +22,9 @@ export const UsersList = (props) => {
               <img className="user-icon" src={val?.photo} />
               <div className="text-container">
                 <p className="name">{val?.name}</p>
-                <p className="profile">{val?.profile}</p>
+                <p className="profile">
+                  {curStrLength(val?.profile, 15, "...")}
+                </p>
               </div>
 
               {props.children}

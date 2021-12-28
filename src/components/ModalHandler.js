@@ -21,16 +21,22 @@ export const ModalHandler = () => {
       case appConfig.components.modal.type["002"]:
         return (
           <ConfirmModal
-            title={modalState.content.title}
-            text={modalState.content.text}
-          />
+            title={modalState?.content?.title}
+            text={modalState?.content?.text}
+            options={modalState?.options}
+          >
+            {modalState?.children}
+          </ConfirmModal>
         );
       case appConfig.components.modal.type["003"]:
         return (
           <ErrorModal
-            title={modalState.content.title}
-            text={modalState.content.text}
-          />
+            title={modalState?.content?.title}
+            text={modalState?.content?.text}
+            options={modalState?.options}
+          >
+            {modalState?.children}
+          </ErrorModal>
         );
 
       default:
@@ -38,7 +44,7 @@ export const ModalHandler = () => {
     }
   };
 
-  const handleClose = () => {
+  const handleClose = (e) => {
     modalState.closable && eraceModal();
   };
 
