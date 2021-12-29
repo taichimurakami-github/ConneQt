@@ -9,7 +9,6 @@ import { UserProfile } from "../UI/UserProfile";
 import { deleteFriend } from "../../fn/db/deleteHandler";
 
 export const ShowChatRoom = (props) => {
-  console.log(props.metaData);
   const headerMetaDataReducerFunc = (state, action) => {
     switch (action.type) {
       case cmpConfig.ShowChatRoom.headerMetaDataAction["001"]:
@@ -83,22 +82,12 @@ export const ShowChatRoom = (props) => {
    * チャット画面の友人を消去
    */
   const handleDeleteThisFriend = async () => {
+    const nowUserUid = props.metaData.doc.me.uid;
+    const targetUserUid = props.metaData.doc.with.uid;
     const chatRoomID = props.metaData.chatRoomID;
-    const nowUserData = {
-      uid: props.metaData.doc.me.uid,
-      friend: props.metaData.doc.me.friend.filter(
-        (val) => val.uid !== props.metaData.doc.with.uid
-      ),
-    };
-    const targetUserData = {
-      uid: props.metaData.doc.with.uid,
-      friend: props.metaData.doc.with.friend.filter(
-        (val) => val.uid !== props.metaData.doc.me.uid
-      ),
-    };
 
     props.handleViewState(cmpConfig.state.view["001"]);
-    await deleteFriend(chatRoomID, nowUserData, targetUserData);
+    await deleteFriend(chatRoomID, nowUserUid, targetUserUid);
   };
 
   /**

@@ -1,9 +1,12 @@
 export const ErrorModal = (props) => {
   return (
     <div
-      className={`modal-container white error p-events-none ${
+      className={`modal-container white error ${
         props?.className?.wrapper ? props.className.wrapper : ""
       }`}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
     >
       <h3 className="title">{props?.title}</h3>
       {props?.text.map((val) => {

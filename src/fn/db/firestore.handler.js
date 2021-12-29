@@ -215,10 +215,6 @@ const getRelatedUserDocs = async (userDoc) => {
       });
 
       addUserDocArrToObject(userDocsArr, friendUserDocs);
-
-      if (gettingUsersUid.friend.length !== userDocsArr) {
-        console.error(userDocsArr);
-      }
     }
 
     //追加のrequest.receivedデータを取得

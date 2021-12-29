@@ -11,20 +11,18 @@ export const MypageTop = (props) => {
     useContext(AppRouteContext);
 
   const handleDeleteAccount = async () => {
+    showLoadingModal();
+    console.log("deleting your account...");
+    await deleteAuthUserDoc(props.nowUserDoc);
     eraceModal();
-    return;
-    // showLoadingModal();
-    // console.log("deleting your account...");
-    // await deleteAuthUserDoc(props.nowUserDoc);
-    // eraceModal();
-    // signOutFromApp();
+    signOutFromApp();
   };
 
   const confirmDeleteAccount = () => {
     showConfirmModal({
-      closable: false,
+      // closable: false,
       content: {
-        title: "アカウントを削除しますか？(実装準備中です,動きません)",
+        title: "アカウントを削除しますか？",
         text: ["この操作は取り消せません。", "本当に実行しますか？"],
       },
       children: (

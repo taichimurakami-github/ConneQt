@@ -4,6 +4,9 @@ export const ConfirmModal = (props) => {
       className={`modal-container white confirm ${
         props?.className?.wrapper ? props.className.wrapper : ""
       }`}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
     >
       <h3 className="title">{props?.title}</h3>
       {props?.text.map((val) => {
@@ -11,7 +14,9 @@ export const ConfirmModal = (props) => {
       })}
       {props?.children}
       {props?.children ? undefined : (
-        <button className="btn-gray btn-close">閉じる</button>
+        <button type="button" className="btn-gray btn-close">
+          閉じる
+        </button>
       )}
     </div>
   );

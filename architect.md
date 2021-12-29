@@ -1,37 +1,38 @@
 アカウント削除機能
 
+> > ShowFriendList.js
+> > friendDocsState, reqest ~~ state : [userDocs] -> {uid: {userDoc}}に変更したい
 
-
->> ShowFriendList.js
-friendDocsState, reqest ~~ state : [userDocs] -> {uid: {userDoc}}に変更したい
-
-	> friendUserDocs, requestedUserDocsは別途取得する必要あり
-	> allUserDocsStateを変更すればよい
+    > friendUserDocs, requestedUserDocsは別途取得する必要あり
+    > allUserDocsStateを変更すればよい
 
 allUserDocsState -> relatedUserDocsState
 保持データ：
 {
-	friend: {uid: {userDoc}},
-	request: {
-		received: {uid: {userDoc}}
-		sent: {uid: {userDoc}}
-	},
-	others: {
-		
-	}
+friend: {uid: {userDoc}},
+request: {
+received: {uid: {userDoc}}
+sent: {uid: {userDoc}}
+},
+others: {
+}
 }
 
-showFoundUserで、rejectedユーザーを取得しないように注意する事
+showFoundUser で、rejected ユーザーを取得しないように注意する事
 
-1. 先にfriendとrequest系のユーザーをとってくる
-2. とってきたユーザーのuidをarray形式に変換
-3. metaが合致するユーザーを取得する
-4. 2の配列内に存在するuidを持っていないもので、かつrequest.rejectedの配列内に存在しないuidを持っているユーザーをothersにぶち込む
+1. 先に friend と request 系のユーザーをとってくる
+2. とってきたユーザーの uid を array 形式に変換
+3. meta が合致するユーザーを取得する
+4. 2 の配列内に存在する uid を持っていないもので、かつ request.rejected の配列内に存在しない uid を持っているユーザーを others にぶち込む
 
+問題点：ネストが深いので、値の更新がめんどくさい気がする > とりあえずデータベース的な感じで受け取っといたらいい
+後々 Store 化すべく、localStorage 保存しよう
 
-問題点：ネストが深いので、値の更新がめんどくさい気がする
-	> とりあえずデータベース的な感じで受け取っといたらいい
-	後々Store化すべく、localStorage保存しよう
+friend 追加部分の firebase の update 部分更新
 
-
-friend追加部分のfirebaseのupdate部分更新
+<modify and test>
+modal eracer
+friend.delete
+friend.add
+delete userAccount
+set geolocation

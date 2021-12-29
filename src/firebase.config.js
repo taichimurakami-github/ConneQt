@@ -36,12 +36,13 @@ const userDocTemplate = {
     lat: "",
     lng: "",
   },
+  friend: {},
   request: {
     received: [],
     sent: [],
     rejected: [],
   },
-  friend: [],
+
   meta: [], //firestoreでOR検索するための苦肉の策として入れる。
 };
 

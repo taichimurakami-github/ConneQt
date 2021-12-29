@@ -45,6 +45,7 @@ export const ModalHandler = () => {
   };
 
   const handleClose = (e) => {
+    console.log(e.target);
     modalState.closable && eraceModal();
   };
 

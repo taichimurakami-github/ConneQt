@@ -18,6 +18,7 @@ export const Header = (props) => {
       <h2 className="header-title">{props?.title}</h2>
       {props?.handleMenu && (
         <button
+          type="button"
           className="header-menu-button btn-img"
           onClick={props.handleMenu}
         >

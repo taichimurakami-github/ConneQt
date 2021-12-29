@@ -26,15 +26,16 @@ const userDataReducerFunc = (state, action) => {
 export const RegisterHandler = (props) => {
   const { eraceModal, showLoadingModal, showErrorModal } =
     useContext(AppRouteContext);
+
   const [registerUserData, dispatchUserData] = useReducer(userDataReducerFunc, {
     // auto complete meta data
     ...userDocTemplate,
-    uid: props.authState.uid,
-    email: props.authState.email,
+    uid: props?.authState?.uid,
+    email: props?.authState?.email,
 
     // initial value from authState
-    name: props.authState.displayName,
-    photo: props.authState.photoURL,
+    name: props?.authState?.displayName,
+    photo: props?.authState?.photoURL,
   });
   const [hometownZipcode, setHometownZipcode] = useState("");
   const handleSubmit = (e) => {
