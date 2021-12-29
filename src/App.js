@@ -61,32 +61,35 @@ export const App = (props) => {
 
   //chatRoomDataStateのUpdateHookを登録
   useEffect(() => {
-    authUserDoc.friend.length > 0 &&
+    Object.keys(authUserDoc.friend).length > 0 &&
       (async () => {
         const db = getFirestore();
 
-        const chatroom_unSubFuncArr = authUserDoc.friend.map((val) => {
-          return onSnapshot(
-            doc(db, "chatRoom", val.chatRoomID),
-            //success callback
-            (doc) => {
-              // console.log("chatroom " + val.chatRoomID + " has been updated.");
+        const chatroom_unSubFuncArr = Object.values(authUserDoc.friend).map(
+          (val) => {
+            console.log(val);
+            return onSnapshot(
+              doc(db, "chatRoom", val.chatRoomID),
+              //success callback
+              (doc) => {
+                // console.log("chatroom " + val.chatRoomID + " has been updated.");
 
-              const newData = {
-                ...chatRoomDataState,
-              };
-              const data = doc.data();
-              if (data) {
-                newData[val.chatRoomID] = data;
-                setChatRoomDataState(newData);
+                const newData = {
+                  ...chatRoomDataState,
+                };
+                const data = doc.data();
+                if (data) {
+                  newData[val.chatRoomID] = data;
+                  setChatRoomDataState(newData);
+                }
+              },
+              //error callback
+              (error) => {
+                console.log(error);
               }
-            },
-            //error callback
-            (error) => {
-              console.log(error);
-            }
-          );
-        });
+            );
+          }
+        );
 
         //authUserStateにunsubFuncを登録
         props.registerUnsubFunc(chatroom_unSubFuncArr, "chatRoom");

@@ -30,3 +30,8 @@ showFoundUserで、rejectedユーザーを取得しないように注意する�
 
 
 問題点：ネストが深いので、値の更新がめんどくさい気がする
+	> とりあえずデータベース的な感じで受け取っといたらいい
+	後々Store化すべく、localStorage保存しよう
+
+
+friend追加部分のfirebaseのupdate部分更新

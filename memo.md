@@ -4,6 +4,32 @@ memo
 
 ## 開発進捗レポート
 
+### 2021.12.29
+
+### 実装したこと・変更点
+
+- userDoc.friend の構造を変更、firestore からのデータ取得ロジックを大幅変更（割と限界かもしれない、あとは RDB 使おう）
+
+- App.js allUsersDocs >> relatedUsersDocs に変更、取得するデータの変更に伴い、値を利用していた各コンポーネントの実装を変更
+
+  - データ構造について(めんどいので後で architect.md に記載する)
+    ```js
+      relatedUserDocs = {
+        friend: [uid]: UserDocObject
+        request: {
+          received: [uid]: UserDocObject,
+          sent: [uid]: UserDocObject,
+        },
+        others: [uid]: UserDocObject
+      }
+    ```
+
+- チャット画面の通知機能を実装
+
+- Mypage の変更
+
+- UserID インストールされていない場合はインストールを促すように UI 変更
+
 ### 2021.12.27
 
 ### 実装したこと・変更点
