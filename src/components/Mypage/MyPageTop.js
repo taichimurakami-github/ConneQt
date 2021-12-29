@@ -103,7 +103,7 @@ export const MypageTop = (props) => {
           title="アカウントを削除"
         />
       </ul>
-      <button className="btn-gray" handleOnClick={signOutFromApp}>
+      <button className="btn-gray" onClick={signOutFromApp}>
         ログアウトする
       </button>
     </>

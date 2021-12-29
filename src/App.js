@@ -12,7 +12,7 @@ import { MypageHandler } from "./components/MypageHandler";
 import { PageMenu } from "./components/UI/Menu";
 
 // fn imports
-import { getAllUserDocs } from "./fn/db/firestore.handler";
+import { getRelatedUserDocs } from "./fn/db/firestore.handler";
 // import handleOnWriteHook from "../functions";
 
 // app common style imports
@@ -27,7 +27,7 @@ export const App = (props) => {
    * setState definitions
    */
   const { eraceModal, authUserDoc } = useContext(AppRouteContext);
-  const [allUserDocsState, setAllUserDocsState] = useState([]);
+  const [relatedUserDocsState, setRelatedUserDocsState] = useState([]);
   const [pageContentState, setPageContentState] = useState(
     appConfig.pageContents["001"]
   );
@@ -42,51 +42,54 @@ export const App = (props) => {
       // FInd Usersを表示コンテンツに指定
       setPageContentState(appConfig.pageContents["002"]);
 
-      setAllUserDocsState(await getAllUserDocs(authUserDoc));
+      setRelatedUserDocsState(await getRelatedUserDocs(authUserDoc));
     })();
   }, []);
 
   //chatRoomDataStateが登録されているときは、
   //chatRoomのデータ削除を検知して自動的に削除
-  useEffect(() => {
-    if (Object.keys(chatRoomDataState).length > 0) {
-      const validatedChatRoomDataState = { ...chatRoomDataState };
-      for (const prop in chatRoomDataState) {
-        !chatRoomDataState[prop] && delete validatedChatRoomDataState[prop];
-        console.log(chatRoomDataState[prop]);
-      }
-      setChatRoomDataState(validatedChatRoomDataState);
-    }
-  }, [chatRoomDataState]);
+  // useEffect(() => {
+  //   if (Object.keys(chatRoomDataState).length > 0) {
+  //     const validatedChatRoomDataState = { ...chatRoomDataState };
+  //     for (const prop in chatRoomDataState) {
+  //       !chatRoomDataState[prop] && delete validatedChatRoomDataState[prop];
+  //       console.log(chatRoomDataState[prop]);
+  //     }
+  //     setChatRoomDataState(validatedChatRoomDataState);
+  //   }
+  // }, [chatRoomDataState]);
 
   //chatRoomDataStateのUpdateHookを登録
   useEffect(() => {
-    authUserDoc.friend.length > 0 &&
+    Object.keys(authUserDoc.friend).length > 0 &&
       (async () => {
         const db = getFirestore();
 
-        const chatroom_unSubFuncArr = authUserDoc.friend.map((val) => {
-          return onSnapshot(
-            doc(db, "chatRoom", val.chatRoomID),
-            //success callback
-            (doc) => {
-              // console.log("chatroom " + val.chatRoomID + " has been updated.");
+        const chatroom_unSubFuncArr = Object.values(authUserDoc.friend).map(
+          (val) => {
+            console.log(val);
+            return onSnapshot(
+              doc(db, "chatRoom", val.chatRoomID),
+              //success callback
+              (doc) => {
+                // console.log("chatroom " + val.chatRoomID + " has been updated.");
 
-              const newData = {
-                ...chatRoomDataState,
-              };
-              const data = doc.data();
-              if (data) {
-                newData[val.chatRoomID] = data;
-                setChatRoomDataState(newData);
+                const newData = {
+                  ...chatRoomDataState,
+                };
+                const data = doc.data();
+                if (data) {
+                  newData[val.chatRoomID] = data;
+                  setChatRoomDataState(newData);
+                }
+              },
+              //error callback
+              (error) => {
+                console.log(error);
               }
-            },
-            //error callback
-            (error) => {
-              console.log(error);
-            }
-          );
-        });
+            );
+          }
+        );
 
         //authUserStateにunsubFuncを登録
         props.registerUnsubFunc(chatroom_unSubFuncArr, "chatRoom");
@@ -109,8 +112,8 @@ export const App = (props) => {
         return (
           <FindUserHandler
             nowUserDoc={authUserDoc}
-            allUserDocs={allUserDocsState}
-            handleAllUserDocsState={setAllUserDocsState}
+            allUserDocs={relatedUserDocsState}
+            handleAllUserDocsState={setRelatedUserDocsState}
             handlePageContent={setPageContentState}
           />
         );
@@ -119,7 +122,7 @@ export const App = (props) => {
         return (
           <FriendHandler
             nowUserDoc={authUserDoc}
-            allUserDocs={allUserDocsState}
+            allUserDocs={relatedUserDocsState}
             chatRoomData={chatRoomDataState}
           />
         );
@@ -160,7 +163,7 @@ export const App = (props) => {
 //     snapshot.docChanges().forEach((change) => {
 //       if (change.type === "added") {
 //         console.log("New UserDoc: ", change.doc.data());
-//         const newAllUserDocs = [...allUserDocsState];
+//         const newAllUserDocs = [...relatedUserDocsState];
 //         const changedDocData = change.doc.data();
 //         newAllUserDocs[changedDocData.uid] = changedDocData;
 //         for (let i = 0; i < newAllUserDocs.length; i++) {
@@ -172,7 +175,7 @@ export const App = (props) => {
 //         setter(newAllUserDocs);
 //       }
 //       if (change.type === "modified") {
-//         const newAllUserDocs = [...allUserDocsState];
+//         const newAllUserDocs = [...relatedUserDocsState];
 //         const changedDocData = change.doc.data();
 //         newAllUserDocs[changedDocData.uid] = changedDocData;
 //         for (let i = 0; i < newAllUserDocs.length; i++) {
@@ -186,7 +189,7 @@ export const App = (props) => {
 //       }
 //       if (change.type === "removed") {
 //         console.log("Removed UserDoc: ", change.doc.data());
-//         const newAllUserDocs = [...allUserDocsState];
+//         const newAllUserDocs = [...relatedUserDocsState];
 //         delete newAllUserDocs[change.doc.data().uid];
 //         setter(newAllUserDocs);
 //       }

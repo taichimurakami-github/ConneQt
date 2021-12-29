@@ -9,6 +9,7 @@ import { UserProfile } from "../UI/UserProfile";
 import { deleteFriend } from "../../fn/db/deleteHandler";
 
 export const ShowChatRoom = (props) => {
+  console.log(props.metaData);
   const headerMetaDataReducerFunc = (state, action) => {
     switch (action.type) {
       case cmpConfig.ShowChatRoom.headerMetaDataAction["001"]:
@@ -53,7 +54,6 @@ export const ShowChatRoom = (props) => {
     }
   );
 
-  console.log(props.metaData);
   /**
    * チャットデータ内容をコンポーネント上に出力できる形に整形
    */

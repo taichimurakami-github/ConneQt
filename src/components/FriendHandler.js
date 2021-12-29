@@ -71,7 +71,7 @@ export const FriendHandler = (props) => {
         return (
           <ShowFriendList
             nowUserDoc={props.nowUserDoc}
-            allUserDocs={props.allUserDocs}
+            relatedUserDocs={props.allUserDocs}
             handleSelectedUserDoc={setSelectedUserDocState}
             handleViewState={setViewState}
             handleTargetChatRoomData={setSelectedChatRoomDataState}

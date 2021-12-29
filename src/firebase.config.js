@@ -7,6 +7,12 @@ const firebaseConfig = {
   appId: "1:685488696857:web:cec235e5c4056f4dd24488",
 };
 
+const firestoreQueryConfig = {
+  array_contains_any: {
+    max_length: 10,
+  },
+};
+
 const db_name = {
   user: "users",
   chatRoom: "chatRoom",
@@ -39,4 +45,4 @@ const userDocTemplate = {
   meta: [], //firestoreでOR検索するための苦肉の策として入れる。
 };
 
-export { firebaseConfig, userDocTemplate, db_name };
+export { firebaseConfig, firestoreQueryConfig, userDocTemplate, db_name };

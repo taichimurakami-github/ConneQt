@@ -7,7 +7,7 @@ import { ShowUserProfile } from "./FindUsers/ShowUserProfile";
 import { ShowRequestForm } from "./FindUsers/ShowRequestForm";
 
 //import firebase fn
-import { getAllUserDocs } from "../fn/db/firestore.handler";
+import { getRelatedUserDocs } from "../fn/db/firestore.handler";
 import { sendRequest } from "../fn/db/requestHandler";
 
 //import config
@@ -27,7 +27,7 @@ export const FindUserHandler = (props) => {
     showLoadingModal();
 
     //すべてのユーザーデータを取得し、App.allUserDocsStateを変更
-    const fetchResult = await getAllUserDocs();
+    const fetchResult = await getRelatedUserDocs(props.nowUserDoc);
     props.handleAllUserDocsState(fetchResult);
 
     //モーダルを消去
