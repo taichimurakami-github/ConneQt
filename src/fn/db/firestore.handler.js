@@ -73,8 +73,11 @@ const getRelatedUserDocs = async (userDoc) => {
 
   querySnapshot.forEach((doc) => {
     const data = doc.data();
+
+    //存在するユーザーのみ抽出
     // 自分以外で、かつreqest.rejectedに含まれていないもののみresultに入れる
     if (
+      doc.exists() &&
       data.uid !== userDoc.uid &&
       !userDoc.request.rejected.includes(data.uid)
     ) {
@@ -194,12 +197,15 @@ const getRelatedUserDocs = async (userDoc) => {
         console.log(docSnap.data());
         return docSnap.data();
       } else {
-        return;
+        return undefined;
       }
     };
     //取得したUserDocArrayをターゲットのobjectに追加
     const addUserDocArrToObject = (data, obj) => {
-      data.map((val) => (obj[val.uid] = val));
+      data.map((val) => {
+        //val !== undefinedの時のみobjectに入れる
+        if (val && val?.uid) obj[val.uid] = val;
+      });
     };
 
     //追加のfriendデータを取得
@@ -213,8 +219,7 @@ const getRelatedUserDocs = async (userDoc) => {
         console.log(e);
       });
 
-      gettingUsersUid.friend.length === userDocsArr.length &&
-        addUserDocArrToObject(userDocsArr, friendUserDocs);
+      addUserDocArrToObject(userDocsArr, friendUserDocs);
     }
 
     //追加のrequest.receivedデータを取得
@@ -230,8 +235,7 @@ const getRelatedUserDocs = async (userDoc) => {
         console.log(e);
       });
 
-      gettingUsersUid.request.received.length === userDocsArr.length &&
-        addUserDocArrToObject(userDocsArr, requestUserDocs.received);
+      addUserDocArrToObject(userDocsArr, requestUserDocs.received);
     }
 
     //追加のrequest.sentデータを取得
@@ -247,8 +251,7 @@ const getRelatedUserDocs = async (userDoc) => {
         console.log(e);
       });
 
-      gettingUsersUid.request.sent === userDocsArr.length &&
-        addUserDocArrToObject(userDocsArr, requestUserDocs.sent);
+      addUserDocArrToObject(userDocsArr, requestUserDocs.sent);
     }
   }
 
@@ -311,40 +314,6 @@ const registerUpdateHookForUsers = (uid, setter) => {
   });
 };
 
-const deleteAuthUserDoc = async (userDoc) => {
-  //friend, request系に登録していたユーザーのuserDocに対し、
-  //アカウント削除側のuserDoc.uidを該当箇所から削除する
-  //ついでにchatRoomの削除も行う
-  userDoc.friend.map(async (val) => {
-    await updateDoc(doc(db, db_name.user, val.uid), {
-      friend: arrayRemove(userDoc.uid),
-    });
-    //chatRoomの削除
-    await deleteDoc(doc(db, db_name.chatRoom, val.chatRoomID));
-  });
-
-  userDoc.request.received.map((uid) => {
-    updateDoc(doc(db, db_name.user, uid), {
-      "request.received": arrayRemove(userDoc.uid),
-    });
-  });
-
-  userDoc.request.sent.map((uid) => {
-    updateDoc(doc(db, db_name.user, uid), {
-      "request.sent": arrayRemove(userDoc.uid),
-    });
-  });
-
-  userDoc.request.rejected.map((uid) => {
-    updateDoc(doc(db, db_name.user, uid), {
-      "request.rejected": arrayRemove(userDoc.uid),
-    });
-  });
-
-  //authUserDoc削除
-  return await deleteDoc(doc(db, db_name.user, userDoc.uid));
-};
-
 const registerUpdateHookForChatroom = (chatRoomID, setter) => {
   if (!setter) {
     console.log("UPDATE HOOK SETTER MUST BE A FUNCTION");
@@ -383,5 +352,4 @@ export {
   updateChatRoomData,
   registerUpdateHookForUsers,
   registerUpdateHookForChatroom,
-  deleteAuthUserDoc,
 };

@@ -4,8 +4,7 @@ import { ListMenu } from "../UI/Menu";
 import { AppRouteContext } from "../../AppRoute";
 import { useContext } from "react";
 import { ModalConfirmButton } from "../UI/Button";
-import { deleteAuthUserDoc } from "../../fn/db/firestore.handler";
-import { setGeolocation } from "../../fn/app/geolocation";
+import { deleteAuthUserDoc } from "../../fn/db/deleteHandler";
 
 export const MypageTop = (props) => {
   const {
@@ -17,11 +16,12 @@ export const MypageTop = (props) => {
   } = useContext(AppRouteContext);
 
   const handleDeleteAccount = async () => {
+    const authUserDoc = { ...props.nowUserDoc };
     showLoadingModal();
     console.log("deleting your account...");
-    await deleteAuthUserDoc(props.nowUserDoc);
-    eraceModal();
     signOutFromApp();
+    await deleteAuthUserDoc(authUserDoc);
+    eraceModal();
   };
 
   const handleSetGeolocation = () => {

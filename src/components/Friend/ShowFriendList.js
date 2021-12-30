@@ -49,36 +49,39 @@ export const ShowFriendList = (props) => {
     props.handleViewState(cmpConfig.state.view["003"]);
   };
 
+  const handleShowUnactivatedChatRoom = (e) => {
+    //「退会したユーザー」のチャット画面を表示
+    showErrorModal({
+      content: {
+        title: "退会したユーザーとのチャットルームです。",
+        content: [
+          "このチャットルームを削除するには、",
+          "右上のMenuから「チャットルームを削除」を選択してください",
+        ],
+      },
+    });
+    //ユーザーとのチャット画面を表示
+    props.handleTargetChatRoomData({
+      doc: {
+        me: authUserDoc,
+        with: { uid: e.target.id },
+      },
+      chatRoomID: authUserDoc.friend[e.target.id].chatRoomID,
+    });
+
+    //showChatRoom画面を表示
+    props.handleViewState(cmpConfig.state.view["002"]);
+  };
+
   const handleShowChatRoom = (e) => {
-    if (e.target.id === "__DELETED_USER_UID__") {
-      //「退会したユーザー」のチャット画面を表示
-      showErrorModal({
-        content: {
-          title: "退会したユーザーとのチャットルームです。",
-          content: [
-            "このチャットルームを削除するには、",
-            "右上のMenuから「チャットルームを削除」を選択してください",
-          ],
-        },
-      });
-      //ユーザーとのチャット画面を表示
-      props.handleTargetChatRoomData({
-        doc: {
-          me: authUserDoc,
-          with: {},
-        },
-        chatRoomID: authUserDoc.friend[e.target.id].chatRoomID,
-      });
-    } else {
-      //ユーザーとのチャット画面を表示
-      props.handleTargetChatRoomData({
-        doc: {
-          me: authUserDoc,
-          with: props.relatedUserDocs[e.target.id],
-        },
-        chatRoomID: authUserDoc.friend[e.target.id].chatRoomID,
-      });
-    }
+    //ユーザーとのチャット画面を表示
+    props.handleTargetChatRoomData({
+      doc: {
+        me: authUserDoc,
+        with: props.relatedUserDocs[e.target.id],
+      },
+      chatRoomID: authUserDoc.friend[e.target.id].chatRoomID,
+    });
 
     // showChatRoom画面を表示
     props.handleViewState(cmpConfig.state.view["002"]);
@@ -124,8 +127,6 @@ export const ShowFriendList = (props) => {
             Object.keys(authUserDoc.friend).map((key) => {
               const userDoc = props.relatedUserDocs[key];
               const chatRoomID = authUserDoc.friend[key]?.chatRoomID;
-              console.log(userDoc);
-              console.log(props.chatRoomData[chatRoomID]);
               if (
                 props.chatRoomData[chatRoomID] &&
                 props.chatRoomData[chatRoomID]?.metaData &&
@@ -134,9 +135,9 @@ export const ShowFriendList = (props) => {
                 //正常にチャットルームを確認できる場合
                 return (
                   <li
-                    id={userDoc.uid}
+                    id={key}
                     className={`user-list clickable`}
-                    key={userDoc.uid}
+                    key={key}
                     onClick={handleShowChatRoom}
                   >
                     <img
@@ -157,9 +158,9 @@ export const ShowFriendList = (props) => {
                 //あるいは、chatRoomからmetaDataが消去されている場合（相手が友達削除した時）
                 return (
                   <li
-                    id="__DELETED_USER_UID__"
+                    id={key}
                     className={`user-list clickable`}
-                    onClick={handleShowChatRoom}
+                    onClick={handleShowUnactivatedChatRoom}
                   >
                     <img className="user-icon p-events-none" src="" />
                     <div className="text-container p-events-none">
