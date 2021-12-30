@@ -28,7 +28,7 @@ export const ShowChatRoom = (props) => {
       case cmpConfig.ShowChatRoom.headerMetaDataAction["002"]:
         return {
           ...state,
-          title: props.metaData.doc.with.name,
+          title: props.metaData.doc.with?.name || "退会したユーザー",
           handleBack: () => {
             props.handleViewState(cmpConfig.state.view["001"]);
           },
@@ -47,7 +47,7 @@ export const ShowChatRoom = (props) => {
     headerMetaDataReducerFunc,
     {
       backable: true,
-      title: props.metaData.doc?.with?.name,
+      title: props.metaData.doc.with?.name || "退会したユーザー",
       handleBack: () => {
         props.handleViewState(cmpConfig.state.view["001"]);
       },
@@ -84,15 +84,25 @@ export const ShowChatRoom = (props) => {
 
   /**
    * チャット画面の友人を消去
+   * 相手がすでに抜けているか、自分から抜けていくかで処理を変える
    */
   const handleDeleteThisFriend = async () => {
-    const nowUserUid = props.metaData.doc.me;
-    const targetUserUid = props.metaData.doc.with;
     const chatRoomID = props.metaData.chatRoomID;
-
     showLoadingModal();
-    await deleteFriend(chatRoomID, nowUserUid, targetUserUid);
-    props.handleViewState(cmpConfig.state.view["001"]);
+    if (props.chatRoomData?.metaData) {
+      //相手が存在している -> chatRoom.metaDataと、
+      //双方のfriendからrequest.rejected配列にuidを移行
+      //ただし、相手のfriend配列内にはデータを残しておき、「退会したユーザー」扱いとする
+      await deleteFriend(
+        chatRoomID,
+        props.metaData.doc.me,
+        props.metaData.doc.with
+      );
+      props.handleViewState(cmpConfig.state.view["001"]);
+    } else {
+      //相手が存在していない -> chatRoomと、自身のfriendから該当する項目を削除
+      return;
+    }
     eraceModal();
   };
 
@@ -115,7 +125,7 @@ export const ShowChatRoom = (props) => {
                   {val.uid === props.metaData.doc.with.uid && (
                     <img
                       className="user-icon"
-                      src={props.metaData.doc.with.photo}
+                      src={props.metaData.doc.with?.photo || ""}
                     ></img>
                   )}
 
@@ -125,7 +135,9 @@ export const ShowChatRoom = (props) => {
             );
           })}
         </ul>
-        <InputChatText handleOnSubmit={handleOnSend} />
+        {props.chatRoomData?.metaData && (
+          <InputChatText handleOnSubmit={handleOnSend} />
+        )}
       </>
     );
   };
@@ -134,10 +146,22 @@ export const ShowChatRoom = (props) => {
     return (
       <>
         <h2 className="chatroom-menu-title">プロフィール</h2>
-        <UserProfile userDoc={props.metaData.doc.with} />
-        <button className="btn-orange" onClick={handleDeleteThisFriend}>
-          この友達を削除する
-        </button>
+        <UserProfile
+          userDoc={
+            props.chatRoomData?.metaData
+              ? props.metaData.doc.with
+              : {
+                  name: "退会したユーザー",
+                  uid: props.metaData.doc.with.uid,
+                }
+          }
+        />
+        {
+          //友達削除ボタン：chatRoomDataにmetaDataが存在している場合=相手が存在している場合のみ表示
+          <button className="btn-orange" onClick={handleDeleteThisFriend}>
+            この友達を削除する
+          </button>
+        }
       </>
     );
   };

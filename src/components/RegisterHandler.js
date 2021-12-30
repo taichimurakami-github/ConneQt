@@ -171,12 +171,12 @@ export const RegisterHandler = (props) => {
           valueState={hometownZipcode}
           setValueState={setHometownZipcode}
           text={{
-            label: "郵便番号入力（ハイフン省略可）",
+            label: "実家の郵便番号を入力（ハイフン省略可）",
             placeholder: "半角英数字で郵便番号を入力してください",
           }}
           required={true}
         />
-        <p>
+        <p className="data-showcase">
           住所：
           {registerUserData.hometown.prefecture !== "" &&
           registerUserData.hometown.city !== ""
@@ -204,9 +204,15 @@ export const RegisterHandler = (props) => {
           required={true}
         />
 
-        <div
-          className="getNowLocation btn-gray"
+        <button
+          className={`getNowLocation ${
+            registerUserData.location?.lat && registerUserData.location?.lng
+              ? "btn-gray"
+              : "btn-orange"
+          }`}
+          type="button"
           onClick={() => {
+            showLoadingModal();
             setGeolocation((value) => {
               dispatchUserData({
                 type: "set",
@@ -214,16 +220,19 @@ export const RegisterHandler = (props) => {
                   location: { ...value },
                 },
               });
+              eraceModal();
             });
           }}
         >
-          現在地を取得
-        </div>
-        <p>
+          現在地を設定（後からでも設定可能です）
+        </button>
+        <p className="data-showcase">
           現在地：
           {`${
-            registerUserData.location?.lat || "現在地が取得されていません"
-          }, ${registerUserData.location?.lng || ""}`}
+            registerUserData.location?.lat && registerUserData.location?.lng
+              ? "現在地を取得しました。"
+              : "現在地が取得されていません"
+          }`}
         </p>
 
         <button className="btn-orange" type="submit">
