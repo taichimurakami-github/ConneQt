@@ -189,6 +189,7 @@ export const RegisterHandler = (props) => {
           id="userProfile"
           element="textarea"
           valueState={registerUserData.profile}
+          maxLength={100}
           setValueState={(value) => {
             dispatchUserData({
               type: "set",
@@ -197,7 +198,8 @@ export const RegisterHandler = (props) => {
           }}
           text={{
             label: "プロフィール文",
-            placeholder: "プロフィール文を100文字以内で入力してください",
+            placeholder:
+              "プロフィール文を100文字以内で入力してください。100文字以上入力するとカットされます。",
           }}
           required={true}
         />

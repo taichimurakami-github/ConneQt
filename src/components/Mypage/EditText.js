@@ -42,7 +42,11 @@ export const EditText = (props) => {
           valueState={inputState}
           setValueState={setInputState}
           required={true}
-          {...props}
+          maxLength={100}
+          text={{
+            placeholder:
+              "プロフィールを100文字以内で入力してください。100文字目以降はカットされます。",
+          }}
         >
           {props.children}
         </ControlledInputText>

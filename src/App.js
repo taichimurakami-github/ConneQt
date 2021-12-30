@@ -41,66 +41,21 @@ export const App = (props) => {
   );
   const [chatRoomDataState, setChatRoomDataState] = useState({});
 
-  useEffect(() => {
-    // const allUserDocs = {
-    //   ...relatedUserDocsState.friend,
-    //   ...relatedUserDocsState.request.received,
-    //   ...relatedUserDocsState.request.sent,
-    //   ...relatedUserDocsState.others,
-    // };
-    // const newData = {};
-    // console.log(allUserDocs);
-    // console.log(Object.values(authUserDoc.friend));
-    // if (Object.keys(allUserDocs).length > 0) {
-    //   //新しいfriendを生成
-    //   for (const uid of Object.keys(authUserDoc.friend)) {
-    //     if (uid) {
-    //       newData.friend[uid] = allUserDocs[uid];
-    //       delete allUserDocs[uid];
-    //     }
-    //   }
-    //   //新しいrequest.receivedを生成
-    //   for (const uid of authUserDoc.request.received) {
-    //     if (uid) {
-    //       newData.request.received[uid] = allUserDocs[uid];
-    //       delete allUserDocs[uid];
-    //     }
-    //   }
-    //   //新しいrequest.sentを生成
-    //   for (const uid of authUserDoc.request.sent) {
-    //     if (uid) {
-    //       newData.request.sent[uid] = allUserDocs[uid];
-    //       delete allUserDocs[uid];
-    //     }
-    //   }
-    //   //新しいrequest.othersを生成
-    //   newData.others = allUserDocs;
-    // setRelatedUserDocsState(newData);
-    // }
-  }, [authUserDoc.friend, authUserDoc.request]);
-
   /**
    * useEffect functions
    */
 
   useEffect(() => {
     (async () => {
-      setRelatedUserDocsState(await getRelatedUserDocs(authUserDoc));
+      const r = await getRelatedUserDocs(authUserDoc);
+      setRelatedUserDocsState({
+        ...r.friend,
+        ...r.request.received,
+        ...r.request.sent,
+        ...r.others,
+      });
     })();
-  }, [authUserDoc.friend, authUserDoc.request]);
-
-  //chatRoomDataStateが登録されているときは、
-  //chatRoomのデータ削除を検知して自動的に削除
-  // useEffect(() => {
-  //   if (Object.keys(chatRoomDataState).length > 0) {
-  //     const validatedChatRoomDataState = { ...chatRoomDataState };
-  //     for (const prop in chatRoomDataState) {
-  //       !chatRoomDataState[prop] && delete validatedChatRoomDataState[prop];
-  //       console.log(chatRoomDataState[prop]);
-  //     }
-  //     setChatRoomDataState(validatedChatRoomDataState);
-  //   }
-  // }, [chatRoomDataState]);
+  }, []);
 
   //chatRoomDataStateのUpdateHookを登録
   useEffect(() => {
@@ -138,6 +93,15 @@ export const App = (props) => {
         props.registerUnsubFunc(chatroom_unSubFuncArr, "chatRoom");
       })();
   }, [authUserDoc.friend]);
+
+  const deleteExistChatRoomData = (chatRoomID = "") => {
+    if ((chatRoomID = "")) return;
+
+    const validatedChatRoomDataState = { ...chatRoomDataState };
+    delete validatedChatRoomDataState[chatRoomID];
+
+    setChatRoomDataState(validatedChatRoomDataState);
+  };
 
   /**
    * handle Page Content(Main content) by appConfig.pageContents data
@@ -196,6 +160,19 @@ export const App = (props) => {
     </div>
   );
 };
+
+//chatRoomDataStateが登録されているときは、
+//chatRoomのデータ削除を検知して自動的に削除
+// useEffect(() => {
+//   if (Object.keys(chatRoomDataState).length > 0) {
+//     const validatedChatRoomDataState = { ...chatRoomDataState };
+//     for (const prop in chatRoomDataState) {
+//       !chatRoomDataState[prop] && delete validatedChatRoomDataState[prop];
+//       console.log(chatRoomDataState[prop]);
+//     }
+//     setChatRoomDataState(validatedChatRoomDataState);
+//   }
+// }, [chatRoomDataState]);
 
 // const getAllUserDocsSnapshot = async (setter) => {
 //   const db = getFirestore();

@@ -13,6 +13,8 @@ import "../styles/modal.scss";
 export const ModalHandler = () => {
   const { modalState, eraceModal } = useContext(AppRouteContext);
 
+  const handleClose = () => modalState.closable && eraceModal();
+
   const handleModal = () => {
     switch (modalState.type) {
       case appConfig.components.modal.type["001"]:
@@ -44,11 +46,6 @@ export const ModalHandler = () => {
       default:
         return undefined;
     }
-  };
-
-  const handleClose = (e) => {
-    console.log(e.target);
-    modalState.closable && eraceModal();
   };
 
   return (

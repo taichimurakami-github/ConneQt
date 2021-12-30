@@ -42,7 +42,7 @@ export const UsersCard = (props) => {
               <li
                 className={`user-card ${
                   props?.className?.userCard ? props.className.userCard : ""
-                } ${props?.handleOnClick ? "clickable" : ""} ${
+                } ${props?.handleClick ? "clickable" : ""} ${
                   nowDisplay === index ? "active" : ""
                 }`}
                 key={val.uid}
@@ -67,7 +67,7 @@ export const UsersCard = (props) => {
                 <button
                   id={val.uid}
                   className="btn-orange"
-                  onClick={props.handleOnClick}
+                  onClick={props.handleClick}
                 >
                   このユーザーを見る
                 </button>

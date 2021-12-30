@@ -38,7 +38,7 @@ export const MypageHandler = (props) => {
           break;
 
         case cmpConfig.state.view["004"]:
-          updateData = { uid: props.nowUserDoc.uid, location: data };
+          updateData = { uid: props.nowUserDoc.uid, age: data };
           break;
 
         case cmpConfig.state.view["005"]:
@@ -93,6 +93,7 @@ export const MypageHandler = (props) => {
             handleViewState={setViewState}
             handleSubmit={handleSubmitToDB}
             inputMode="select"
+            defaultValue="under-22"
           >
             <AgeOptions />
           </EditText>
@@ -103,10 +104,13 @@ export const MypageHandler = (props) => {
           <EditText
             viewState={viewState}
             handleViewState={setViewState}
+            handleValidate={(str) => {
+              if (str.length > 100) return false;
+            }}
             handleSubmit={handleSubmitToDB}
             inputMode="textarea"
             text={{
-              placeholder: "プロフィールを入力してください。",
+              placeholder: "プロフィールを100文字以内で入力してください。",
             }}
           />
         );

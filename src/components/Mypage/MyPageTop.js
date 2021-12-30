@@ -147,7 +147,7 @@ export const MypageTop = (props) => {
         <ListMenu
           id="EDIT_ACCOUNT_LOCATION"
           handleClick={handleSetGeolocation}
-          title="位置情報を設定"
+          title="位置情報を現在地に設定"
         />
 
         {/* <ListMenu

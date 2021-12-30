@@ -26,8 +26,10 @@ const deleteFriend = async (chatRoomID, nowUserData, targetUserData) => {
     ["friend." + nowUserData.uid]: deleteField(),
   });
 
-  //チャットルームを削除
-  await deleteDoc(chatRoomRef);
+  //チャットルームから、deleteFriendを実行したユーザーのuidを消去
+  await updateDoc(chatRoomRef, {
+    metaData: deleteField(),
+  });
 };
 
 export { deleteFriend };

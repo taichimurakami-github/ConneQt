@@ -10,7 +10,9 @@ import { deleteFriend } from "../../fn/db/deleteHandler";
 import { AppRouteContext } from "../../AppRoute";
 
 export const ShowChatRoom = (props) => {
+  console.log(props.metaData);
   const { showLoadingModal, eraceModal } = useContext(AppRouteContext);
+
   const headerMetaDataReducerFunc = (state, action) => {
     switch (action.type) {
       case cmpConfig.ShowChatRoom.headerMetaDataAction["001"]:
@@ -45,7 +47,7 @@ export const ShowChatRoom = (props) => {
     headerMetaDataReducerFunc,
     {
       backable: true,
-      title: props.metaData.doc.with.name,
+      title: props.metaData.doc?.with?.name,
       handleBack: () => {
         props.handleViewState(cmpConfig.state.view["001"]);
       },
@@ -113,7 +115,7 @@ export const ShowChatRoom = (props) => {
                   {val.uid === props.metaData.doc.with.uid && (
                     <img
                       className="user-icon"
-                      src={val.uid === props.metaData.doc.with.photo}
+                      src={props.metaData.doc.with.photo}
                     ></img>
                   )}
 
