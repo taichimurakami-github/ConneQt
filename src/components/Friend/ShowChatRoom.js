@@ -1,4 +1,4 @@
-import { useMemo, useState, useReducer } from "react";
+import { useMemo, useState, useReducer, useContext } from "react";
 import { Header } from "../UI/Header";
 import cmpConfig from "./config";
 
@@ -7,8 +7,10 @@ import { updateChatRoomData } from "../../fn/db/firestore.handler";
 import { useEffect } from "react/cjs/react.development";
 import { UserProfile } from "../UI/UserProfile";
 import { deleteFriend } from "../../fn/db/deleteHandler";
+import { AppRouteContext } from "../../AppRoute";
 
 export const ShowChatRoom = (props) => {
+  const { showLoadingModal, eraceModal } = useContext(AppRouteContext);
   const headerMetaDataReducerFunc = (state, action) => {
     switch (action.type) {
       case cmpConfig.ShowChatRoom.headerMetaDataAction["001"]:
@@ -82,12 +84,14 @@ export const ShowChatRoom = (props) => {
    * チャット画面の友人を消去
    */
   const handleDeleteThisFriend = async () => {
-    const nowUserUid = props.metaData.doc.me.uid;
-    const targetUserUid = props.metaData.doc.with.uid;
+    const nowUserUid = props.metaData.doc.me;
+    const targetUserUid = props.metaData.doc.with;
     const chatRoomID = props.metaData.chatRoomID;
 
-    props.handleViewState(cmpConfig.state.view["001"]);
+    showLoadingModal();
     await deleteFriend(chatRoomID, nowUserUid, targetUserUid);
+    props.handleViewState(cmpConfig.state.view["001"]);
+    eraceModal();
   };
 
   /**
@@ -106,14 +110,13 @@ export const ShowChatRoom = (props) => {
                     val.uid === props.metaData.doc.me.uid ? "right" : "left"
                   }`}
                 >
-                  <img
-                    className="user-icon"
-                    src={
-                      val.uid === props.metaData.doc.me.uid
-                        ? props.metaData.doc.me.photo
-                        : props.metaData.doc.with.photo
-                    }
-                  ></img>
+                  {val.uid === props.metaData.doc.with.uid && (
+                    <img
+                      className="user-icon"
+                      src={val.uid === props.metaData.doc.with.photo}
+                    ></img>
+                  )}
+
                   <p className="text-container">{val.text}</p>
                 </div>
               </>

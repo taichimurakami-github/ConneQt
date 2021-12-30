@@ -148,7 +148,6 @@ const getRelatedUserDocs = async (userDoc) => {
     },
   };
 
-  console.log(userDoc.friend);
   for (const friendUid of Object.keys(userDoc.friend)) {
     console.log(userDoc.friend);
     console.log(friendUid);
@@ -161,7 +160,7 @@ const getRelatedUserDocs = async (userDoc) => {
     }
   }
 
-  for (const req_receivedUid of Object.keys(userDoc.request.received)) {
+  for (const req_receivedUid of userDoc.request.received) {
     // もしもuserDoc.request.received内に格納されているユーザーが、
     // 先ほど取得したデータに入っていなかった場合
     if (!Object.keys(requestUserDocs.received).includes(req_receivedUid)) {
@@ -169,7 +168,7 @@ const getRelatedUserDocs = async (userDoc) => {
     }
   }
 
-  for (const req_sentUid of Object.keys(userDoc.request.sent)) {
+  for (const req_sentUid of userDoc.request.sent) {
     // もしもuserDoc.request.received内に格納されているユーザーが、
     // 先ほど取得したデータに入っていなかった場合
     if (!Object.keys(requestUserDocs.sent).includes(req_sentUid)) {

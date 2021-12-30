@@ -16,7 +16,8 @@ import cmpConfig from "./FindUsers/config";
 import { AppRouteContext } from "../AppRoute";
 
 export const FindUserHandler = (props) => {
-  const { eraceModal, showLoadingModal } = useContext(AppRouteContext);
+  const { eraceModal, showLoadingModal, showConfirmModal } =
+    useContext(AppRouteContext);
   const [selectedUserState, setSelectedUserState] = useState(null);
   const [viewState, setViewState] = useState(cmpConfig.state.view["001"]);
 
@@ -46,8 +47,18 @@ export const FindUserHandler = (props) => {
     console.log(senderUid, receiverUid);
 
     (async () => {
+      showLoadingModal();
       await sendRequest(senderUid, receiverUid);
       setViewState(cmpConfig.state.view["001"]);
+      showConfirmModal({
+        content: {
+          title: "友達申請を送信しました",
+          text: [
+            "申請状況は友達一覧から確認できます。",
+            "申請が拒否された場合、友達一覧に表示されなくなります。",
+          ],
+        },
+      });
     })();
   };
 

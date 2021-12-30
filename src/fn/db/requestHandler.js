@@ -58,25 +58,23 @@ const approveRequest = async (approvingUserUid, approvedUserUid) => {
   // create ref
   const approvingUserDoc = doc(db, "users", approvingUserUid);
   const approvedUserDoc = doc(db, "users", approvedUserUid);
+  // const test = {
+  //   "request.received": arrayRemove(approvedUserUid),
+
+  // }
 
   // リクエストを許可する側のUserDocを更新
   // request.received からリクエスト送信者のuidを削除 >> friendに追加
   await updateDoc(approvingUserDoc, {
     "request.received": arrayRemove(approvedUserUid),
-    friend: arrayUnion({
-      uid: approvedUserUid,
-      chatRoomID: chatRoomID,
-    }),
+    ["friend." + approvedUserUid]: { chatRoomID: chatRoomID },
   });
 
   // リクエストを許可される側のUserDocを更新
   // request.sent からリクエスト受信者のuidを削除 >> friendに追加
   await updateDoc(approvedUserDoc, {
     "request.sent": arrayRemove(approvingUserUid),
-    friend: arrayUnion({
-      uid: approvingUserUid,
-      chatRoomID: chatRoomID,
-    }),
+    ["friend." + approvingUserUid]: { chatRoomID: chatRoomID },
   });
 
   return true;

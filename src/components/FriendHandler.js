@@ -11,7 +11,8 @@ import { approveRequest, rejectRequest } from "../fn/db/requestHandler";
 import { AppRouteContext } from "../AppRoute";
 
 export const FriendHandler = (props) => {
-  const { modalState, setModalState, eraceModal } = useContext(AppRouteContext);
+  const { eraceModal, showLoadingModal, showConfirmModal } =
+    useContext(AppRouteContext);
   const [viewState, setViewState] = useState(cmpConfig.state.view["001"]);
   const [selectedUserDocState, setSelectedUserDocState] = useState(null);
   const [selectedChatRoomDataState, setSelectedChatRoomDataState] =
@@ -39,10 +40,17 @@ export const FriendHandler = (props) => {
 
     // リクエスト拒否をされる側のユーザーデータ
     const rejectedUserUid = selectedUserDocState.uid;
+    const rejectedUserName = selectedUserDocState.name;
 
     (async () => {
+      showLoadingModal();
       await rejectRequest(rejectingUserUid, rejectedUserUid);
       setViewState(cmpConfig.state.view["001"]);
+      showConfirmModal({
+        content: {
+          title: rejectedUserName + " さんの友達リクエストを拒否しました。",
+        },
+      });
     })();
   };
 
@@ -57,11 +65,17 @@ export const FriendHandler = (props) => {
 
     const approvingUserUid = props.nowUserDoc.uid;
     const approvedUserUid = selectedUserDocState.uid;
+    const approvedUserName = selectedUserDocState.name;
 
     (async () => {
+      showLoadingModal();
       await approveRequest(approvingUserUid, approvedUserUid);
-
       setViewState(cmpConfig.state.view["001"]);
+      showConfirmModal({
+        content: {
+          title: approvedUserName + " さんと友達になりました。",
+        },
+      });
     })();
   };
 

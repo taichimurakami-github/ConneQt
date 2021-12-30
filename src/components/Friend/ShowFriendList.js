@@ -1,17 +1,31 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import cmpConfig from "./config";
 import { Header } from "../UI/Header";
 import { UsersList } from "../UI/UsersList";
 import { AppRouteContext } from "../../AppRoute";
 
 export const ShowFriendList = (props) => {
-  const { showConfirmModal, eraceModal } = useContext(AppRouteContext);
+  const { authUserDoc, showConfirmModal, eraceModal } =
+    useContext(AppRouteContext);
 
-  const friendUserDocs = props.relatedUserDocs.friend;
-  const requestUserDocs = props.relatedUserDocs.request;
+  const [requestUserDocs, setRequestUserDocs] = useState({
+    received: [],
+    sent: [],
+  });
+  const [friendUserDocs, setFriendUserDocs] = useState([]);
+
+  useEffect(() => {
+    if (props.relatedUserDocs) {
+      setRequestUserDocs({
+        received: Object.values(props.relatedUserDocs.request.received),
+        sent: Object.values(props.relatedUserDocs.request.sent),
+      });
+      setFriendUserDocs(Object.values(props.relatedUserDocs.friend));
+    }
+  }, [authUserDoc.friend, authUserDoc.request]);
 
   const getTopMessageFromChatRoomData = (targetUid) => {
-    const chatRoomID = props.nowUserDoc.friend[targetUid].chatRoomID;
+    const chatRoomID = authUserDoc.friend[targetUid].chatRoomID;
     const chatRoomData = { ...props.chatRoomData[chatRoomID] };
 
     // friendList上に表示される、一番新しいメッセージを表示
@@ -47,10 +61,10 @@ export const ShowFriendList = (props) => {
   const handleShowChatRoom = (e) => {
     props.handleTargetChatRoomData({
       doc: {
-        me: props.nowUserDoc,
+        me: authUserDoc,
         with: friendUserDocs[e.target.id],
       },
-      chatRoomID: props.nowUserDoc.friend[e.target.id].chatRoomID,
+      chatRoomID: authUserDoc.friend[e.target.id].chatRoomID,
     });
     // showChatRoom画面を表示
     props.handleViewState(cmpConfig.state.view["002"]);
@@ -58,17 +72,15 @@ export const ShowFriendList = (props) => {
 
   return (
     <>
-      <Header title="フレンドリスト" backable={false} />
+      <Header title="友達一覧" backable={false} />
       <div className="request-users-container received">
         <h3 className="title">あなた宛ての友達リクエスト</h3>
         <UsersList
-          userDocs={Object.values(requestUserDocs.received)}
+          userDocs={requestUserDocs.received}
           noUserMessage="現在、あなたが受け取ったリクエストはありません。"
+          handleClick={handleShowProfileOnRequestReceived}
         >
-          <button
-            className="btn-orange"
-            onClick={handleShowProfileOnRequestReceived}
-          >
+          <button className="btn-orange p-events-none">
             プロフィールを見る
           </button>
         </UsersList>
@@ -77,13 +89,11 @@ export const ShowFriendList = (props) => {
       <div className="request-users-container sent">
         <h3 className="title">友達リクエスト送信済みのユーザー</h3>
         <UsersList
-          userDocs={Object.values(requestUserDocs.sent)}
+          userDocs={requestUserDocs.sent}
           noUserMessage="現在、あなたが送ったリクエストはありません。"
+          handleClick={handleShowProfileOnRequestSent}
         >
-          <button
-            className="btn-orange"
-            onClick={handleShowProfileOnRequestSent}
-          >
+          <button className="btn-orange p-events-none">
             プロフィールを見る
           </button>
         </UsersList>
@@ -92,9 +102,8 @@ export const ShowFriendList = (props) => {
       <div className="friend-users-container">
         <h3 className="title">あなたの友達一覧</h3>
         <ul className="users-list-wrapper">
-          {Object.keys(friendUserDocs).length !== 0 ? (
-            Object.values(friendUserDocs).map((val) => {
-              console.log(val);
+          {friendUserDocs.length !== 0 ? (
+            friendUserDocs.map((val) => {
               return (
                 <li
                   id={val.uid}
@@ -153,7 +162,7 @@ export const ShowFriendList = (props) => {
 // };
 
 // const getTargetChatRoomID = (targetUid) => {
-//   for (const friendData of props.nowUserDoc.friend) {
+//   for (const friendData of authUserDoc.friend) {
 //     if (friendData.uid === targetUid) return friendData.chatRoomID;
 //   }
 // };

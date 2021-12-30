@@ -1,12 +1,10 @@
 import {
-  arrayRemove,
-  arrayUnion,
   updateDoc,
   doc,
-  setDoc,
   deleteDoc,
+  deleteField,
+  arrayUnion,
 } from "firebase/firestore";
-import { userDocTemplate } from "../../firebase.config";
 import { getFirestore } from "firebase/firestore";
 import "./firestore.ready";
 
@@ -17,17 +15,15 @@ const deleteFriend = async (chatRoomID, nowUserData, targetUserData) => {
   const targetUserDocRef = doc(db, "users", targetUserData.uid);
   const chatRoomRef = doc(db, "chatRoom", chatRoomID);
 
-  //friend -> request.rejectedへと移行...使用と思ってたけど、
-  //デバッグ時は普通に消えるだけにしてくれた方が便利なので一旦はこれにする
-  //フレンド周りの仕様をどうするかは要検討
+  //friend -> request.rejectedへと移行
   await updateDoc(nowUserDocRef, {
-    // "request.rejected": arrayUnion(targetUserUid),
-    friend: nowUserData.friend,
+    "request.rejected": arrayUnion(targetUserData.uid),
+    ["friend." + targetUserData.uid]: deleteField(),
   });
 
   await updateDoc(targetUserDocRef, {
-    // "request.rejected": arrayUnion(targetUserUid),
-    friend: targetUserData.friend,
+    "request.rejected": arrayUnion(nowUserData.uid),
+    ["friend." + nowUserData.uid]: deleteField(),
   });
 
   //チャットルームを削除

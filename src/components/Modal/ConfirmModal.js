@@ -9,12 +9,15 @@ export const ConfirmModal = (props) => {
       }}
     >
       <h3 className="title">{props?.title}</h3>
-      {props?.text.map((val) => {
-        return <p className="text">{val}</p>;
-      })}
-      {props?.children}
-      {props?.children ? undefined : (
-        <button type="button" className="btn-gray btn-close">
+      {props?.text &&
+        props?.text.map((val) => {
+          return <p className="text">{val}</p>;
+        })}
+
+      {props?.children ? (
+        props.children
+      ) : (
+        <button className="btn-gray btn-close" onClick={props.handleClose}>
           閉じる
         </button>
       )}

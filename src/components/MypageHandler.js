@@ -13,7 +13,17 @@ import { AgeOptions } from "./UI/Options";
 
 export const MypageHandler = (props) => {
   const [viewState, setViewState] = useState(cmpConfig.state.view["001"]);
-  const { eraceModal, showLoadingModal } = useContext(AppRouteContext);
+  const { eraceModal, showLoadingModal, showConfirmModal } =
+    useContext(AppRouteContext);
+
+  const handleUpdateAuthUserDoc = async (
+    updateData,
+    newModalStateData = null
+  ) => {
+    showLoadingModal();
+    await updateUserData({ ...updateData, uid: props.nowUserDoc.uid });
+    newModalStateData ? showConfirmModal(newModalStateData) : eraceModal();
+  };
 
   const handleSubmitToDB = (data) => {
     (async () => {
@@ -57,6 +67,7 @@ export const MypageHandler = (props) => {
           <MypageTop
             handleViewState={setViewState}
             handleSubmit={handleSubmitToDB}
+            handleExecUpdate={handleUpdateAuthUserDoc}
             nowUserDoc={props.nowUserDoc}
             signOut={props.signOut}
           />

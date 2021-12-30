@@ -26,12 +26,58 @@ export const App = (props) => {
   /**
    * setState definitions
    */
-  const { eraceModal, authUserDoc } = useContext(AppRouteContext);
-  const [relatedUserDocsState, setRelatedUserDocsState] = useState([]);
+  const { authUserDoc } = useContext(AppRouteContext);
+  // const [nowUserDoc, setNowUserDoc] = useState({...authUserDoc})
+  const [relatedUserDocsState, setRelatedUserDocsState] = useState({
+    friend: {},
+    request: {
+      received: {},
+      sent: {},
+    },
+    others: {},
+  });
   const [pageContentState, setPageContentState] = useState(
     appConfig.pageContents["001"]
   );
   const [chatRoomDataState, setChatRoomDataState] = useState({});
+
+  useEffect(() => {
+    // const allUserDocs = {
+    //   ...relatedUserDocsState.friend,
+    //   ...relatedUserDocsState.request.received,
+    //   ...relatedUserDocsState.request.sent,
+    //   ...relatedUserDocsState.others,
+    // };
+    // const newData = {};
+    // console.log(allUserDocs);
+    // console.log(Object.values(authUserDoc.friend));
+    // if (Object.keys(allUserDocs).length > 0) {
+    //   //新しいfriendを生成
+    //   for (const uid of Object.keys(authUserDoc.friend)) {
+    //     if (uid) {
+    //       newData.friend[uid] = allUserDocs[uid];
+    //       delete allUserDocs[uid];
+    //     }
+    //   }
+    //   //新しいrequest.receivedを生成
+    //   for (const uid of authUserDoc.request.received) {
+    //     if (uid) {
+    //       newData.request.received[uid] = allUserDocs[uid];
+    //       delete allUserDocs[uid];
+    //     }
+    //   }
+    //   //新しいrequest.sentを生成
+    //   for (const uid of authUserDoc.request.sent) {
+    //     if (uid) {
+    //       newData.request.sent[uid] = allUserDocs[uid];
+    //       delete allUserDocs[uid];
+    //     }
+    //   }
+    //   //新しいrequest.othersを生成
+    //   newData.others = allUserDocs;
+    // setRelatedUserDocsState(newData);
+    // }
+  }, [authUserDoc.friend, authUserDoc.request]);
 
   /**
    * useEffect functions
@@ -39,12 +85,9 @@ export const App = (props) => {
 
   useEffect(() => {
     (async () => {
-      // FInd Usersを表示コンテンツに指定
-      setPageContentState(appConfig.pageContents["002"]);
-
       setRelatedUserDocsState(await getRelatedUserDocs(authUserDoc));
     })();
-  }, []);
+  }, [authUserDoc.friend, authUserDoc.request]);
 
   //chatRoomDataStateが登録されているときは、
   //chatRoomのデータ削除を検知して自動的に削除
@@ -108,16 +151,6 @@ export const App = (props) => {
       //   return <SignUp />;
 
       //USERS_LIST
-      case appConfig.pageContents["002"]:
-        return (
-          <FindUserHandler
-            nowUserDoc={authUserDoc}
-            allUserDocs={relatedUserDocsState}
-            handleAllUserDocsState={setRelatedUserDocsState}
-            handlePageContent={setPageContentState}
-          />
-        );
-
       case appConfig.pageContents["003"]:
         return (
           <FriendHandler
@@ -136,7 +169,14 @@ export const App = (props) => {
         );
 
       default:
-        return undefined;
+        return (
+          <FindUserHandler
+            nowUserDoc={authUserDoc}
+            allUserDocs={relatedUserDocsState}
+            handleAllUserDocsState={setRelatedUserDocsState}
+            handlePageContent={setPageContentState}
+          />
+        );
     }
   };
 

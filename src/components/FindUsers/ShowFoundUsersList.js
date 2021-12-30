@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Header } from "../UI/Header";
 import { UsersCard } from "../UI/UsersCard";
 // import { UsersList } from "../UI/UsersList";
@@ -40,7 +40,7 @@ export const ShowFoundUsersList = (props) => {
    * @param {React.DOMAttributes<React.MouseEvent<HTMLLIElement | MouseEvent>>} e
    */
   const handleSelectUser = (e) => {
-    for (let user of props.allUserDocs) {
+    for (const user of Object.values(props.allUserDocs.others)) {
       if (user.uid === e.currentTarget.id) {
         props.handleSelectedUser(user);
         props.handleViewState(cmpConfig.state.view["002"]);
@@ -50,6 +50,10 @@ export const ShowFoundUsersList = (props) => {
   };
 
   const generateShowableUserDocs = () => {
+    console.log(
+      "=========================================================UPDATED~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+    );
+    console.log(props);
     //   // appState allUserDocs, nowUserDocが正しく取得されていない場合（初期状態など）は
     //   // 表示できるユーザーを0とする
     //   if (props.allUserDocs.length === 0 || !props.nowUserDoc) return [];
@@ -66,8 +70,15 @@ export const ShowFoundUsersList = (props) => {
     // 両者の距離を測定、一定距離以内であればtrueを返す
     const KM_BOUNDARY = 10;
 
-    for (const user in props.allUserDocs.others) {
+    for (const user of Object.values(props.allUserDocs.others)) {
       //一定距離以内にいる場合は表示可能と判定
+      console.log(props.nowUserDoc.location);
+      console.log(user.location);
+      console.log(
+        calcKmDistance(props.nowUserDoc.location, user.location),
+        KM_BOUNDARY,
+        calcKmDistance(props.nowUserDoc.location, user.location) < KM_BOUNDARY
+      );
       calcKmDistance(props.nowUserDoc.location, user.location) < KM_BOUNDARY &&
         shoableUserDocsArr.push(user);
     }
@@ -75,16 +86,30 @@ export const ShowFoundUsersList = (props) => {
     return shoableUserDocsArr;
   };
 
+  useEffect(() => {
+    console.log("onchange nowuser");
+  }, [props.nowUserDoc]);
+
+  useEffect(() => {
+    console.log("onchange allUserDocs");
+  }, [props.allUserDocs]);
+
   const showableUserDocs = useMemo(generateShowableUserDocs, [
     props.nowUserDoc,
-    props.allUserDocs,
+    props.allUserDocs.others,
   ]);
 
   return (
     <>
-      <Header title="ユーザーを見つける" backable={false} />
+      <Header title="友達を見つける" backable={false} />
       {showableUserDocs.length > 0 && (
-        <h2>近くに{showableUserDocs.length}人のユーザーがいます！</h2>
+        <h2
+          style={{
+            margin: "35px auto 15px",
+          }}
+        >
+          近くに{showableUserDocs.length}人の友達候補がいます！
+        </h2>
       )}
       {/* <iframe src="https://maps.google.com/maps?output=embed&ll=${lat},${lng}&t=m&hl=ja&z=18https://www.google.co.jp/maps/@38.2664704,140.8663552&output=svembed,14z?api=1?hl=ja"></iframe> */}
       {/* <UsersList

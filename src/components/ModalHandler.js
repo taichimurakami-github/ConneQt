@@ -21,6 +21,7 @@ export const ModalHandler = () => {
       case appConfig.components.modal.type["002"]:
         return (
           <ConfirmModal
+            handleClose={handleClose}
             title={modalState?.content?.title}
             text={modalState?.content?.text}
             options={modalState?.options}
@@ -31,6 +32,7 @@ export const ModalHandler = () => {
       case appConfig.components.modal.type["003"]:
         return (
           <ErrorModal
+            handleClose={handleClose}
             title={modalState?.content?.title}
             text={modalState?.content?.text}
             options={modalState?.options}
