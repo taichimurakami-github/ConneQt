@@ -82,8 +82,8 @@ const getRelatedUserDocs = async (userDoc) => {
     }
   });
 
-  console.log("phase1 finished");
-  console.log(metaUserDocs);
+  // console.log("phase1 finished");
+  // console.log(metaUserDocs);
 
   /**
    * fetch phase 2
@@ -97,8 +97,8 @@ const getRelatedUserDocs = async (userDoc) => {
     sent: {},
   };
 
-  console.log("metaUsersUidArray");
-  console.log(metaUserUidArray);
+  // console.log("metaUsersUidArray");
+  // console.log(metaUserUidArray);
 
   metaUserUidArray.map((uid) => {
     //friendユーザーだった場合
@@ -128,10 +128,10 @@ const getRelatedUserDocs = async (userDoc) => {
     }
   });
 
-  console.log("phase2 finished");
-  console.log(metaUserDocs);
-  console.log(friendUserDocs);
-  console.log(requestUserDocs);
+  // console.log("phase2 finished");
+  // console.log(metaUserDocs);
+  // console.log(friendUserDocs);
+  // console.log(requestUserDocs);
 
   /**
    * fetch phase 3
@@ -148,10 +148,9 @@ const getRelatedUserDocs = async (userDoc) => {
     },
   };
 
-  console.log(userDoc.friend);
   for (const friendUid of Object.keys(userDoc.friend)) {
-    console.log(userDoc.friend);
-    console.log(friendUid);
+    // console.log(userDoc.friend);
+    // console.log(friendUid);
     // もしもuserDoc.friend内に格納されているユーザーが、
     // 先ほど取得したデータに入っていなかった場合
     if (!Object.keys(friendUserDocs).includes(friendUid)) {
@@ -161,7 +160,7 @@ const getRelatedUserDocs = async (userDoc) => {
     }
   }
 
-  for (const req_receivedUid of Object.keys(userDoc.request.received)) {
+  for (const req_receivedUid of userDoc.request.received) {
     // もしもuserDoc.request.received内に格納されているユーザーが、
     // 先ほど取得したデータに入っていなかった場合
     if (!Object.keys(requestUserDocs.received).includes(req_receivedUid)) {
@@ -169,7 +168,7 @@ const getRelatedUserDocs = async (userDoc) => {
     }
   }
 
-  for (const req_sentUid of Object.keys(userDoc.request.sent)) {
+  for (const req_sentUid of userDoc.request.sent) {
     // もしもuserDoc.request.received内に格納されているユーザーが、
     // 先ほど取得したデータに入っていなかった場合
     if (!Object.keys(requestUserDocs.sent).includes(req_sentUid)) {
@@ -177,8 +176,8 @@ const getRelatedUserDocs = async (userDoc) => {
     }
   }
 
-  console.log("phase3 parsed getiingUsersuid");
-  console.log(gettingUsersUid);
+  // console.log("phase3 parsed getiingUsersuid");
+  // console.log(gettingUsersUid);
 
   //取得する必要があるユーザーが存在した場合
   //Promise.allで取得処理を並列で実行
@@ -214,7 +213,8 @@ const getRelatedUserDocs = async (userDoc) => {
         console.log(e);
       });
 
-      addUserDocArrToObject(userDocsArr, friendUserDocs);
+      gettingUsersUid.friend.length === userDocsArr.length &&
+        addUserDocArrToObject(userDocsArr, friendUserDocs);
     }
 
     //追加のrequest.receivedデータを取得
@@ -230,13 +230,14 @@ const getRelatedUserDocs = async (userDoc) => {
         console.log(e);
       });
 
-      addUserDocArrToObject(userDocsArr, requestUserDocs.received);
+      gettingUsersUid.request.received.length === userDocsArr.length &&
+        addUserDocArrToObject(userDocsArr, requestUserDocs.received);
     }
 
     //追加のrequest.sentデータを取得
     if (gettingUsersUid.request.sent.length > 0) {
       const userDocsArr = await Promise.all(
-        gettingUsersUid.request.received.map((uid) =>
+        gettingUsersUid.request.sent.map((uid) =>
           getDocSnapDataFromUserDoc(uid)
         )
       ).catch((e) => {
@@ -246,7 +247,8 @@ const getRelatedUserDocs = async (userDoc) => {
         console.log(e);
       });
 
-      addUserDocArrToObject(userDocsArr, requestUserDocs.sent);
+      gettingUsersUid.request.sent === userDocsArr.length &&
+        addUserDocArrToObject(userDocsArr, requestUserDocs.sent);
     }
   }
 

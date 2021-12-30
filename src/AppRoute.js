@@ -103,7 +103,10 @@ export const AuthHandler = () => {
     const authUserDoc_unSubFunc = onSnapshot(
       doc(db, "users", user.uid),
       (doc) => {
-        setAuthUserDoc(doc.data());
+        console.log("changed doc data");
+        const data = doc.data();
+        console.log(doc.data());
+        setAuthUserDoc({ ...data });
         setViewState(appConfig.routePageContents["003"]);
       }
     );
@@ -212,6 +215,7 @@ export const AuthHandler = () => {
           <App
             authState={authState}
             setAuthState={setAuthState}
+            authUserDoc={authUserDoc}
             signOutFromApp={signOutFromApp}
             registerUnsubFunc={registerUnsubFunc}
           />

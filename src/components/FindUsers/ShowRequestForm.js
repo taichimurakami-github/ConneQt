@@ -20,14 +20,24 @@ export const ShowRequestForm = (props) => {
       />
       <img className="user-icon" src={props.targetUserDoc.photo}></img>
       <div>
+        <p style={{ padding: "10px" }}>
+          「友達申請を送る」 ボタンを押すと、 <br></br>
+          {" " + props.targetUserDoc.name + " "}
+          さんに対して友達申請を送ります。
+        </p>
+        <p style={{ padding: "10px" }}>
+          友達申請が許可されると、下部メニュー「友達一覧」からチャットで会話できます。
+        </p>
+
         <button className="btn-orange" onClick={props.handleRequest}>
-          チケット１枚を消費して<br></br>リクエストを送る
+          {/* チケット１枚を消費して<br></br>リクエストを送る */}
+          友達申請を送る(取り消せません)
         </button>
         <button
           className="btn-gray"
           onClick={() => props.handleViewState(cmpConfig.state.view["001"])}
         >
-          リクエストをキャンセル
+          友達申請をキャンセル
         </button>
       </div>
     </>

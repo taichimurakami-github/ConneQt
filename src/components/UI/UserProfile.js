@@ -10,11 +10,11 @@ export const UserProfile = (props) => {
         {props.userDoc?.hometown?.prefecture} {props.userDoc?.hometown?.city}{" "}
         出身
       </p>
-      <p className="university">{props.userDoc.history.university} 卒業</p>
-      <p className="profile">
+      <p className="university">{props.userDoc?.history?.university} 卒業</p>
+      <div className="profile">
         <h3 style={{ textAlign: "center", lineHeight: "2" }}>プロフィール</h3>
         {props.userDoc?.profile}
-      </p>
+      </div>
     </div>
   );
 };

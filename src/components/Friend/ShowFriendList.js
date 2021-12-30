@@ -1,17 +1,14 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import cmpConfig from "./config";
 import { Header } from "../UI/Header";
 import { UsersList } from "../UI/UsersList";
 import { AppRouteContext } from "../../AppRoute";
 
 export const ShowFriendList = (props) => {
-  const { showConfirmModal, eraceModal } = useContext(AppRouteContext);
+  const { authUserDoc, showErrorModal, eraceModal } =
+    useContext(AppRouteContext);
 
-  const friendUserDocs = props.relatedUserDocs.friend;
-  const requestUserDocs = props.relatedUserDocs.request;
-
-  const getTopMessageFromChatRoomData = (targetUid) => {
-    const chatRoomID = props.nowUserDoc.friend[targetUid].chatRoomID;
+  const getTopMessageFromChatRoomData = (chatRoomID) => {
     const chatRoomData = { ...props.chatRoomData[chatRoomID] };
 
     // friendList上に表示される、一番新しいメッセージを表示
@@ -25,50 +22,81 @@ export const ShowFriendList = (props) => {
   };
 
   const handleShowProfileOnRequestSent = (e) => {
+    const targetUserDoc = props.relatedUserDocs[e.target.id];
+
+    if (!targetUserDoc) {
+      return showErrorModal("ユーザー情報の取得に失敗しました。");
+    }
+
     // selectedUserDocStateを設定
-    props.handleSelectedUserDoc({
-      ...requestUserDocs.sent[e.target.id],
-    });
+    props.handleSelectedUserDoc(targetUserDoc);
 
     // showUserProfile画面を表示
     props.handleViewState(cmpConfig.state.view["004"]);
   };
 
   const handleShowProfileOnRequestReceived = (e) => {
+    const targetUserDoc = props.relatedUserDocs[e.target.id];
+
+    if (!targetUserDoc) {
+      return showErrorModal("ユーザー情報の取得に失敗しました。");
+    }
+
     // selectedUserDocStateを設定
-    props.handleSelectedUserDoc({
-      ...requestUserDocs.received[e.target.id],
-    });
+    props.handleSelectedUserDoc(targetUserDoc);
 
     // showUserProfile画面を表示
     props.handleViewState(cmpConfig.state.view["003"]);
   };
 
   const handleShowChatRoom = (e) => {
-    props.handleTargetChatRoomData({
-      doc: {
-        me: props.nowUserDoc,
-        with: friendUserDocs[e.target.id],
-      },
-      chatRoomID: props.nowUserDoc.friend[e.target.id].chatRoomID,
-    });
+    if (e.target.id === "__DELETED_USER_UID__") {
+      //「退会したユーザー」のチャット画面を表示
+      showErrorModal({
+        content: {
+          title: "退会したユーザーとのチャットルームです。",
+          content: [
+            "このチャットルームを削除するには、",
+            "右上のMenuから「チャットルームを削除」を選択してください",
+          ],
+        },
+      });
+      //ユーザーとのチャット画面を表示
+      props.handleTargetChatRoomData({
+        doc: {
+          me: authUserDoc,
+          with: {},
+        },
+        chatRoomID: authUserDoc.friend[e.target.id].chatRoomID,
+      });
+    } else {
+      //ユーザーとのチャット画面を表示
+      props.handleTargetChatRoomData({
+        doc: {
+          me: authUserDoc,
+          with: props.relatedUserDocs[e.target.id],
+        },
+        chatRoomID: authUserDoc.friend[e.target.id].chatRoomID,
+      });
+    }
+
     // showChatRoom画面を表示
     props.handleViewState(cmpConfig.state.view["002"]);
   };
 
   return (
     <>
-      <Header title="フレンドリスト" backable={false} />
+      <Header title="友達一覧" backable={false} />
       <div className="request-users-container received">
         <h3 className="title">あなた宛ての友達リクエスト</h3>
         <UsersList
-          userDocs={Object.values(requestUserDocs.received)}
+          userDocs={authUserDoc.request.received.map(
+            (uid) => props.relatedUserDocs[uid]
+          )}
           noUserMessage="現在、あなたが受け取ったリクエストはありません。"
+          handleClick={handleShowProfileOnRequestReceived}
         >
-          <button
-            className="btn-orange"
-            onClick={handleShowProfileOnRequestReceived}
-          >
+          <button className="btn-orange p-events-none">
             プロフィールを見る
           </button>
         </UsersList>
@@ -77,13 +105,13 @@ export const ShowFriendList = (props) => {
       <div className="request-users-container sent">
         <h3 className="title">友達リクエスト送信済みのユーザー</h3>
         <UsersList
-          userDocs={Object.values(requestUserDocs.sent)}
+          userDocs={authUserDoc.request.sent.map(
+            (uid) => props.relatedUserDocs[uid]
+          )}
           noUserMessage="現在、あなたが送ったリクエストはありません。"
+          handleClick={handleShowProfileOnRequestSent}
         >
-          <button
-            className="btn-orange"
-            onClick={handleShowProfileOnRequestSent}
-          >
+          <button className="btn-orange p-events-none">
             プロフィールを見る
           </button>
         </UsersList>
@@ -92,25 +120,57 @@ export const ShowFriendList = (props) => {
       <div className="friend-users-container">
         <h3 className="title">あなたの友達一覧</h3>
         <ul className="users-list-wrapper">
-          {Object.keys(friendUserDocs).length !== 0 ? (
-            Object.values(friendUserDocs).map((val) => {
-              console.log(val);
-              return (
-                <li
-                  id={val.uid}
-                  className={`user-list clickable`}
-                  key={val.uid}
-                  onClick={handleShowChatRoom}
-                >
-                  <img className="user-icon p-events-none" src={val?.photo} />
-                  <div className="text-container p-events-none">
-                    <p className="name p-events-none">{val?.name}</p>
-                    <p className="p-events-none">
-                      {getTopMessageFromChatRoomData(val.uid)}
-                    </p>
-                  </div>
-                </li>
-              );
+          {Object.keys(authUserDoc.friend).length !== 0 ? (
+            Object.keys(authUserDoc.friend).map((key) => {
+              const userDoc = props.relatedUserDocs[key];
+              const chatRoomID = authUserDoc.friend[key]?.chatRoomID;
+              console.log(userDoc);
+              console.log(props.chatRoomData[chatRoomID]);
+              if (
+                props.chatRoomData[chatRoomID] &&
+                props.chatRoomData[chatRoomID]?.metaData &&
+                userDoc
+              ) {
+                //正常にチャットルームを確認できる場合
+                return (
+                  <li
+                    id={userDoc.uid}
+                    className={`user-list clickable`}
+                    key={userDoc.uid}
+                    onClick={handleShowChatRoom}
+                  >
+                    <img
+                      className="user-icon p-events-none"
+                      src={userDoc?.photo}
+                    />
+                    <div className="text-container p-events-none">
+                      <p className="name p-events-none">{userDoc?.name}</p>
+                      <p className="p-events-none">
+                        {getTopMessageFromChatRoomData(chatRoomID)}
+                      </p>
+                    </div>
+                  </li>
+                );
+              } else {
+                //chatRoomが存在していない場合（取得に失敗した時とか？）
+                //ユーザーのドキュメントが取得できなかった場合（相手が存在しない）
+                //あるいは、chatRoomからmetaDataが消去されている場合（相手が友達削除した時）
+                return (
+                  <li
+                    id="__DELETED_USER_UID__"
+                    className={`user-list clickable`}
+                    onClick={handleShowChatRoom}
+                  >
+                    <img className="user-icon p-events-none" src="" />
+                    <div className="text-container p-events-none">
+                      <p className="name p-events-none">退会したユーザー</p>
+                      <p className="p-events-none">
+                        {getTopMessageFromChatRoomData(chatRoomID)}
+                      </p>
+                    </div>
+                  </li>
+                );
+              }
             })
           ) : (
             <p>"見つける" から友達を探しましょう！</p>
@@ -153,7 +213,7 @@ export const ShowFriendList = (props) => {
 // };
 
 // const getTargetChatRoomID = (targetUid) => {
-//   for (const friendData of props.nowUserDoc.friend) {
+//   for (const friendData of authUserDoc.friend) {
 //     if (friendData.uid === targetUid) return friendData.chatRoomID;
 //   }
 // };

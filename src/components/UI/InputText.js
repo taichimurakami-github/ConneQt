@@ -21,8 +21,8 @@ export const ControlledInputText = (props) => {
           className={props?.className?.textarea ? props.className.textarea : ""}
           placeholder={props?.text?.placeholder ? props.text.placeholder : ""}
           value={props.valueState}
-          pattern={props}
           onChange={handleChange}
+          maxLength={props?.maxLength}
           required={props?.required ? true : false}
         ></textarea>
       ) : props?.element === "select" ? (
