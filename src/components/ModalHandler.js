@@ -27,6 +27,7 @@ export const ModalHandler = () => {
             title={modalState?.content?.title}
             text={modalState?.content?.text}
             options={modalState?.options}
+            key={"APP_COMPONENT_CONFIRM_MODAL"}
           >
             {modalState?.children}
           </ConfirmModal>
@@ -38,6 +39,7 @@ export const ModalHandler = () => {
             title={modalState?.content?.title}
             text={modalState?.content?.text}
             options={modalState?.options}
+            key={"APP_COMPONENT_ERROR_MODAL"}
           >
             {modalState?.children}
           </ErrorModal>

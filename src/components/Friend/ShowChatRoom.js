@@ -1,10 +1,9 @@
-import { useMemo, useState, useReducer, useContext } from "react";
+import { useMemo, useState, useReducer, useContext, useEffect } from "react";
 import { Header } from "../UI/Header";
 import cmpConfig from "./config";
 
 import "../../styles/chat.scss";
 import { updateChatRoomData } from "../../fn/db/firestore.handler";
-import { useEffect } from "react/cjs/react.development";
 import { UserProfile } from "../UI/UserProfile";
 import { deleteFriend } from "../../fn/db/deleteHandler";
 import { AppRouteContext } from "../../AppRoute";
@@ -169,7 +168,6 @@ export const ShowChatRoom = (props) => {
   useEffect(() => {
     headerMenuViewState
       ? dispatchHeaderMetaData({
-          headerMetaDataState,
           type: cmpConfig.ShowChatRoom.headerMetaDataAction["001"],
         })
       : dispatchHeaderMetaData({

@@ -9,8 +9,6 @@ import {
   onSnapshot,
   arrayUnion,
   Timestamp,
-  arrayRemove,
-  deleteDoc,
   query,
   where,
 } from "firebase/firestore";

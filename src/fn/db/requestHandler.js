@@ -5,7 +5,6 @@ import {
   doc,
   setDoc,
 } from "firebase/firestore";
-import { userDocTemplate } from "../../firebase.config";
 import { getFirestore } from "firebase/firestore";
 import "./firestore.ready";
 
