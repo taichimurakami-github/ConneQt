@@ -7,6 +7,7 @@ import { ChoiceActionButton } from "../UI/Button";
 
 import { cmpConfig } from "./config";
 import { AppRouteContext } from "../../AppRoute";
+import { appConfig, appInfo } from "../../app.config";
 
 export const MypageTop = (props) => {
   const {
@@ -161,13 +162,32 @@ export const MypageTop = (props) => {
           handleClick={handleSetGeolocation}
           title="位置情報を現在地に設定"
         />
+        <ListMenu
+          id={cmpConfig.state.view["099"]}
+          handleClick={() => {
+            showConfirmModal({
+              content: {
+                title: "アプリ情報",
+              },
+              children: (
+                <div>
+                  <p>version: {appInfo.version + " __ " + appInfo.mode}</p>
+                  <p>連絡先: conneqtu@gmail.com</p>
+                  <button onClick={eraceModal} className="btn-gray">
+                    閉じる
+                  </button>
+                </div>
+              ),
+            });
+          }}
+          title="アプリ情報"
+        />
 
         {/* <ListMenu
           id={cmpConfig.state.view["010"]}
           handleClick={() => props.handleViewState(cmpConfig.state.view["005"])}
           title="チケットを追加"
         /> */}
-
         <ListMenu
           id="DELETE_ACCOUNT"
           handleClick={confirmDeleteAccount}

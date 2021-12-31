@@ -37,5 +37,5 @@ export const appConfig = {
 export const appInfo = {
   version: "2021.12.31",
   db: "firestore",
-  mode: "develop",
+  mode: "beta",
 };

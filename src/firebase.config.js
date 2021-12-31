@@ -27,7 +27,7 @@ const firestoreQueryConfig = {
 
 const db_name = {
   user: "users",
-  chatRoom: "chatRoom",
+  chatRoom: "chatRooms",
 };
 
 const userDocTemplate = {

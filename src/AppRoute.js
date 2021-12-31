@@ -143,6 +143,8 @@ export const AuthHandler = () => {
           };
           // AuthStateを設定
           setAuthState(authStateData);
+        } else {
+          setAuthState(authState);
         }
       } else {
         // User is signed out
@@ -169,21 +171,33 @@ export const AuthHandler = () => {
           return;
         }
 
-        // userDocをfirestore上で検索
-        const fetchedAuthUserData = await getAuthUserDoc(authState);
+        try {
+          // userDocをfirestore上で検索
+          const fetchedAuthUserData = await getAuthUserDoc(authState);
 
-        if (fetchedAuthUserData) {
-          //userDocが存在した：登録済み
-          //authUserのsnapShot登録 & 変更を検知したらsetAuthUserDocを自動実行
-          handleAuthUserDoc(fetchedAuthUserData);
-        } else {
-          //fetchedAuthUserData == nullだった
-          //初回登録へ
-          console.log("you are new here.");
-          setViewState(appConfig.routePageContents["002"]);
+          eraceModal();
+
+          if (fetchedAuthUserData) {
+            //userDocが存在した：登録済み
+            //authUserのsnapShot登録 & 変更を検知したらsetAuthUserDocを自動実行
+            handleAuthUserDoc(fetchedAuthUserData);
+          } else {
+            //fetchedAuthUserData == nullだった
+            //初回登録へ
+            console.log("you are new here.");
+            setViewState(appConfig.routePageContents["002"]);
+          }
+        } catch (e) {
+          showErrorModal({
+            content: {
+              title: "Google認証に失敗しました。",
+              text: [
+                "アクセス権が存在しない可能性があります。",
+                "登録には、事前登録フォームでのお申し込みが必要です。",
+              ],
+            },
+          });
         }
-
-        eraceModal();
       })();
   }, [authState]);
 

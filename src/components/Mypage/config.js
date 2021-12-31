@@ -9,6 +9,7 @@ export const cmpConfig = {
       // "006": "EDIT_ACCOUNT_HOMETOWN",
       // "007": "EDIT_ACCOUNT_HISTORY",
       "010": "EDIT_ACCOUNT_TICKET",
+      "099": "APP_INFO",
     },
   },
 };

@@ -49,17 +49,29 @@ export const RegisterHandler = (props) => {
     //DB登録後、登録したデータを取得
     (async () => {
       showLoadingModal();
-      await registerAuthUserDoc({ ...registerUserData });
-      props.handleAuthUserDoc(props.authState);
-      showConfirmModal({
-        content: {
-          title: "アカウント登録に成功しました！",
-          text: [
-            "まずは下部メニュー「見つける」から、",
-            "周囲に友達候補がいるか確認しましょう！",
-          ],
-        },
-      });
+      try {
+        await registerAuthUserDoc({ ...registerUserData });
+        props.handleAuthUserDoc(props.authState);
+        showConfirmModal({
+          content: {
+            title: "アカウント登録に成功しました！",
+            text: [
+              "まずは下部メニュー「見つける」から、",
+              "周囲に友達候補がいるか確認しましょう！",
+            ],
+          },
+        });
+      } catch (e) {
+        showErrorModal({
+          content: {
+            title: "アカウント登録に失敗しました",
+            text: [
+              "アクセス権が存在しない可能性があります。",
+              "登録には、事前登録フォームでのお申し込みが必要です。",
+            ],
+          },
+        });
+      }
     })();
   };
 

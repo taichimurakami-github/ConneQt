@@ -7,11 +7,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import {
-  db_name,
-  firebaseConfig,
-  firestoreQueryConfig,
-} from "../../firebase.config";
+import { db_name, firestoreQueryConfig } from "../../firebase.config";
 import { splitArray } from "../util/splitArray";
 import "./firestore.ready";
 const db = getFirestore();
