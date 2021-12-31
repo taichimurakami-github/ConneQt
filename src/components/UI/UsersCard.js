@@ -36,6 +36,9 @@ export const UsersCard = (props) => {
       >
         {props?.userDocs && props.userDocs.length !== 0 ? (
           props.userDocs.map((val, index) => {
+            //もしもundefinedオブジェクトが混ざっていたら、表示しない
+            if (!val) return undefined;
+
             return (
               <li
                 className={`user-card ${

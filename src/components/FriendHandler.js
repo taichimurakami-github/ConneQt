@@ -78,6 +78,22 @@ export const FriendHandler = (props) => {
     })();
   };
 
+  /**
+   * 該当するチャットルームを削除する
+   * relatedUserDocsから、該当ユーザーのuserDocも削除する
+   */
+  const handleEraceChatRoom = (friendUid, chatRoomID) => {
+    //chatRoomDataから該当するchatRooomを消去
+    const newChatRoomData = { ...props.chatRoomData };
+    delete newChatRoomData[chatRoomID];
+    props.handleChatRoom(newChatRoomData);
+
+    //relatedUserDocsから該当するuserDocsを削除
+    const newRelatedUserDocsState = { ...props.allUserDocs };
+    delete newRelatedUserDocsState[friendUid];
+    props.handleRelatedUserDocs(newRelatedUserDocsState);
+  };
+
   const handleView = () => {
     switch (viewState) {
       case cmpConfig.state.view["001"]:
@@ -97,6 +113,7 @@ export const FriendHandler = (props) => {
           <ShowChatRoom
             handleViewState={setViewState}
             chatRoomData={props.chatRoomData}
+            handleEraceChatRoom={handleEraceChatRoom}
             metaData={selectedChatRoomDataState}
           />
         );

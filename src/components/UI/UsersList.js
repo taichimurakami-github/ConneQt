@@ -2,16 +2,22 @@ import { curStrLength } from "../../fn/util/cutStrLength";
 import "../../styles/UI/UsersList.scss";
 
 export const UsersList = (props) => {
-  // console.log(props.userDocs);
-  //UserDocsArrayの時
+  //退会済みユーザーを削除
+  const userDocs = [];
+  for (const userDoc of props.userDocs) {
+    userDoc && userDocs.push(userDoc);
+  }
+
   return (
     <ul
       className={`users-list-wrapper ${
         props?.className?.wrapper ? props.className.wrapper : ""
       }`}
     >
-      {props?.userDocs && props.userDocs.length !== 0 ? (
-        props.userDocs.map((val) => {
+      {userDocs && userDocs.length !== 0 ? (
+        userDocs.map((val) => {
+          if (!val) return undefined;
+
           return (
             <li
               id={val.uid}

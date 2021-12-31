@@ -8,9 +8,7 @@ const firebaseConfig = {
 };
 
 const firestoreQueryConfig = {
-  array_contains_any: {
-    max_length: 10,
-  },
+  array_max_length: 10,
 };
 
 const db_name = {

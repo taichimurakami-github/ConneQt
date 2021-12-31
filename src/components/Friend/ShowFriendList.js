@@ -73,13 +73,14 @@ export const ShowFriendList = (props) => {
   };
 
   const handleShowChatRoom = (e) => {
+    const chatRoomID = authUserDoc.friend[e.target.id].chatRoomID;
     //ユーザーとのチャット画面を表示
     props.handleTargetChatRoomData({
       doc: {
         me: authUserDoc,
         with: props.relatedUserDocs[e.target.id],
       },
-      chatRoomID: authUserDoc.friend[e.target.id].chatRoomID,
+      chatRoomID: chatRoomID,
     });
 
     // showChatRoom画面を表示

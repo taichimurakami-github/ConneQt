@@ -3,15 +3,18 @@ import "../../styles/UI/UserProfile.scss";
 export const UserProfile = (props) => {
   return (
     <div className="user-profile-wrapper">
-      <img
-        className="user-icon"
-        src={props.userDoc?.photo || ""}
-        alt={
-          props.userDoc?.name
-            ? props.userDoc.name + "さんのプロフィール画像"
-            : ""
-        }
-      ></img>
+      {props.userDoc?.photo && (
+        <img
+          className="user-icon"
+          src={props.userDoc?.photo || ""}
+          alt={
+            props.userDoc?.name
+              ? props.userDoc.name + "さんのプロフィール画像"
+              : ""
+          }
+        ></img>
+      )}
+
       {props.userDoc?.name && <p className="name">{props.userDoc?.name}</p>}
       {props.userDoc?.age && (
         <p className="age">{props.userDoc?.age + " 歳"}</p>

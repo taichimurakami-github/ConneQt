@@ -11,7 +11,17 @@ import "./firestore.ready";
 
 const db = getFirestore();
 
-const deleteFriend = async (chatRoomID, nowUserData, targetUserData) => {
+/**
+ * まだ存在しているユーザーのチャットルームを削除
+ * @param {*} chatRoomID
+ * @param {*} nowUserData
+ * @param {*} targetUserData
+ */
+export const deleteExistingFriend = async (
+  chatRoomID,
+  nowUserData,
+  targetUserData
+) => {
   const nowUserDocRef = doc(db, db_name.user, nowUserData.uid);
   const targetUserDocRef = doc(db, db_name.user, targetUserData.uid);
   const chatRoomRef = doc(db, db_name.chatRoom, chatRoomID);
@@ -34,7 +44,35 @@ const deleteFriend = async (chatRoomID, nowUserData, targetUserData) => {
   });
 };
 
-const deleteAuthUserDoc = async (authUserDoc) => {
+/**
+ * 退会済みのユーザーのチャットルームを削除
+ * @param {*} chatRoomID
+ * @param {*} nowUserData
+ * @param {*} targetUserData
+ */
+export const deleteWithdrawalFriend = async (
+  chatRoomID,
+  nowUserData,
+  targetUserData
+) => {
+  const nowUserDocRef = doc(db, db_name.user, nowUserData.uid);
+  const chatRoomRef = doc(db, db_name.chatRoom, chatRoomID);
+
+  //friendから消去
+  await updateDoc(nowUserDocRef, {
+    ["friend." + targetUserData.uid]: deleteField(),
+  });
+
+  //チャットルームそのものを消去
+  await deleteDoc(chatRoomRef).catch((e) => console.log(e));
+};
+
+/**
+ * 引数に指定したユーザーをデータベースから削除する
+ * @param {UserDoc} authUserDoc
+ * @returns
+ */
+export const deleteAuthUserDoc = async (authUserDoc) => {
   console.log("deleteAuthUserDoc");
   console.log(authUserDoc);
 
@@ -51,9 +89,7 @@ const deleteAuthUserDoc = async (authUserDoc) => {
     });
 
   //authUserDoc削除
-  return await deleteDoc(doc(db, db_name.user, authUserDoc.uid)).catch((e) =>
+  await deleteDoc(doc(db, db_name.user, authUserDoc.uid)).catch((e) =>
     console.log(e)
   );
 };
-
-export { deleteFriend, deleteAuthUserDoc };

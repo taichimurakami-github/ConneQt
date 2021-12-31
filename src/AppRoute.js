@@ -84,11 +84,13 @@ export const AuthHandler = () => {
     }
     if (to === "chatRoom") {
       //chatRoomのonSnapshotに関してのunsub
-      //friend状態が変化した際にlistenし直すので、毎回全部unsubしてから総入れ替え
-      authState.onSnapshot_chatRoom_unsubFuncArr.map((func) => func());
+      //呼ばれるたびにfuncArrを新たに追加する
       setAuthState({
         ...authState,
-        onSnapshot_chatRoom_unsubFuncArr: [...funcArr],
+        onSnapshot_chatRoom_unsubFuncArr: [
+          ...authState.onSnapshot_chatRoom_unsubFuncArr,
+          ...funcArr,
+        ],
       });
     } else {
       setAuthState({
@@ -130,19 +132,18 @@ export const AuthHandler = () => {
         // User is signed in, see docs for a list of available properties
         // https://firebase.google.com/docs/reference/js/firebase.User
         console.log("you have signed in as : " + user.email);
+        authState && console.log("you have already authenticated.");
 
-        /**
-         * firestoreのusers > nowUser.uid のdocの変更をhookする関数を起動
-         * ログイン時に１回だけ起動できれば良い？はず
-         * 以後、ログアウトするまで自動でuserDocの更新時にsetStateしてくれる
-         */
-        const authStateData = {
-          ...user,
-          onSnapshot_unsubFuncArr: [],
-          onSnapshot_chatRoom_unsubFuncArr: [],
-        };
-        // AuthStateを設定
-        setAuthState(authStateData);
+        if (!authState) {
+          //すでにauthStateが設定されている場合のみ実施
+          const authStateData = {
+            ...user,
+            onSnapshot_unsubFuncArr: [],
+            onSnapshot_chatRoom_unsubFuncArr: [],
+          };
+          // AuthStateを設定
+          setAuthState(authStateData);
+        }
       } else {
         // User is signed out
         console.log("you have signed out!");
@@ -164,6 +165,7 @@ export const AuthHandler = () => {
         if (isUserStateExists) {
           //既にuserDocStateが存在しているかどうか判定
           console.log("your userdata has already exist.");
+          eraceModal();
           return;
         }
 

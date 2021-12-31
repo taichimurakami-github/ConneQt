@@ -12,7 +12,7 @@ import { MypageHandler } from "./components/MypageHandler";
 import { PageMenu } from "./components/UI/Menu";
 
 // fn imports
-import { getRelatedUserDocs } from "./fn/db/getHandler";
+import { getRelatedUserDocs, getUserDocsByDataArray } from "./fn/db/getHandler";
 // import handleOnWriteHook from "../functions";
 
 // app common style imports
@@ -28,14 +28,7 @@ export const App = (props) => {
    */
   const { authUserDoc, eraceModal } = useContext(AppRouteContext);
   // const [nowUserDoc, setNowUserDoc] = useState({...authUserDoc})
-  const [relatedUserDocsState, setRelatedUserDocsState] = useState({
-    friend: {},
-    request: {
-      received: {},
-      sent: {},
-    },
-    others: {},
-  });
+  const [relatedUserDocsState, setRelatedUserDocsState] = useState({});
   const [pageContentState, setPageContentState] = useState(
     appConfig.pageContents["001"]
   );
@@ -48,52 +41,92 @@ export const App = (props) => {
   useEffect(() => {
     (async () => {
       const r = await getRelatedUserDocs(authUserDoc);
-      setRelatedUserDocsState({
-        ...r.friend,
-        ...r.request.received,
-        ...r.request.sent,
-        ...r.others,
-      });
+      setRelatedUserDocsState(r);
       eraceModal();
     })();
   }, []);
 
   //chatRoomDataStateのUpdateHookを登録
+  //friendが新しく追加された場合は、chatRoomDataStateを自動更新し、updateHookを付与する
   useEffect(() => {
-    Object.keys(authUserDoc.friend).length > 0 &&
-      (async () => {
-        const db = getFirestore();
+    (async () => {
+      //authUserDoc.friendが取得されていない、あるいはフレンドがいない状態なら実行しない
+      if (!Object.keys(authUserDoc.friend).length > 0) return;
 
-        const chatroom_unSubFuncArr = Object.values(authUserDoc.friend).map(
-          (val) => {
-            console.log(val);
-            return onSnapshot(
-              doc(db, "chatRoom", val.chatRoomID),
-              //success callback
-              (doc) => {
-                // console.log("chatroom " + val.chatRoomID + " has been updated.");
+      const listenTargetChatRoomIDs = [];
+      const nowListeningChatRoomIDs = Object.keys(chatRoomDataState);
 
-                const newData = {
-                  ...chatRoomDataState,
-                };
-                const data = doc.data();
-                if (data) {
-                  newData[val.chatRoomID] = data;
-                  setChatRoomDataState(newData);
-                }
-              },
-              //error callback
-              (error) => {
-                console.log(error);
+      for (const friendObj of Object.values(authUserDoc.friend)) {
+        //friend.chatRoomIDがリッスンされていないchatRoomだったら
+        //listenTargetChatRoomIDsに登録
+        if (!nowListeningChatRoomIDs.includes(friendObj.chatRoomID)) {
+          listenTargetChatRoomIDs.push(friendObj.chatRoomID);
+        }
+      }
+
+      //新たに追加するchatRoomがなかったらここで終了
+      if (!listenTargetChatRoomIDs.length > 0) return;
+
+      //新しくchatRoomをリッスンする
+      const db = getFirestore();
+      const chatroom_unSubFuncArr = listenTargetChatRoomIDs.map(
+        (chatRoomID) => {
+          return onSnapshot(
+            doc(db, "chatRoom", chatRoomID),
+            //success callback
+            (doc) => {
+              //現在のchatRoomDataStateに要素を追加
+              const newData = {
+                ...chatRoomDataState,
+              };
+              const data = doc.data();
+              if (data) {
+                newData[chatRoomID] = data;
+                setChatRoomDataState(newData);
               }
-            );
-          }
-        );
+            },
+            //error callback
+            (error) => {
+              console.log(error);
+            }
+          );
+        }
+      );
 
-        //authUserStateにunsubFuncを登録
-        props.registerUnsubFunc(chatroom_unSubFuncArr, "chatRoom");
-      })();
+      //authUserStateにunsubFuncを登録
+      props.registerUnsubFunc(chatroom_unSubFuncArr, "chatRoom");
+    })();
   }, [authUserDoc.friend]);
+
+  //friend, requestユーザーがアップデートされた場合、該当ユーザーがallUserDocs内に存在していなかったら取得する
+  useEffect(() => {
+    const newUserUidArray = [];
+    const nowRelatedUsersUidArray = [
+      ...Object.keys(authUserDoc.friend),
+      ...authUserDoc.request.received,
+      ...authUserDoc.request.sent,
+    ];
+
+    //現在所持しているrelatedUserDocs内に、authUserDocsが保持しているrelatedUser(request.sent, request.received, friend)のデータが存在しない場合
+    //新たにfetchする対象とする
+    for (const uid of nowRelatedUsersUidArray) {
+      !relatedUserDocsState.hasOwnProperty(uid) && newUserUidArray.push(uid);
+    }
+
+    //新しいユーザーを取得し、relatedUserDocsに追加
+    newUserUidArray.length > 0 &&
+      (async () => {
+        const r = await getUserDocsByDataArray(newUserUidArray);
+        setRelatedUserDocsState({
+          ...relatedUserDocsState,
+          ...r,
+        });
+      })();
+  }, [
+    authUserDoc.friend,
+    authUserDoc.request.received,
+    authUserDoc.request.sent,
+  ]);
 
   // const deleteExistChatRoomData = (tRoomID = "") => {
   //   if ((chatRoomID = "")) return;
@@ -111,17 +144,14 @@ export const App = (props) => {
    */
   const handlePageContent = (id) => {
     switch (id) {
-      //SIGN_UP
-      // case appConfig.pageContents["001"]:
-      //   return <SignUp />;
-
-      //USERS_LIST
       case appConfig.pageContents["003"]:
         return (
           <FriendHandler
             nowUserDoc={authUserDoc}
             allUserDocs={relatedUserDocsState}
             chatRoomData={chatRoomDataState}
+            handleChatRoom={setChatRoomDataState}
+            handleRelatedUserDocs={setRelatedUserDocsState}
           />
         );
 

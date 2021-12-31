@@ -60,6 +60,9 @@ export const ShowFoundUsersList = (props) => {
     ];
 
     for (const user of Object.values(props.allUserDocs)) {
+      //undefinedユーザー（退会済みのユーザー）ではないユーザーのみ処理
+      if (!user) continue;
+
       //friend, requestに記録されているユーザーではなく、かつ近くにいる場合のみshowableUserDocsに保存
       !unAbleToShowUserUidArr.includes(user.uid) &&
         areUserNearby(user) &&

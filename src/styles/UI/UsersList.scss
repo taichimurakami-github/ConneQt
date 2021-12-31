@@ -36,6 +36,8 @@ $button-size: 100px;
   align-items: center;
   column-gap: 5px;
   padding: 10px 5px;
+  max-width: 750px;
+  margin: auto;
   border-bottom: 1px solid lightgray;
   &:first-child {
     border-top: 1px solid lightgray;

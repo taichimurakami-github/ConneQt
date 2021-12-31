@@ -16,13 +16,13 @@ import cmpConfig from "./FindUsers/config";
 import { AppRouteContext } from "../AppRoute";
 
 export const FindUserHandler = (props) => {
-  const { eraceModal, showLoadingModal, showConfirmModal } =
+  const { eraceModal, showLoadingModal, showConfirmModal, showErrorModal } =
     useContext(AppRouteContext);
   const [selectedUserState, setSelectedUserState] = useState(null);
   const [viewState, setViewState] = useState(cmpConfig.state.view["001"]);
 
   const fetchAndRenewAllUserDocs = async () => {
-    console.log("handle fetch");
+    // console.log("handle fetch");
 
     //モーダルを表示
     showLoadingModal();
@@ -48,17 +48,30 @@ export const FindUserHandler = (props) => {
 
     (async () => {
       showLoadingModal();
-      await sendRequest(senderUid, receiverUid);
-      setViewState(cmpConfig.state.view["001"]);
-      showConfirmModal({
-        content: {
-          title: "友達申請を送信しました",
-          text: [
-            "申請状況は友達一覧から確認できます。",
-            "申請が拒否された場合、友達一覧に表示されなくなります。",
-          ],
-        },
-      });
+      try {
+        await sendRequest(senderUid, receiverUid);
+        setViewState(cmpConfig.state.view["001"]);
+        showConfirmModal({
+          content: {
+            title: "友達申請を送信しました",
+            text: [
+              "申請状況は友達一覧から確認できます。",
+              "申請が拒否された場合、友達一覧に表示されなくなります。",
+            ],
+          },
+        });
+      } catch (e) {
+        console.log(e);
+        showErrorModal({
+          content: {
+            title: "友達申請の送信に失敗しました。",
+            text: [
+              "このユーザーに友達申請を送ることはできません。",
+              "アカウントが削除された可能性があります。",
+            ],
+          },
+        });
+      }
     })();
   };
 
