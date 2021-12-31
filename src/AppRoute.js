@@ -26,14 +26,8 @@ export const AuthHandler = () => {
   /**
    * Modal util functions
    */
-  const eraceModal = (forceErace = false) => {
-    //モーダルが表示されていて、Loadingモーダル以外で、closableがfalseの状態のみ消す
-    if (!modalState.display) return;
-
-    modalState.type === appConfig.components.modal.type["001"] &&
-      setModalState({ ...appConfig.initialState.modalState });
-
-    forceErace && setModalState({ ...appConfig.initialState.modalState });
+  const eraceModal = () => {
+    setModalState({ ...appConfig.initialState.modalState });
   };
 
   const showLoadingModal = () => {
@@ -124,9 +118,6 @@ export const AuthHandler = () => {
 
   //ログイン状態を判定・処理
   useEffect(() => {
-    //loadingエフェクトを起動
-    showLoadingModal();
-
     const auth = getAuth();
     // setPageContentState(appConfig.pageContents["002"]);
 
@@ -155,7 +146,6 @@ export const AuthHandler = () => {
         // AuthStateを初期化
         setAuthState(null);
         setViewState(appConfig.routePageContents["001"]);
-        eraceModal();
       }
     });
   }, []);
@@ -163,6 +153,7 @@ export const AuthHandler = () => {
   useEffect(() => {
     authState &&
       (async () => {
+        showLoadingModal();
         //authを通ったユーザーを指定
         //返り値は Object(見つかった) or null(見つからなかった)
         const isUserStateExists = authUserDoc ? true : false;

@@ -26,7 +26,7 @@ export const App = (props) => {
   /**
    * setState definitions
    */
-  const { authUserDoc } = useContext(AppRouteContext);
+  const { authUserDoc, eraceModal } = useContext(AppRouteContext);
   // const [nowUserDoc, setNowUserDoc] = useState({...authUserDoc})
   const [relatedUserDocsState, setRelatedUserDocsState] = useState({
     friend: {},
@@ -54,6 +54,7 @@ export const App = (props) => {
         ...r.request.sent,
         ...r.others,
       });
+      eraceModal();
     })();
   }, []);
 

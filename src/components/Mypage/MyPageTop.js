@@ -3,13 +3,14 @@ import { deleteAuthUserDoc } from "../../fn/db/deleteHandler";
 
 import { Header } from "../UI/Header";
 import { ListMenu } from "../UI/Menu";
-import { ModalConfirmButton } from "../UI/Button";
+import { ChoiceActionButton } from "../UI/Button";
 
 import { cmpConfig } from "./config";
 import { AppRouteContext } from "../../AppRoute";
 
 export const MypageTop = (props) => {
   const {
+    authUserDoc,
     eraceModal,
     showLoadingModal,
     showConfirmModal,
@@ -18,11 +19,12 @@ export const MypageTop = (props) => {
   } = useContext(AppRouteContext);
 
   const handleDeleteAccount = async () => {
-    const authUserDoc = { ...props.nowUserDoc };
+    const targetDoc = { ...authUserDoc };
     showLoadingModal();
     console.log("deleting your account...");
     signOutFromApp();
-    await deleteAuthUserDoc(authUserDoc);
+    await deleteAuthUserDoc(targetDoc);
+    eraceModal();
     showConfirmModal({
       title: "アカウントの削除が完了しました。",
       text: ["ご利用ありがとうございました。"],
@@ -90,7 +92,7 @@ export const MypageTop = (props) => {
         text: ["この操作は取り消せません。", "本当に実行しますか？"],
       },
       children: (
-        <ModalConfirmButton
+        <ChoiceActionButton
           callback={{
             yes: handleDeleteAccount,
             no: eraceModal,

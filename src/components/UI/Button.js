@@ -1,6 +1,6 @@
 import "../../styles/UI/Button.scss";
 
-export const ModalConfirmButton = (props) => {
+export const ChoiceActionButton = (props) => {
   return (
     <div className="modal-confirm-button-container">
       <button
