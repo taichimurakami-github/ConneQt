@@ -5,14 +5,12 @@ export const appConfig = {
     "002": "DEV_TEST",
   },
   initialState: {
-    App: {
-      modalState: {
-        display: false,
-        type: null,
-        closeable: false,
-        content: null
-      }
-    }
+    modalState: {
+      display: false,
+      type: null,
+      closeable: false,
+      content: null,
+    },
   },
   components: {
     modal: {
@@ -20,13 +18,24 @@ export const appConfig = {
         "001": "LOADING",
         "002": "CONFIRM",
         "003": "ERROR",
-      }
+      },
     },
+  },
+  routePageContents: {
+    "001": "NOT_SIGNED_IN",
+    "002": "REGISTRATION",
+    "003": "APP",
   },
   pageContents: {
     "001": "NOT_SIGNED_IN",
     "002": "FIND_USERS",
     "003": "CHAT",
     "004": "MY_PAGE",
-  }
-}
+  },
+};
+
+export const appInfo = {
+  version: "2021.12.31",
+  db: "firestore",
+  mode: "develop",
+};

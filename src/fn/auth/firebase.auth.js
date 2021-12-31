@@ -19,7 +19,7 @@ const signInWithGoogle = async () => {
 }
 
 const signOut = () => {
-  console.log("signout function");
+  console.log("sign out");
   getAuth().signOut();
 }
 

@@ -1,18 +1,86 @@
-html{
+@import "./assets";
+
+html {
   font-size: 62.5%;
 }
 
-body{
+body {
   font-size: 1.5rem;
   text-align: center;
 }
 
-*{
+* {
   padding: 0;
   margin: 0;
+  box-sizing: border-box;
 }
 
-
-li{
+li {
   list-style: none;
+}
+
+button {
+  display: block;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  padding: 10px 15px;
+  border: 0;
+  margin: 30px auto;
+  box-shadow: 2px 2px 5px 3px lightgray;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &.btn-gray {
+    background: $darkgray;
+  }
+
+  &.btn-orange {
+    background: $orange;
+  }
+
+  &.btn-img {
+    background: none;
+    box-shadow: none;
+    color: black;
+  }
+}
+
+.clickable:hover {
+  cursor: pointer;
+}
+
+.user-icon {
+  object-fit: contain;
+  border-radius: 10000px;
+}
+
+.name {
+  font-weight: bold;
+}
+
+.arrow-gt.absolute {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+}
+
+.p-events-none {
+  pointer-events: none;
+}
+
+.flex-xyc {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-col-xyc {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
