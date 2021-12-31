@@ -36,19 +36,24 @@ const deleteFriend = async (chatRoomID, nowUserData, targetUserData) => {
 
 const deleteAuthUserDoc = async (authUserDoc) => {
   console.log("deleteAuthUserDoc");
+  console.log(authUserDoc);
+
   //friendに登録しているchatRoomのディアクティベートも行う
-  Object.keys(authUserDoc.friend).map(async (key) => {
-    //chatRoomのディアクティベート(metaDataを消去)
-    updateDoc(doc(db, "chatRoom", authUserDoc.friend[key].chatRoomID), {
-      metaData: deleteField(),
+  const friendsData = Object.keys(authUserDoc.friend);
+
+  friendsData.length > 0 &&
+    friendsData.map(async (key) => {
+      //chatRoomのディアクティベート(metaDataを消去)
+      console.log(key, authUserDoc.friend[key].chatRoomID);
+      updateDoc(doc(db, "chatRoom", authUserDoc.friend[key].chatRoomID), {
+        metaData: deleteField(),
+      });
     });
-  });
 
   //authUserDoc削除
-  const result = await deleteDoc(doc(db, db_name.user, authUserDoc.uid));
-  console.log(result);
-
-  return result;
+  return await deleteDoc(doc(db, db_name.user, authUserDoc.uid)).catch((e) =>
+    console.log(e)
+  );
 };
 
 export { deleteFriend, deleteAuthUserDoc };

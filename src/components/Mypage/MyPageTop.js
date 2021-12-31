@@ -22,12 +22,14 @@ export const MypageTop = (props) => {
     const targetDoc = { ...authUserDoc };
     showLoadingModal();
     console.log("deleting your account...");
-    signOutFromApp();
     await deleteAuthUserDoc(targetDoc);
+    signOutFromApp();
     eraceModal();
     showConfirmModal({
-      title: "アカウントの削除が完了しました。",
-      text: ["ご利用ありがとうございました。"],
+      content: {
+        title: "アカウントの削除が完了しました。",
+        text: ["ご利用ありがとうございました。"],
+      },
     });
   };
 

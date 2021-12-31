@@ -5,6 +5,7 @@ import { cmpConfig } from "./config";
 
 export const EditText = (props) => {
   const [inputState, setInputState] = useState("");
+  let ControlledInputProps = {};
 
   const generateHeaderTitle = () => {
     switch (props.viewState) {
@@ -15,6 +16,18 @@ export const EditText = (props) => {
       case cmpConfig.state.view["004"]:
         return "年齢を編集";
       case cmpConfig.state.view["005"]:
+        ControlledInputProps = {
+          text: {
+            label: "プロフィールを100文字以内で入力",
+            placeholder: "プロフィールを入力",
+          },
+          maxLength: 100,
+          statefulNavComponent: (
+            <p>
+              {inputState.length}/{100}
+            </p>
+          ),
+        };
         return "プロフィール編集";
       default:
         return "";
@@ -42,11 +55,7 @@ export const EditText = (props) => {
           valueState={inputState}
           setValueState={setInputState}
           required={true}
-          maxLength={100}
-          text={{
-            placeholder:
-              "プロフィールを100文字以内で入力してください。100文字目以降はカットされます。",
-          }}
+          {...ControlledInputProps}
         >
           {props.children}
         </ControlledInputText>

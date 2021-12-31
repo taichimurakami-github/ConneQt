@@ -109,8 +109,12 @@ export const AuthHandler = () => {
         console.log("changed doc data");
         const data = doc.data();
         console.log(doc.data());
-        setAuthUserDoc({ ...data });
-        setViewState(appConfig.routePageContents["003"]);
+
+        //undefinedだったらこれ以下の処理を実行しない(アカウント消去時)
+        if (data) {
+          setAuthUserDoc({ ...data });
+          setViewState(appConfig.routePageContents["003"]);
+        }
       }
     );
     return registerUnsubFunc([authUserDoc_unSubFunc]);
