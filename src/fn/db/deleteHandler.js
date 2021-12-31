@@ -4,6 +4,7 @@ import {
   deleteDoc,
   deleteField,
   arrayUnion,
+  arrayRemove,
 } from "firebase/firestore";
 import { getFirestore } from "firebase/firestore";
 import { db_name } from "../../firebase.config";
@@ -76,17 +77,39 @@ export const deleteAuthUserDoc = async (authUserDoc) => {
   console.log("deleteAuthUserDoc");
   console.log(authUserDoc);
 
-  //friendに登録しているchatRoomのディアクティベートも行う
-  const friendsData = Object.keys(authUserDoc.friend);
-
-  friendsData.length > 0 &&
-    friendsData.map(async (key) => {
-      //chatRoomのディアクティベート(metaDataを消去)
-      console.log(key, authUserDoc.friend[key].chatRoomID);
-      updateDoc(doc(db, "chatRoom", authUserDoc.friend[key].chatRoomID), {
+  //friendに登録しているchatRoomのディアクティベートを行う
+  for (const key of Object.keys(authUserDoc.friend)) {
+    //chatRoomのディアクティベート(metaDataを消去)
+    try {
+      updateDoc(doc(db, db_name.chatRoom, authUserDoc.friend[key].chatRoomID), {
         metaData: deleteField(),
       });
-    });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  //requestを送ってきた相手のrequest.sentから自分を消去
+  for (const uid of authUserDoc.request.received) {
+    try {
+      updateDoc(doc(db, db_name.user, uid), {
+        "request.sent": arrayRemove(authUserDoc.uid),
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  //requestを送った相手のrequest.receivedから自分を消去
+  for (const uid of authUserDoc.request.sent) {
+    try {
+      updateDoc(doc(db, db_name.user, uid), {
+        "request.received": arrayRemove(authUserDoc.uid),
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
   //authUserDoc削除
   await deleteDoc(doc(db, db_name.user, authUserDoc.uid)).catch((e) =>

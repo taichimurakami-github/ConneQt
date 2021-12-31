@@ -33,3 +33,9 @@ export const appConfig = {
     "004": "MY_PAGE",
   },
 };
+
+export const appInfo = {
+  version: "2021.12.31",
+  db: "firestore",
+  mode: "develop",
+};

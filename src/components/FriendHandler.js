@@ -9,9 +9,11 @@ import { ShowUserProfileOnRequestSent } from "./Friend/ShowUserProfileOnRequestS
 import { approveRequest, rejectRequest } from "../fn/db/requestHandler";
 
 import { AppRouteContext } from "../AppRoute";
+import { updateUserDocObjectData } from "../fn/db/updateHandler";
 
 export const FriendHandler = (props) => {
-  const { showLoadingModal, showConfirmModal } = useContext(AppRouteContext);
+  const { showLoadingModal, showConfirmModal, showErrorModal, eraceModal } =
+    useContext(AppRouteContext);
   const [viewState, setViewState] = useState(cmpConfig.state.view["001"]);
   const [selectedUserDocState, setSelectedUserDocState] = useState(null);
   const [selectedChatRoomDataState, setSelectedChatRoomDataState] =
@@ -43,13 +45,28 @@ export const FriendHandler = (props) => {
 
     (async () => {
       showLoadingModal();
-      await rejectRequest(rejectingUserUid, rejectedUserUid);
-      setViewState(cmpConfig.state.view["001"]);
-      showConfirmModal({
-        content: {
-          title: rejectedUserName + " さんの友達リクエストを拒否しました。",
-        },
-      });
+      try {
+        await rejectRequest(rejectingUserUid, rejectedUserUid);
+        setViewState(cmpConfig.state.view["001"]);
+        showConfirmModal({
+          content: {
+            title: rejectedUserName + " さんの友達リクエストを拒否しました。",
+          },
+        });
+      } catch (e) {
+        //リクエスト受諾失敗
+        console.log(e);
+
+        showErrorModal({
+          content: {
+            title: "エラーが発生しました。",
+            text: [
+              "相手がアカウントを消去したか、",
+              "通信エラーが発生した可能性があります。",
+            ],
+          },
+        });
+      }
     })();
   };
 
@@ -68,13 +85,48 @@ export const FriendHandler = (props) => {
 
     (async () => {
       showLoadingModal();
-      await approveRequest(approvingUserUid, approvedUserUid);
-      setViewState(cmpConfig.state.view["001"]);
-      showConfirmModal({
-        content: {
-          title: approvedUserName + " さんと友達になりました。",
-        },
-      });
+      try {
+        await approveRequest(approvingUserUid, approvedUserUid);
+        setViewState(cmpConfig.state.view["001"]);
+        showConfirmModal({
+          content: {
+            title: approvedUserName + " さんと友達になりました。",
+          },
+        });
+      } catch (e) {
+        console.log(e);
+
+        //もし自分の友達リスト内に相手のuidがあったら削除
+        if (Object.keys(props.nowUserDoc.friend).includes(approvedUserUid)) {
+          updateUserDocObjectData(
+            "deleteField",
+            approvingUserUid,
+            "friend" + approvedUserUid
+          );
+        }
+
+        showErrorModal({
+          closable: false,
+          content: {
+            title: "エラーが発生しました。",
+            text: [
+              "相手がアカウントを消去したか、",
+              "通信エラーが発生した可能性があります。",
+            ],
+          },
+          children: (
+            <button
+              className="btn-gray"
+              onClick={() => {
+                setViewState(cmpConfig.state.view["001"]);
+                eraceModal();
+              }}
+            >
+              前のページに戻る
+            </button>
+          ),
+        });
+      }
     })();
   };
 

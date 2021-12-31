@@ -31,9 +31,10 @@ const sendRequest = async (senderUid, receiverUid) => {
   return true;
 };
 
+//自分のupdateDocは最後に実行！
 const approveRequest = async (approvingUserUid, approvedUserUid) => {
   /**
-   * チャットルームを作成する準備
+   * チャットルームを作成
    */
 
   //チャットルームIDを作成
@@ -51,23 +52,12 @@ const approveRequest = async (approvingUserUid, approvedUserUid) => {
   });
 
   /**
-   * userDocを更新する準備
+   * userDocを更新
    */
 
   // create ref
   const approvingUserDoc = doc(db, "users", approvingUserUid);
   const approvedUserDoc = doc(db, "users", approvedUserUid);
-  // const test = {
-  //   "request.received": arrayRemove(approvedUserUid),
-
-  // }
-
-  // リクエストを許可する側のUserDocを更新
-  // request.received からリクエスト送信者のuidを削除 >> friendに追加
-  await updateDoc(approvingUserDoc, {
-    "request.received": arrayRemove(approvedUserUid),
-    ["friend." + approvedUserUid]: { chatRoomID: chatRoomID },
-  });
 
   // リクエストを許可される側のUserDocを更新
   // request.sent からリクエスト受信者のuidを削除 >> friendに追加
@@ -76,9 +66,15 @@ const approveRequest = async (approvingUserUid, approvedUserUid) => {
     ["friend." + approvingUserUid]: { chatRoomID: chatRoomID },
   });
 
-  return true;
+  // リクエストを許可する側のUserDocを更新
+  // request.received からリクエスト送信者のuidを削除 >> friendに追加
+  await updateDoc(approvingUserDoc, {
+    "request.received": arrayRemove(approvedUserUid),
+    ["friend." + approvedUserUid]: { chatRoomID: chatRoomID },
+  });
 };
 
+//自分のupdateDocを最初に実行！！
 const rejectRequest = async (rejectingUserUid, rejectedUserUid) => {
   /**
    * userDocを更新する準備

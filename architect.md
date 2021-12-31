@@ -27,12 +27,3 @@ showFoundUser で、rejected ユーザーを取得しないように注意する
 
 問題点：ネストが深いので、値の更新がめんどくさい気がする > とりあえずデータベース的な感じで受け取っといたらいい
 後々 Store 化すべく、localStorage 保存しよう
-
-friend 追加部分の firebase の update 部分更新
-
-<modify and test>
-modal eracer
-friend.delete
-friend.add
-delete userAccount
-set geolocation

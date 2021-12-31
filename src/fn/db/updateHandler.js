@@ -4,6 +4,7 @@ import {
   arrayUnion,
   Timestamp,
   getFirestore,
+  deleteField,
 } from "firebase/firestore";
 import { db_name } from "../../firebase.config";
 import "./firestore.ready";
@@ -28,4 +29,23 @@ export const updateChatRoomData = async (sendData) => {
     }),
   });
   console.log("...done!");
+};
+
+export const updateUserDocObjectData = async (
+  mode,
+  targetUserUid,
+  fieldRef,
+  data
+) => {
+  const docRef = doc(db, db_name.user, targetUserUid);
+
+  switch (mode) {
+    case "deleteField":
+      return await updateDoc(docRef, {
+        [fieldRef]: deleteField(),
+      });
+
+    default:
+      return;
+  }
 };

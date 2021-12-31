@@ -1,8 +1,8 @@
 import { signInWithGoogle } from "../fn/auth/firebase.auth";
 import { Header } from "./UI/Header";
 
-import "../styles/SignIn.scss";
-import logo from "../images/logo-1x.png";
+import "../styles/SignUp.scss";
+import logo from "../images/logo.png";
 
 export const SignUp = () => {
   return (
