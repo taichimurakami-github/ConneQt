@@ -1,10 +1,12 @@
-import { Header } from "../UI/Header";
-import { cmpConfig } from "./config";
-import { ListMenu } from "../UI/Menu";
-import { AppRouteContext } from "../../AppRoute";
 import { useContext } from "react";
-import { ModalConfirmButton } from "../UI/Button";
 import { deleteAuthUserDoc } from "../../fn/db/deleteHandler";
+
+import { Header } from "../UI/Header";
+import { ListMenu } from "../UI/Menu";
+import { ModalConfirmButton } from "../UI/Button";
+
+import { cmpConfig } from "./config";
+import { AppRouteContext } from "../../AppRoute";
 
 export const MypageTop = (props) => {
   const {
@@ -21,7 +23,10 @@ export const MypageTop = (props) => {
     console.log("deleting your account...");
     signOutFromApp();
     await deleteAuthUserDoc(authUserDoc);
-    eraceModal();
+    showConfirmModal({
+      title: "アカウントの削除が完了しました。",
+      text: ["ご利用ありがとうございました。"],
+    });
   };
 
   const handleSetGeolocation = () => {
@@ -64,7 +69,6 @@ export const MypageTop = (props) => {
     };
 
     const errorCallback = (e) => {
-      const errorData = e;
       let errorMessage = "位置情報の取得中にエラーが発生しました。";
 
       if (e.code === 1) errorMessage = "現在地の取得を許可してください。";
@@ -101,7 +105,11 @@ export const MypageTop = (props) => {
       <Header title="マイページ" backable={false} />
 
       <ul className="mypage-top-wrapper">
-        <img className="user-icon" src={props.nowUserDoc?.photo}></img>
+        <img
+          className="user-icon"
+          src={props.nowUserDoc?.photo}
+          alt={props.nowUserDoc?.name + "さんのプロフィール画像"}
+        ></img>
 
         <ListMenu
           id={cmpConfig.state.view["003"]}

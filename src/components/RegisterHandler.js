@@ -7,8 +7,12 @@ import { ControlledInputText } from "./UI/InputText";
 import { AppRouteContext } from "../AppRoute";
 import { getAddressByZipcode } from "../fn/app/getAddressByZipcode";
 import { setGeolocation } from "../fn/app/geolocation";
-import { registerAuthUserDoc } from "../fn/db/firestore.handler";
+import { registerAuthUserDoc } from "../fn/db/registerHandler";
 import { AgeOptions } from "./UI/Options";
+import {
+  validateAccountData,
+  validateZipcode,
+} from "../fn/app/validateAccountData";
 
 const userDataReducerFunc = (state, action) => {
   switch (action.type) {
@@ -24,9 +28,8 @@ const userDataReducerFunc = (state, action) => {
 };
 
 export const RegisterHandler = (props) => {
-  const { eraceModal, showLoadingModal, showErrorModal } =
+  const { eraceModal, showLoadingModal, showConfirmModal, showErrorModal } =
     useContext(AppRouteContext);
-
   const [registerUserData, dispatchUserData] = useReducer(userDataReducerFunc, {
     // auto complete meta data
     ...userDocTemplate,
@@ -38,6 +41,7 @@ export const RegisterHandler = (props) => {
     photo: props?.authState?.photoURL,
   });
   const [hometownZipcode, setHometownZipcode] = useState("");
+
   const handleSubmit = (e) => {
     console.log("submit!");
     e.preventDefault();
@@ -47,26 +51,40 @@ export const RegisterHandler = (props) => {
       showLoadingModal();
       await registerAuthUserDoc({ ...registerUserData });
       props.handleAuthUserDoc(props.authState);
-      eraceModal();
+      showConfirmModal({
+        content: {
+          title: "アカウント登録に成功しました！",
+          text: [
+            "まずは下部メニュー「見つける」から、",
+            "周囲に友達候補がいるか確認しましょう！",
+          ],
+        },
+      });
     })();
   };
 
   useEffect(() => {
+    showConfirmModal({
+      content: {
+        title: "Hey! へようこそ！",
+        text: ["まずはアカウントへの情報登録を行いましょう！"],
+      },
+    });
+  }, []);
+
+  useEffect(() => {
     hometownZipcode !== "" &&
       (async () => {
-        if (hometownZipcode.length < 7 && 8 < hometownZipcode.length) return;
+        //郵便番号のバリデーション
+        const parsedZipcode = validateZipcode(hometownZipcode);
+        if (!parsedZipcode) return;
 
-        // 入力された郵便番号（ハイフン消去）
-        const parsedZipcode = hometownZipcode.split("-").join("");
-        console.log(parsedZipcode);
-
-        //ハイフン以外に、数字以外の文字列を入力してたら終了
-        //数値変換後、7桁出なければ終了
-        if (isNaN(parsedZipcode) || parsedZipcode.length !== 7) return;
-
+        //APIで住所取得
         showLoadingModal();
         const fetchResponse = await getAddressByZipcode(parsedZipcode);
+        eraceModal();
 
+        //取得結果を分析・整形
         if (fetchResponse.status === 200 && fetchResponse.results) {
           //正常なレスポンスを取得し、かつ住所が取得できた
           const result = fetchResponse.results[0];
@@ -93,14 +111,14 @@ export const RegisterHandler = (props) => {
           showErrorModal({
             title: "住所の取得に失敗しました。",
             text: [
-              "APIの不具合により、住所の取得に失敗しました。",
-              "お手数ですが、開発者までご連絡ください。",
+              "郵便番号からの住所の取得に失敗しました。",
+              "お手数ですが、もう一度郵便番号を入力してください。s",
             ],
           });
+
+          //その他：住所が存在しないなど(都庁とかの特殊郵便番号だと存在しない扱いになる)
           return;
         }
-
-        eraceModal();
       })();
   }, [hometownZipcode]);
 
@@ -113,7 +131,11 @@ export const RegisterHandler = (props) => {
         }}
       />
       <form onSubmit={handleSubmit}>
-        <img src={registerUserData.photo} className="user-icon"></img>
+        <img
+          src={registerUserData.photo}
+          className="user-icon"
+          alt="アカウントプロフィール画像"
+        ></img>
 
         <ControlledInputText
           id="userName"
@@ -125,10 +147,11 @@ export const RegisterHandler = (props) => {
             });
           }}
           text={{
-            label: "お名前",
-            placeholder: "お名前を入力してください",
+            label: "お名前(30文字以内で入力)",
+            placeholder: "お名前を入力",
           }}
           required={true}
+          maxLength={30}
         />
 
         <ControlledInputText
@@ -142,8 +165,7 @@ export const RegisterHandler = (props) => {
             });
           }}
           text={{
-            label: "年齢",
-            placeholder: "お名前を入力してください",
+            label: "年齢(選択してください)",
           }}
           required={true}
         >
@@ -160,8 +182,8 @@ export const RegisterHandler = (props) => {
             });
           }}
           text={{
-            label: "出身大学を記入",
-            placeholder: "出身大学名を記入してください",
+            label: "あなたの出身大学",
+            placeholder: "出身大学名を入力",
           }}
           required={true}
         />
@@ -171,19 +193,21 @@ export const RegisterHandler = (props) => {
           valueState={hometownZipcode}
           setValueState={setHometownZipcode}
           text={{
-            label: "実家の郵便番号を入力（ハイフン省略可）",
-            placeholder: "半角英数字で郵便番号を入力してください",
+            label: "実家の郵便番号（ハイフン省略可）",
+            placeholder: "半角英数字で郵便番号を入力",
           }}
           required={true}
+          statefulNavComponent={
+            <p className="data-showcase">
+              住所：
+              {registerUserData.hometown.prefecture !== "" &&
+              registerUserData.hometown.city !== ""
+                ? registerUserData.hometown.prefecture +
+                  registerUserData.hometown.city
+                : "郵便番号を正しく入力してください"}
+            </p>
+          }
         />
-        <p className="data-showcase">
-          住所：
-          {registerUserData.hometown.prefecture !== "" &&
-          registerUserData.hometown.city !== ""
-            ? registerUserData.hometown.prefecture +
-              registerUserData.hometown.city
-            : "郵便番号を正しく入力してください"}
-        </p>
 
         <ControlledInputText
           id="userProfile"
@@ -202,6 +226,11 @@ export const RegisterHandler = (props) => {
               "プロフィール文を100文字以内で入力してください。100文字以上入力するとカットされます。",
           }}
           required={true}
+          statefulNavComponent={
+            <p>
+              {registerUserData.profile.length}/{100}
+            </p>
+          }
         />
 
         <button
@@ -211,6 +240,9 @@ export const RegisterHandler = (props) => {
               : "btn-orange"
           }`}
           type="button"
+          disabled={
+            registerUserData.location?.lat && registerUserData.location?.lng
+          }
           onClick={() => {
             showLoadingModal();
             setGeolocation((value) => {
@@ -224,18 +256,18 @@ export const RegisterHandler = (props) => {
             });
           }}
         >
-          現在地を設定（後からでも設定可能です）
+          {registerUserData.location?.lat && registerUserData.location?.lng
+            ? "現在地を取得しました。"
+            : "現在地を設定（後からでも設定可能です）"}
         </button>
-        <p className="data-showcase">
-          現在地：
-          {`${
-            registerUserData.location?.lat && registerUserData.location?.lng
-              ? "現在地を取得しました。"
-              : "現在地が取得されていません"
-          }`}
-        </p>
 
-        <button className="btn-orange" type="submit">
+        <button
+          className={`${
+            validateAccountData(registerUserData) ? "btn-orange" : "btn-gray"
+          }`}
+          type="submit"
+          disabled={!validateAccountData(registerUserData)}
+        >
           この内容で登録する
         </button>
       </form>

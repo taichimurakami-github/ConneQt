@@ -1,13 +1,15 @@
 import { useState, useEffect, createContext } from "react";
 import { App } from "./App";
-import { SignUp } from "./components/SignUp";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { signOut } from "./fn/auth/firebase.auth";
+
 import { appConfig } from "./app.config";
+import { SignUp } from "./components/SignUp";
 import { ModalHandler } from "./components/ModalHandler";
 import { RegisterHandler } from "./components/RegisterHandler";
-import { getAuthUserDoc } from "./fn/db/firestore.handler";
+
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { doc, getFirestore, onSnapshot } from "firebase/firestore";
+import { getAuthUserDoc } from "./fn/db/getHandler";
+import { signOut } from "./fn/auth/firebase.auth";
 
 export const AppRouteContext = createContext();
 
@@ -24,8 +26,15 @@ export const AuthHandler = () => {
   /**
    * Modal util functions
    */
-  const eraceModal = () =>
-    setModalState({ ...appConfig.initialState.modalState });
+  const eraceModal = (forceErace = false) => {
+    //モーダルが表示されていて、Loadingモーダル以外で、closableがfalseの状態のみ消す
+    if (!modalState.display) return;
+
+    modalState.type === appConfig.components.modal.type["001"] &&
+      setModalState({ ...appConfig.initialState.modalState });
+
+    forceErace && setModalState({ ...appConfig.initialState.modalState });
+  };
 
   const showLoadingModal = () => {
     setModalState({
@@ -186,13 +195,6 @@ export const AuthHandler = () => {
    */
   const handleView = () => {
     switch (viewState) {
-      case appConfig.routePageContents["001"]:
-        /**
-         * authUserDocが取得できなかった
-         *  >> ログイン前画面表示
-         */
-        return <SignUp />;
-
       case appConfig.routePageContents["002"]:
         /**
          * authSStateが存在かつauthUserDocが取得できなかった
@@ -220,6 +222,13 @@ export const AuthHandler = () => {
             registerUnsubFunc={registerUnsubFunc}
           />
         );
+
+      default:
+        /**
+         * authUserDocが取得できなかった
+         *  >> ログイン前画面表示
+         */
+        return <SignUp />;
     }
   };
 

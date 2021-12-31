@@ -11,8 +11,7 @@ import { approveRequest, rejectRequest } from "../fn/db/requestHandler";
 import { AppRouteContext } from "../AppRoute";
 
 export const FriendHandler = (props) => {
-  const { eraceModal, showLoadingModal, showConfirmModal } =
-    useContext(AppRouteContext);
+  const { showLoadingModal, showConfirmModal } = useContext(AppRouteContext);
   const [viewState, setViewState] = useState(cmpConfig.state.view["001"]);
   const [selectedUserDocState, setSelectedUserDocState] = useState(null);
   const [selectedChatRoomDataState, setSelectedChatRoomDataState] =

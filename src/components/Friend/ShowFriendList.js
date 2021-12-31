@@ -1,12 +1,11 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import cmpConfig from "./config";
 import { Header } from "../UI/Header";
 import { UsersList } from "../UI/UsersList";
 import { AppRouteContext } from "../../AppRoute";
 
 export const ShowFriendList = (props) => {
-  const { authUserDoc, showErrorModal, eraceModal } =
-    useContext(AppRouteContext);
+  const { authUserDoc, showErrorModal } = useContext(AppRouteContext);
 
   const getTopMessageFromChatRoomData = (chatRoomID) => {
     const chatRoomData = { ...props.chatRoomData[chatRoomID] };
@@ -143,6 +142,7 @@ export const ShowFriendList = (props) => {
                     <img
                       className="user-icon p-events-none"
                       src={userDoc?.photo}
+                      alt={userDoc?.name + "さんのプロフィール画像"}
                     />
                     <div className="text-container p-events-none">
                       <p className="name p-events-none">{userDoc?.name}</p>
@@ -162,7 +162,11 @@ export const ShowFriendList = (props) => {
                     className={`user-list clickable`}
                     onClick={handleShowUnactivatedChatRoom}
                   >
-                    <img className="user-icon p-events-none" src="" />
+                    <img
+                      className="user-icon p-events-none"
+                      src=""
+                      alt="退会したユーザー"
+                    />
                     <div className="text-container p-events-none">
                       <p className="name p-events-none">退会したユーザー</p>
                       <p className="p-events-none">

@@ -4,18 +4,11 @@ import {
   getDoc,
   getDocs,
   getFirestore,
-  setDoc,
-  updateDoc,
-  onSnapshot,
-  arrayUnion,
-  Timestamp,
   query,
   where,
 } from "firebase/firestore";
 import { db_name, firestoreQueryConfig } from "../../firebase.config";
 import "./firestore.ready";
-// import "./cloudfunctions.ready";
-
 const db = getFirestore();
 
 /**
@@ -24,7 +17,7 @@ const db = getFirestore();
  * @param {authData} authData
  * @returns {null | Object}
  */
-const getAuthUserDoc = async (authData) => {
+export const getAuthUserDoc = async (authData) => {
   console.log(`searching user docs ... where uid = ${authData.uid}`);
 
   const docRef = doc(db, db_name.user, authData.uid);
@@ -40,7 +33,7 @@ const getAuthUserDoc = async (authData) => {
  * 見つからなかったら、空の配列を返す
  * @returns {Array}
  */
-const getRelatedUserDocs = async (userDoc) => {
+export const getRelatedUserDocs = async (userDoc) => {
   console.log("getting related user docs from firestore...");
   const queryMetaData = [...userDoc.meta];
   const max_arr_length = firestoreQueryConfig.array_contains_any.max_length;
@@ -101,7 +94,7 @@ const getRelatedUserDocs = async (userDoc) => {
   // console.log("metaUsersUidArray");
   // console.log(metaUserUidArray);
 
-  metaUserUidArray.map((uid) => {
+  for (const uid of metaUserUidArray) {
     //friendユーザーだった場合
     //friendUserDocsオブジェクトに該当のuserDocデータを入れる
     //metaUserDocsオブジェクトから該当要素を削除する
@@ -127,7 +120,7 @@ const getRelatedUserDocs = async (userDoc) => {
     if (userDoc.request.rejected.includes(uid)) {
       delete metaUserDocs[uid];
     }
-  });
+  }
 
   // console.log("phase2 finished");
   // console.log(metaUserDocs);
@@ -200,10 +193,9 @@ const getRelatedUserDocs = async (userDoc) => {
     };
     //取得したUserDocArrayをターゲットのobjectに追加
     const addUserDocArrToObject = (data, obj) => {
-      data.map((val) => {
-        //val !== undefinedの時のみobjectに入れる
+      for (const val of data) {
         if (val && val?.uid) obj[val.uid] = val;
-      });
+      }
     };
 
     //追加のfriendデータを取得
@@ -263,91 +255,4 @@ const getRelatedUserDocs = async (userDoc) => {
   console.log("relatedUserDocs fetch done");
   console.log(result);
   return result;
-};
-
-const registerAuthUserDoc = async (registerDataWithoutMetaArr) => {
-  console.log("creating your account...");
-  const template = { ...registerDataWithoutMetaArr };
-  template.meta = [
-    registerDataWithoutMetaArr.hometown.prefecture,
-    registerDataWithoutMetaArr.hometown.city,
-    registerDataWithoutMetaArr.history.university,
-  ];
-
-  //create user doc
-  return await setDoc(doc(db, db_name.user, template.uid), template);
-};
-
-const updateUserData = async (updateData) => {
-  const docRef = doc(db, db_name.user, updateData.uid);
-  await updateDoc(docRef, updateData);
-};
-
-const registerUpdateHookForUsers = (uid, setter) => {
-  console.log("registered updateHook for firestore.");
-
-  if (!uid || typeof uid !== "string") {
-    throw new Error(
-      "registerUpdateHookForUser Error: uidを引数に正しく指定してください."
-    );
-  }
-
-  if (!setter) {
-    throw new Error(
-      "registerUpdateHookUser Error: UserDocを保持するstate用のsetterを正しく指定してください。"
-    );
-  }
-
-  console.log(uid);
-  /**
-   * onSnapshot with doc
-   * 該当ユーザーのデータベースの読み込みを行う
-   * 初回起動時はユーザーデータが "added" 扱いで取得される。
-   * それ以降はユーザーデータに変更があったときのみ該当データが取得される。
-   */
-  return onSnapshot(doc(db, db_name.user, uid), (doc) => {
-    console.log("user data updated.");
-    console.log(doc.data());
-    setter(doc.data());
-  });
-};
-
-const registerUpdateHookForChatroom = (chatRoomID, setter) => {
-  if (!setter) {
-    console.log("UPDATE HOOK SETTER MUST BE A FUNCTION");
-    return null;
-  }
-
-  console.log(chatRoomID);
-
-  return onSnapshot(doc(db, db_name.chatRoom, chatRoomID), (doc) => {
-    console.log("chatroom id=" + chatRoomID + " data updated.");
-    console.log(doc.data());
-    setter(doc.data());
-  });
-};
-
-const updateChatRoomData = async (sendData) => {
-  const docRef = doc(db, db_name.chatRoom, sendData.chatRoomID);
-  const dateTime = Timestamp.now();
-
-  //set user doc
-  await updateDoc(docRef, {
-    data: arrayUnion({
-      uid: sendData.uid,
-      text: sendData.text,
-      sentAt: dateTime,
-    }),
-  });
-  console.log("...done!");
-};
-
-export {
-  getAuthUserDoc,
-  registerAuthUserDoc,
-  getRelatedUserDocs,
-  updateUserData,
-  updateChatRoomData,
-  registerUpdateHookForUsers,
-  registerUpdateHookForChatroom,
 };

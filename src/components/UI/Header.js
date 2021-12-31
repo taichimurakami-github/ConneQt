@@ -10,7 +10,7 @@ export const Header = (props) => {
         } clickable`}
         onClick={props?.handleBack}
       >
-        <img className="arrow-lt" src={arrow_lt}></img>
+        <img className="arrow-lt" src={arrow_lt} alt=""></img>
         <span className="text">
           {props?.text?.backToButton ? props.text.backToButton : "戻る"}
         </span>

@@ -5,7 +5,7 @@ import icon_friend_yellow from "./icon-friend-yellow.svg";
 import icon_mypage_gray from "./icon-mypage-gray.svg";
 import icon_mypage_yellow from "./icon-mypage-yellow.svg";
 
-export default {
+const srcList = {
   icon_find_gray: icon_find_gray,
   icon_find_yellow: icon_find_yellow,
   icon_friend_gray: icon_friend_gray,
@@ -13,3 +13,5 @@ export default {
   icon_mypage_gray: icon_mypage_gray,
   icon_mypage_yellow: icon_mypage_yellow,
 };
+
+export default srcList;

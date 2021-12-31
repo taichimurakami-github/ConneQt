@@ -1,15 +1,13 @@
 import { useContext, useState } from "react";
-
-import { updateUserData } from "../fn/db/firestore.handler";
-
-import { AppRouteContext } from "../AppRoute";
+import { updateUserData } from "../fn/db/updateHandler";
 
 import { cmpConfig } from "./Mypage/config";
 import { MypageTop } from "./Mypage/MyPageTop";
 import { EditText } from "./Mypage/EditText";
-// import { EditLocation } from "./Mypage/EditLocation";
-import "../styles/mypage.scss";
 import { AgeOptions } from "./UI/Options";
+import { AppRouteContext } from "../AppRoute";
+
+import "../styles/mypage.scss";
 
 export const MypageHandler = (props) => {
   const [viewState, setViewState] = useState(cmpConfig.state.view["001"]);

@@ -16,19 +16,25 @@ export const ControlledInputText = (props) => {
         </label>
       )}
       {props?.element === "textarea" ? (
-        <textarea
-          id={props.id}
-          className={props?.className?.textarea ? props.className.textarea : ""}
-          placeholder={props?.text?.placeholder ? props.text.placeholder : ""}
-          value={props.valueState}
-          onChange={handleChange}
-          maxLength={props?.maxLength}
-          required={props?.required ? true : false}
-        ></textarea>
+        <>
+          <textarea
+            id={props.id}
+            className={`${props?.className?.inputElement || ""} ${
+              props?.statefulNavComponent ? "has-stateful-nav" : ""
+            }`}
+            placeholder={props?.text?.placeholder || ""}
+            value={props.valueState}
+            onChange={handleChange}
+            maxLength={props?.maxLength}
+            required={props?.required ? true : false}
+          ></textarea>
+        </>
       ) : props?.element === "select" ? (
         <select
           id={props.id}
-          className={props?.className?.textarea ? props.className.textarea : ""}
+          className={`${props?.className?.inputElement || ""} ${
+            props?.statefulNavComponent ? "has-stateful-nav" : ""
+          }`}
           value={props.valueState}
           onChange={handleChange}
           required={props?.required ? true : false}
@@ -38,7 +44,9 @@ export const ControlledInputText = (props) => {
       ) : (
         <input
           id={props.id}
-          className={props?.className?.input ? props.className.input : ""}
+          className={`${props?.className?.inputElement || ""} ${
+            props?.statefulNavComponent ? "has-stateful-nav" : ""
+          }`}
           placeholder={props?.text?.placeholder ? props.text.placeholder : ""}
           value={props.valueState}
           onChange={handleChange}
@@ -46,6 +54,7 @@ export const ControlledInputText = (props) => {
           pattern={props?.pattern}
         ></input>
       )}
+      {props?.statefulNavComponent}
     </>
   );
 };

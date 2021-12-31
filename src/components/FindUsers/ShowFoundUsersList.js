@@ -1,8 +1,9 @@
-import { useContext, useEffect, useMemo, useState } from "react";
-import { AppRouteContext } from "../../AppRoute";
+import { useContext, useMemo } from "react";
+
 import { Header } from "../UI/Header";
 import { UsersCard } from "../UI/UsersCard";
-// import { UsersList } from "../UI/UsersList";
+
+import { AppRouteContext } from "../../AppRoute";
 import cmpConfig from "./config";
 
 export const ShowFoundUsersList = (props) => {

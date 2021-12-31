@@ -21,7 +21,11 @@ export const UsersList = (props) => {
               onClick={props?.handleClick}
               key={val.uid}
             >
-              <img className="user-icon p-events-none" src={val?.photo} />
+              <img
+                className="user-icon p-events-none"
+                src={val?.photo}
+                alt={val?.name + "さんのプロフィール画像"}
+              />
               <div className="text-container p-events-none">
                 <p className="name p-events-none">{val?.name}</p>
                 <p className="profile p-events-none">

@@ -7,7 +7,7 @@ import { ShowUserProfile } from "./FindUsers/ShowUserProfile";
 import { ShowRequestForm } from "./FindUsers/ShowRequestForm";
 
 //import firebase fn
-import { getRelatedUserDocs } from "../fn/db/firestore.handler";
+import { getRelatedUserDocs } from "../fn/db/getHandler";
 import { sendRequest } from "../fn/db/requestHandler";
 
 //import config

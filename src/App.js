@@ -12,7 +12,7 @@ import { MypageHandler } from "./components/MypageHandler";
 import { PageMenu } from "./components/UI/Menu";
 
 // fn imports
-import { getRelatedUserDocs } from "./fn/db/firestore.handler";
+import { getRelatedUserDocs } from "./fn/db/getHandler";
 // import handleOnWriteHook from "../functions";
 
 // app common style imports
@@ -94,14 +94,14 @@ export const App = (props) => {
       })();
   }, [authUserDoc.friend]);
 
-  const deleteExistChatRoomData = (chatRoomID = "") => {
-    if ((chatRoomID = "")) return;
+  // const deleteExistChatRoomData = (tRoomID = "") => {
+  //   if ((chatRoomID = "")) return;
 
-    const validatedChatRoomDataState = { ...chatRoomDataState };
-    delete validatedChatRoomDataState[chatRoomID];
+  //   const validatedChatRoomDataState = { ...chatRoomDataState };
+  //   delete validatedChatRoomDataState[chatRoomID];
 
-    setChatRoomDataState(validatedChatRoomDataState);
-  };
+  //   setChatRoomDataState(validatedChatRoomDataState);
+  // };
 
   /**
    * handle Page Content(Main content) by appConfig.pageContents data

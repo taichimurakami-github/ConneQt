@@ -1,12 +1,10 @@
-import { useRef, useState } from "react";
-
+import { useState } from "react";
 import { curStrLength } from "../../fn/util/cutStrLength";
 
 import "../../styles/UI/UsersCard.scss";
 
 export const UsersCard = (props) => {
   const [nowDisplay, setNowDisplay] = useState(0);
-  const paginationRef = useRef(null);
 
   return (
     <div className="carousel-wrapper">
@@ -47,7 +45,11 @@ export const UsersCard = (props) => {
                 }`}
                 key={val.uid}
               >
-                <img className="user-icon" src={val?.photo} />
+                <img
+                  className="user-icon"
+                  src={val?.photo}
+                  alt={val?.name + "さんのプロフィール画像"}
+                />
 
                 <p className="name">{val?.name}</p>
                 <p className="age">

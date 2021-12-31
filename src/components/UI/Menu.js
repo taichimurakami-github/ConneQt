@@ -88,7 +88,7 @@ export const ListMenu = (props) => {
     >
       <h3 className="nav-title">{props.title}</h3>
       <p className="nav-content">{props?.content}</p>
-      <img className="arrow-gt absolute" src={darkgrayArrowGt}></img>
+      <img className="arrow-gt absolute" src={darkgrayArrowGt} alt=""></img>
     </li>
   );
 };

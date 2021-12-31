@@ -1,12 +1,14 @@
 import { useMemo, useState, useReducer, useContext, useEffect } from "react";
-import { Header } from "../UI/Header";
+
+import { updateChatRoomData } from "../../fn/db/updateHandler";
+import { deleteFriend } from "../../fn/db/deleteHandler";
+
 import cmpConfig from "./config";
+import { Header } from "../UI/Header";
+import { UserProfile } from "../UI/UserProfile";
+import { AppRouteContext } from "../../AppRoute";
 
 import "../../styles/chat.scss";
-import { updateChatRoomData } from "../../fn/db/firestore.handler";
-import { UserProfile } from "../UI/UserProfile";
-import { deleteFriend } from "../../fn/db/deleteHandler";
-import { AppRouteContext } from "../../AppRoute";
 
 export const ShowChatRoom = (props) => {
   console.log(props.metaData);
@@ -125,6 +127,11 @@ export const ShowChatRoom = (props) => {
                     <img
                       className="user-icon"
                       src={props.metaData.doc.with?.photo || ""}
+                      alt={
+                        props.userDoc?.name
+                          ? props.userDoc.name + "さんのプロフィール画像"
+                          : ""
+                      }
                     ></img>
                   )}
 
