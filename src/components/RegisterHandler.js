@@ -1,18 +1,17 @@
 import { useContext, useReducer, useState, useEffect } from "react";
 import { userDocTemplate } from "../firebase.config";
 
-import { Header } from "./UI/Header";
-import { ControlledInputText } from "./UI/InputText";
-
 import { AppRouteContext } from "../AppRoute";
-import { getAddressByZipcode } from "../fn/app/getAddressByZipcode";
-import { setGeolocation } from "../fn/app/geolocation";
 import { registerAuthUserDoc } from "../fn/db/registerHandler";
-import { AgeOptions } from "./UI/Options";
-import {
-  validateAccountData,
-  validateZipcode,
-} from "../fn/app/validateAccountData";
+
+import { cmpConfig } from "./Register/config";
+import { InputBasicData } from "./Register/InputBasicData";
+import { InputHometownData } from "./Register/InputHometownData";
+import { InputHistoryData } from "./Register/InputHistoryData";
+import { ConfirmInputData } from "./Register/ConfirmInputData";
+import { InputNowLocationData } from "./Register/InputNowLocationData";
+
+import "../styles/Register.scss";
 
 const userDataReducerFunc = (state, action) => {
   switch (action.type) {
@@ -39,8 +38,12 @@ export const RegisterHandler = (props) => {
     // initial value from authState
     name: props?.authState?.displayName,
     photo: props?.authState?.photoURL,
+
+    //set initial value for input
+    age: "23",
   });
-  const [hometownZipcode, setHometownZipcode] = useState("");
+
+  const [viewState, setViewState] = useState(cmpConfig.state.view["001"]);
 
   const handleSubmit = (e) => {
     console.log("submit!");
@@ -79,71 +82,160 @@ export const RegisterHandler = (props) => {
     showConfirmModal({
       content: {
         title: "Hey! へようこそ！",
-        text: ["まずはアカウントへの情報登録を行いましょう！"],
+        text: [
+          "新規アカウントへの情報登録を行います。",
+          "必要な情報を入力し、「次へ進む」を押してください。",
+        ],
       },
     });
   }, []);
 
-  useEffect(() => {
-    hometownZipcode !== "" &&
-      (async () => {
-        //郵便番号のバリデーション
-        const parsedZipcode = validateZipcode(hometownZipcode);
-        if (!parsedZipcode) return;
+  const handleView = () => {
+    switch (viewState) {
+      case cmpConfig.state.view["001"]:
+        return (
+          <InputBasicData
+            registerUserData={registerUserData}
+            dispatchUserData={dispatchUserData}
+            handleGoNext={() => {
+              setViewState(cmpConfig.state.view["002"]);
+            }}
+            handleGoBack={() => {
+              props.handleSignOut();
+            }}
+          />
+        );
 
-        //APIで住所取得
-        showLoadingModal();
-        const fetchResponse = await getAddressByZipcode(parsedZipcode);
-        eraceModal();
+      case cmpConfig.state.view["002"]:
+        return (
+          <InputHometownData
+            registerUserData={registerUserData}
+            dispatchUserData={dispatchUserData}
+            handleGoNext={() => {
+              setViewState(cmpConfig.state.view["003"]);
+            }}
+            handleGoBack={() => {
+              setViewState(cmpConfig.state.view["001"]);
+            }}
+          />
+        );
 
-        //取得結果を分析・整形
-        if (fetchResponse.status === 200 && fetchResponse.results) {
-          //正常なレスポンスを取得し、かつ住所が取得できた
-          const result = fetchResponse.results[0];
+      case cmpConfig.state.view["003"]:
+        return (
+          <InputHistoryData
+            registerUserData={registerUserData}
+            dispatchUserData={dispatchUserData}
+            handleGoNext={() => {
+              setViewState(cmpConfig.state.view["004"]);
+            }}
+            handleGoBack={() => {
+              setViewState(cmpConfig.state.view["002"]);
+            }}
+          />
+        );
 
-          // resultから県と市を取り出す
-          const prefecture = result.address1;
-          const city = result.address2.indexOf("市")
-            ? result.address2.split("市")[0] + "市"
-            : result.address2;
+      case cmpConfig.state.view["004"]:
+        return (
+          <InputNowLocationData
+            registerUserData={registerUserData}
+            dispatchUserData={dispatchUserData}
+            handleGoNext={() => {
+              setViewState(cmpConfig.state.view["005"]);
+            }}
+            handleGoBack={() => {
+              setViewState(cmpConfig.state.view["003"]);
+            }}
+          />
+        );
 
-          //○○市と書いてある場合は、区、町は切り捨てて、市のみhometown.cityに入れる
-          //「市」の文字がない場合（東京23区等）は、そのまま入れる
-          dispatchUserData({
-            type: "set",
-            value: {
-              hometown: {
-                prefecture: prefecture,
-                city: city,
-              },
-            },
-          });
-        } else if (fetchResponse.status === 500) {
-          //APIエラーを取得
-          showErrorModal({
-            title: "住所の取得に失敗しました。",
-            text: [
-              "郵便番号からの住所の取得に失敗しました。",
-              "お手数ですが、もう一度郵便番号を入力してください。s",
-            ],
-          });
+      case cmpConfig.state.view["005"]:
+        return (
+          <ConfirmInputData
+            registerUserData={registerUserData}
+            dispatchUserData={dispatchUserData}
+            handleViewState={setViewState}
+            handleGoBack={() => {
+              setViewState(cmpConfig.state.view["004"]);
+            }}
+            handleSubmit={handleSubmit}
+          />
+        );
 
-          //その他：住所が存在しないなど(都庁とかの特殊郵便番号だと存在しない扱いになる)
-          return;
-        }
-      })();
-  }, [hometownZipcode]);
+      default:
+        return undefined;
+    }
+  };
+
+  // useEffect(() => {
+  //   //郵便番号のバリデーション
+  //   const parsedZipcode = validateZipcode(schoolZipcode);
+  //   if (!parsedZipcode) return;
+
+  //   //APIで住所取得
+  //   console.log(schoolData[parsedZipcode]);
+  // }, [schoolZipcode]);
+
+  // useEffect(() => {
+  //   hometownZipcode !== "" &&
+  //     (async () => {
+  //       //郵便番号のバリデーション
+  //       const parsedZipcode = validateZipcode(hometownZipcode);
+  //       if (!parsedZipcode) return;
+
+  //       //APIで住所取得
+  //       showLoadingModal();
+  //       const fetchResponse = await getAddressByZipcode(parsedZipcode);
+  //       eraceModal();
+
+  //       //取得結果を分析・整形
+  //       if (fetchResponse.status === 200 && fetchResponse.results) {
+  //         //正常なレスポンスを取得し、かつ住所が取得できた
+  //         const result = fetchResponse.results[0];
+
+  //         // resultから県と市を取り出す
+  //         const prefecture = result.address1;
+  //         const city = result.address2.indexOf("市")
+  //           ? result.address2.split("市")[0] + "市"
+  //           : result.address2;
+
+  //         //○○市と書いてある場合は、区、町は切り捨てて、市のみhometown.cityに入れる
+  //         //「市」の文字がない場合（東京23区等）は、そのまま入れる
+  //         dispatchUserData({
+  //           type: "set",
+  //           value: {
+  //             hometown: {
+  //               prefecture: prefecture,
+  //               city: city,
+  //             },
+  //           },
+  //         });
+  //       } else if (fetchResponse.status === 500) {
+  //         //APIエラーを取得
+  //         showErrorModal({
+  //           title: "住所の取得に失敗しました。",
+  //           text: [
+  //             "郵便番号からの住所の取得に失敗しました。",
+  //             "お手数ですが、もう一度郵便番号を入力してください。s",
+  //           ],
+  //         });
+
+  //         //その他：住所が存在しないなど(都庁とかの特殊郵便番号だと存在しない扱いになる)
+  //         return;
+  //       }
+  //     })();
+  // }, [hometownZipcode]);
 
   return (
     <>
-      <Header
+      {handleView()}
+      {/* <Header
         title="アカウント情報入力"
         handleBack={() => {
           props.handleSignOut();
         }}
-      />
-      <form onSubmit={handleSubmit}>
-        <img
+      /> */}
+      {/* <form onSubmit={handleSubmit}> */}
+      {/* <img
           src={registerUserData.photo}
           className="user-icon"
           alt="アカウントプロフィール画像"
@@ -184,7 +276,7 @@ export const RegisterHandler = (props) => {
           <AgeOptions />
         </ControlledInputText>
 
-        <ControlledInputText
+        {/* <ControlledInputText
           id="userGraduatedUniversity"
           valueState={registerUserData.history.university}
           setValueState={(value) => {
@@ -198,8 +290,8 @@ export const RegisterHandler = (props) => {
             placeholder: "出身大学名を入力",
           }}
           required={true}
-        />
-
+        /> */}
+      {/* 
         <ControlledInputText
           id="userHometownZipcode"
           valueState={hometownZipcode}
@@ -209,6 +301,7 @@ export const RegisterHandler = (props) => {
             placeholder: "半角英数字で郵便番号を入力",
           }}
           required={true}
+          pattern="\d{3}-?\d{4}"
           statefulNavComponent={
             <p className="data-showcase">
               住所：
@@ -217,6 +310,27 @@ export const RegisterHandler = (props) => {
                 ? registerUserData.hometown.prefecture +
                   registerUserData.hometown.city
                 : "郵便番号を正しく入力してください"}
+            </p>
+          }
+        />
+
+        <ControlledInputText
+          id="userSchoolZipcode"
+          valueState={schoolZipcode}
+          setValueState={setSchoolZipcode}
+          text={{
+            label: "出身大学・短大・高専の所在地の郵便番号（ハイフン省略可）",
+            placeholder: "半角英数字で郵便番号を入力",
+          }}
+          required={true}
+          pattern="\d{3}-?\d{4}"
+          statefulNavComponent={
+            <p className="data-showcase">
+              出身大学：
+              {registerUserData.hometown.prefecture !== "" &&
+              registerUserData.hometown.city !== ""
+                ? registerUserData.history.university
+                : "出身大学の所在地の郵便番号を正しく入力してください"}
             </p>
           }
         />
@@ -281,8 +395,8 @@ export const RegisterHandler = (props) => {
           disabled={!validateAccountData(registerUserData)}
         >
           この内容で登録する
-        </button>
-      </form>
+        </button> */}
+      {/* </form> */}
     </>
   );
 };

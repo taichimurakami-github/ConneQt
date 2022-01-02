@@ -27,18 +27,48 @@ export const deleteExistingFriend = async (
   const targetUserDocRef = doc(db, db_name.user, targetUserData.uid);
   const chatRoomRef = doc(db, db_name.chatRoom, chatRoomID);
 
+  /**
+   * memo: エラーハンドリングについて
+   * resultObject = {
+   *  type: "ERROR",
+   *  code: appConfig.state.error[""].code
+   *  modalContent: {
+   *    //モーダル表示コンテンツ
+   *  }
+   * }
+   */
   //friend -> request.rejectedへと移行
   await updateDoc(nowUserDocRef, {
     "request.rejected": arrayUnion(targetUserData.uid),
     ["friend." + targetUserData.uid]: deleteField(),
   });
 
+  /**
+   * memo: エラーハンドリングについて
+   * resultObject = {
+   *  type: "ERROR",
+   *  code: appConfig.state.error[""].code
+   *  modalContent: {
+   *    //モーダル表示コンテンツ
+   *  }
+   * }
+   */
   // request.rejectedへ登録するが、friendからは消さない
   // 退会したユーザーとして見せるため
   await updateDoc(targetUserDocRef, {
     "request.rejected": arrayUnion(nowUserData.uid),
   });
 
+  /**
+   * memo: エラーハンドリングについて
+   * resultObject = {
+   *  type: "ERROR",
+   *  code: appConfig.state.error[""].code
+   *  modalContent: {
+   *    //モーダル表示コンテンツ
+   *  }
+   * }
+   */
   //チャットルームから、metaDataを消去
   await updateDoc(chatRoomRef, {
     metaData: deleteField(),

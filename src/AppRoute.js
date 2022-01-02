@@ -124,10 +124,12 @@ export const AuthHandler = () => {
 
   //ログイン状態を判定・処理
   useEffect(() => {
+    showLoadingModal();
     const auth = getAuth();
     // setPageContentState(appConfig.pageContents["002"]);
 
     onAuthStateChanged(auth, (user) => {
+      console.log(user);
       if (user) {
         // User is signed in, see docs for a list of available properties
         // https://firebase.google.com/docs/reference/js/firebase.User
@@ -146,6 +148,8 @@ export const AuthHandler = () => {
         } else {
           setAuthState(authState);
         }
+
+        eraceModal();
       } else {
         // User is signed out
         console.log("you have signed out!");
@@ -153,6 +157,7 @@ export const AuthHandler = () => {
         // AuthStateを初期化
         setAuthState(null);
         setViewState(appConfig.routePageContents["001"]);
+        eraceModal();
       }
     });
   }, []);

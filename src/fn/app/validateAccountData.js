@@ -1,5 +1,59 @@
-export const validateAccountData = (data) => {
-  return true;
+export const validateAccountData = (mode, data) => {
+  switch (mode) {
+    case "string-01":
+      console.log(data);
+      //文字列じゃなかったらOUT
+      if (typeof data !== "string") {
+        console.log("A");
+        return false;
+      }
+
+      const splitStr = [...data];
+
+      //入力されてなかったらOUT
+      if (splitStr.length === 0) {
+        console.log("B");
+        return false;
+      }
+
+      //半角・全角の空白のみの文字列だったらOUT
+      else if (
+        splitStr.filter((str) => str === " " || str === "　").length ===
+        splitStr.length
+      ) {
+        console.log("C");
+        return false;
+      }
+
+      return true;
+
+    // case "object-01":
+    //   //Arrayとnull以外のobjectでなければreturn
+    //   if (!data || typeof data !== "object" || Array.isArray(data)) {
+    //     return false;
+    //   }
+
+    //   for (const val of Object.values(data)) {
+    //     //valueがstringだったら、普通にstring-01パターンの判定を行う
+    //     if (typeof val === "string") {
+    //       console.log(val);
+    //       return validateAccountData("string-01", val);
+    //     }
+
+    //     //valueがオブジェクトだったら、stringの値を取り出せるまで再起処理
+    //     else if (val && typeof val === "object" && !Array.isArray(val)) {
+    //       console.log(val);
+    //       //再起処理でdeep objectを展開する
+    //       return validateAccountData("object-01", val);
+    //     }
+
+    //     //想定外なのでreturn false
+    //     else return false;
+    //   }
+
+    default:
+      return false;
+  }
 };
 
 export const validateZipcode = (zipcode) => {
@@ -7,7 +61,6 @@ export const validateZipcode = (zipcode) => {
 
   // 入力された郵便番号（ハイフン消去）
   const parsedZipcode = zipcode.split("-").join("");
-  console.log(parsedZipcode);
 
   //ハイフン以外に、数字以外の文字列を入力してたら終了
   //数値変換後、7桁出なければ終了
