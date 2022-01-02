@@ -7,7 +7,8 @@ import { ChoiceActionButton } from "../UI/Button";
 import { AppRouteContext } from "../../AppRoute";
 
 export const InputHistoryData = (props) => {
-  const { showErrorModal } = useContext(AppRouteContext);
+  const { showErrorModal, showConfirmModal, eraceModal } =
+    useContext(AppRouteContext);
   const [schoolZipcode, setSchoolZipcode] = useState("");
 
   const isAbleToGoNext = () => {
@@ -16,7 +17,33 @@ export const InputHistoryData = (props) => {
 
   const handleGoNext = () => {
     if (isAbleToGoNext()) {
-      props.handleGoNext();
+      showConfirmModal({
+        content: {
+          title: "出身校名は後から変更できません。",
+          text: ["記入ミスがないかご確認ください。"],
+        },
+        children: (
+          <>
+            <p className="description">
+              登録学校名：{" "}
+              <strong className="orange">
+                {props.registerUserData.history.university}
+              </strong>
+            </p>
+            <p>本当にこの学校名でよろしいですか？</p>
+            <ChoiceActionButton
+              callback={{
+                yes: () => {
+                  props.handleGoNext();
+                  eraceModal();
+                },
+                no: eraceModal,
+              }}
+            />
+          </>
+        ),
+      });
+      //   props.handleGoNext();
     } else {
       showErrorModal({
         content: {
@@ -66,11 +93,12 @@ export const InputHistoryData = (props) => {
       <Header title="出身校を登録" handleBack={handleGoBack} />
 
       <div className="register-form-container">
-        <h2>出身大学、短大、高専の情報を登録</h2>
+        <h2>出身大学、短大、高専を登録</h2>
 
         <p className="description">
           マッチング用の条件として利用します。<br></br>
-          出身大学、短大、高専の所在地に記載されている郵便番号を下部記入欄に記入してください。
+          <b>出身大学、短大、高専の所在地に記載されている郵便番号</b>
+          を記入してください。
         </p>
 
         <ControlledInputText
@@ -78,30 +106,27 @@ export const InputHistoryData = (props) => {
           valueState={schoolZipcode}
           setValueState={setSchoolZipcode}
           text={{
-            label: "出身校の所在地の郵便番号で検索（ハイフン省略可）",
+            label: "出身校を所在地の郵便番号で検索（ハイフン省略可）",
             placeholder: "半角英数字で郵便番号を入力",
           }}
           required={true}
           statefulNavComponent={
             <p className="data-showcase">
               登録内容：
-              {props.registerUserData.history.university !== ""
-                ? props.registerUserData.history.university
-                : "出身校の所在地の郵便番号を正しく入力してください"}
+              {props.registerUserData.history.university !== "" ? (
+                <strong className="orange">
+                  {props.registerUserData.history.university}
+                </strong>
+              ) : (
+                "出身校の所在地の郵便番号を正しく入力してください"
+              )}
             </p>
           }
         />
 
         <p className="description">
-          郵便番号検索で所在地が出てこない場合、<br></br>
-          大変お手数ですが下部の入力フォームにて入力をお願いいたします。
-        </p>
-
-        <p className="description">
-          出身校名を手動で記入する場合、<br></br>
-          出身校名のみを正確に記入してください。<br></br>
-          <b>例： 「東大」ではなく、「東京大学」と記入</b>
-          <br></br>
+          郵便番号検索で所在地が出ない場合、<br></br>
+          お手数ですが下部の入力フォームにて手動入力をお願いいたします。
         </p>
 
         <ControlledInputText
@@ -118,21 +143,19 @@ export const InputHistoryData = (props) => {
             });
           }}
           text={{
-            label: "手動で入力する場合はこちらのフォーム",
-            placeholder: "出身校名のみを正確に入力",
+            placeholder: "手動入力の場合はこちら",
           }}
           required={true}
           maxLength={30}
         />
 
         <p className="description">
-          <b>記入された出身校名は基本的に変更できません。</b>
+          ※手動で記入する場合、出身校名のみを正確に記入してください。
+          <b>学部、専攻などは記入しないでください。</b>
           <br></br>
-          登録された出身校名をそのままマッチング条件として使用しますので、
-          <br></br>
-          手動で入力された場合、略称や記入ミスなどで、<br></br>
-          マッチングが難しくなる可能性があります。<br></br>
-          今一度ミスがないかご注意ください。
+          <span className="orange">
+            例： 「東大」ではなく、「東京大学」と記入
+          </span>
         </p>
 
         <ChoiceActionButton

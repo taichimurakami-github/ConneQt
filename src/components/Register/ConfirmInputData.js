@@ -1,10 +1,32 @@
+import { useContext } from "react";
+import { AppRouteContext } from "../../AppRoute";
+import { ChoiceActionButton } from "../UI/Button";
 import { Header } from "../UI/Header";
+import { cmpConfig } from "./config";
 
 export const ConfirmInputData = (props) => {
+  const { eraceModal, showConfirmModal } = useContext(AppRouteContext);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    showConfirmModal({
+      content: {
+        title: "この内容で登録します。よろしいですか？",
+      },
+      children: (
+        <ChoiceActionButton
+          callback={{
+            yes: props.handleSubmit,
+            no: eraceModal,
+          }}
+        />
+      ),
+    });
+  };
   return (
     <>
       <Header title="入力情報の確認" handleBack={props.handleGoBack} />
-      <form className="register-form-container" onSubmit={props.onSubmit}>
+      <form className="register-form-container" onSubmit={handleSubmit}>
+        <h2>入力内容は以下の通りです。</h2>
         <ul>
           <li className="description">
             <h3>お名前</h3>
@@ -35,6 +57,14 @@ export const ConfirmInputData = (props) => {
           </li>
         </ul>
 
+        <button
+          className="btn-gray"
+          onClick={() => {
+            props.handleViewState(cmpConfig.state.view["002"]);
+          }}
+        >
+          入力画面に戻る
+        </button>
         <button type="submit" className="btn-orange">
           この内容で登録する
         </button>
