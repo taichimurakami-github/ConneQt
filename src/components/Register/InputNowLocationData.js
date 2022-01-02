@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { AppRouteContext } from "../../AppRoute";
 import { setGeolocation } from "../../fn/app/geolocation";
+import { validateAccountData } from "../../fn/app/validateAccountData";
 import { ChoiceActionButton } from "../UI/Button";
 import { Header } from "../UI/Header";
 
@@ -8,11 +9,15 @@ export const InputNowLocationData = (props) => {
   const { showLoadingModal, showErrorModal, eraceModal } =
     useContext(AppRouteContext);
 
-  const handleGoNext = () => {
-    if (
+  const isAbleToGoNext = () => {
+    return (
       props.registerUserData.location.lat !== "" &&
       props.registerUserData.location.lng !== ""
-    ) {
+    );
+  };
+
+  const handleGoNext = () => {
+    if (isAbleToGoNext()) {
       props.handleGoNext();
     } else {
       showErrorModal({
@@ -76,7 +81,7 @@ export const InputNowLocationData = (props) => {
           {props.registerUserData.location?.lat &&
           props.registerUserData.location?.lng
             ? "現在地を取得しました。"
-            : "現在地を設定（後からでも設定可能です）"}
+            : "現在地の設定を開始"}
         </button>
         <ChoiceActionButton
           callback={{
@@ -86,6 +91,11 @@ export const InputNowLocationData = (props) => {
           text={{
             yes: "次へ進む >",
             no: "< 前に戻る",
+          }}
+          attributes={{
+            yes: {
+              disabled: !isAbleToGoNext(),
+            },
           }}
           reverseOrder={true}
         />

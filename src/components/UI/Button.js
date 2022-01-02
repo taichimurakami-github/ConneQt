@@ -8,6 +8,7 @@ export const ChoiceActionButton = (props) => {
           type="button"
           className="btn-no btn-gray"
           onClick={props.callback.no}
+          {...props?.attributes?.no}
         >
           {props?.text?.no ? props.text.no : "いいえ"}
         </button>
@@ -15,6 +16,7 @@ export const ChoiceActionButton = (props) => {
           type="button"
           className="btn-yes btn-orange"
           onClick={props.callback.yes}
+          {...props?.attributes?.yes}
         >
           {props?.text?.yes ? props.text.yes : "はい"}
         </button>
@@ -27,6 +29,7 @@ export const ChoiceActionButton = (props) => {
           type="button"
           className="btn-yes btn-orange"
           onClick={props.callback.yes}
+          {...props?.attributes?.yes}
         >
           {props?.text?.yes ? props.text.yes : "はい"}
         </button>
@@ -34,6 +37,7 @@ export const ChoiceActionButton = (props) => {
           type="button"
           className="btn-no btn-gray"
           onClick={props.callback.no}
+          {...props?.attributes?.no}
         >
           {props?.text?.no ? props.text.no : "いいえ"}
         </button>

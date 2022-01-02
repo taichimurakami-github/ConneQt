@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { AppRouteContext } from "../../AppRoute";
+import { validateAccountData } from "../../fn/app/validateAccountData";
 import { ChoiceActionButton } from "../UI/Button";
 import { Header } from "../UI/Header";
 import { ControlledInputText } from "../UI/InputText";
@@ -8,8 +9,13 @@ import { AgeOptions } from "../UI/Options";
 export const InputBasicData = (props) => {
   const { showConfirmModal, showErrorModal, eraceModal } =
     useContext(AppRouteContext);
+
+  const isAbleToGoNext = () => {
+    return validateAccountData("string-01", props.registerUserData.name);
+  };
+
   const handleGoNext = () => {
-    if (props.registerUserData.name === "") {
+    if (!isAbleToGoNext()) {
       return showErrorModal({
         content: {
           title: "お名前を正しく入力してください。",
@@ -122,6 +128,11 @@ export const InputBasicData = (props) => {
           text={{
             yes: "次へ進む >",
             no: "< 前に戻る",
+          }}
+          attributes={{
+            yes: {
+              disabled: !isAbleToGoNext(),
+            },
           }}
           reverseOrder={true}
         />

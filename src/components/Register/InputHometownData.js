@@ -12,11 +12,15 @@ export const InputHometownData = (props) => {
 
   const [hometownZipcode, setHometownZipcode] = useState("");
 
-  const handleGoNext = () => {
-    if (
+  const isAbleToGoNext = () => {
+    return (
       props.registerUserData.hometown.prefecture !== "" &&
       props.registerUserData.hometown.city !== ""
-    ) {
+    );
+  };
+
+  const handleGoNext = () => {
+    if (isAbleToGoNext()) {
       props.handleGoNext();
     } else {
       showErrorModal({
@@ -91,12 +95,20 @@ export const InputHometownData = (props) => {
       <Header title="出身地を登録" handleBack={handleGoBack} />
 
       <div className="register-form-container">
+        <h2>出身地を登録</h2>
+
+        <p className="description">
+          マッチング用の条件として利用します。<br></br>
+          あなたが生まれ育ったご実家の郵便番号を<br></br>
+          下部記入欄に記入してください。
+        </p>
+
         <ControlledInputText
           id="userHometownZipcode"
           valueState={hometownZipcode}
           setValueState={setHometownZipcode}
           text={{
-            label: "実家の郵便番号（ハイフン省略可）",
+            label: "ご実家の郵便番号（ハイフン省略可）",
             placeholder: "半角英数字で郵便番号を入力",
           }}
           required={true}
@@ -104,8 +116,7 @@ export const InputHometownData = (props) => {
           statefulNavComponent={
             <p className="data-showcase">
               登録内容：
-              {props.registerUserData.hometown.prefecture !== "" &&
-              props.registerUserData.hometown.city !== ""
+              {isAbleToGoNext()
                 ? props.registerUserData.hometown.prefecture +
                   props.registerUserData.hometown.city
                 : "正しい郵便番号が入力されていません。"}
@@ -120,6 +131,11 @@ export const InputHometownData = (props) => {
           text={{
             yes: "次へ進む >",
             no: "< 前に戻る",
+          }}
+          attributes={{
+            yes: {
+              disabled: !isAbleToGoNext(),
+            },
           }}
           reverseOrder={true}
         />

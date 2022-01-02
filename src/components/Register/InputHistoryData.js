@@ -10,8 +10,12 @@ export const InputHistoryData = (props) => {
   const { showErrorModal } = useContext(AppRouteContext);
   const [schoolZipcode, setSchoolZipcode] = useState("");
 
+  const isAbleToGoNext = () => {
+    return props.registerUserData.history.university !== "";
+  };
+
   const handleGoNext = () => {
-    if (props.registerUserData.history.university !== "") {
+    if (isAbleToGoNext()) {
       props.handleGoNext();
     } else {
       showErrorModal({
@@ -95,7 +99,8 @@ export const InputHistoryData = (props) => {
 
         <p className="description">
           出身校名を手動で記入する場合、<br></br>
-          出身校名のみを正確に記入してください。
+          出身校名のみを正確に記入してください。<br></br>
+          <b>例： 「東大」ではなく、「東京大学」と記入</b>
           <br></br>
         </p>
 
@@ -113,18 +118,21 @@ export const InputHistoryData = (props) => {
             });
           }}
           text={{
-            label: "手動で入力する場合はこちら",
-            placeholder: "出身校名のみを正確に記入してください。",
+            label: "手動で入力する場合はこちらのフォーム",
+            placeholder: "出身校名のみを正確に入力",
           }}
           required={true}
           maxLength={30}
         />
 
         <p className="description">
-          記入された出身校名をそのままマッチング上の条件として使用しますので、
+          <b>記入された出身校名は基本的に変更できません。</b>
           <br></br>
-          略称や記入ミスなどにより、<br></br>
-          マッチングが難しくなる可能性があります。
+          登録された出身校名をそのままマッチング条件として使用しますので、
+          <br></br>
+          手動で入力された場合、略称や記入ミスなどで、<br></br>
+          マッチングが難しくなる可能性があります。<br></br>
+          今一度ミスがないかご注意ください。
         </p>
 
         <ChoiceActionButton
@@ -135,6 +143,11 @@ export const InputHistoryData = (props) => {
           text={{
             yes: "次へ進む >",
             no: "< 前に戻る",
+          }}
+          attributes={{
+            yes: {
+              disabled: !isAbleToGoNext(),
+            },
           }}
           reverseOrder={true}
         />
