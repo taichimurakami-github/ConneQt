@@ -8,6 +8,19 @@
   .user-icon {
     margin-bottom: 15px;
   }
+
+  .btn-sign-out {
+    margin-top: 15px;
+  }
+
+  .mypage-menu-list-title {
+    margin: 75px auto 15px;
+    font-size: 1.6rem;
+
+    &.mg-top-0 {
+      margin-top: 0;
+    }
+  }
 }
 
 .edit-menu-container {

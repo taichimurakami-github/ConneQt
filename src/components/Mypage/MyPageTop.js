@@ -7,7 +7,7 @@ import { ChoiceActionButton } from "../UI/Button";
 
 import { cmpConfig } from "./config";
 import { AppRouteContext } from "../../AppRoute";
-import { appConfig, appInfo } from "../../app.config";
+import { appInfo } from "../../app.config";
 
 export const MypageTop = (props) => {
   const {
@@ -42,18 +42,22 @@ export const MypageTop = (props) => {
         text: ["現在地の取得を許可してください。"],
       },
       children: (
-        <button
-          className="btn-orange"
-          onClick={() => {
-            showLoadingModal();
-            navigator.geolocation.getCurrentPosition(
-              successCallback,
-              errorCallback
-            );
+        <ChoiceActionButton
+          text={{
+            yes: "現在地を取得",
+            no: "閉じる",
           }}
-        >
-          現在地を取得して設定
-        </button>
+          callback={{
+            yes: () => {
+              showLoadingModal();
+              navigator.geolocation.getCurrentPosition(
+                successCallback,
+                errorCallback
+              );
+            },
+            no: eraceModal,
+          }}
+        />
       ),
     });
 
@@ -110,6 +114,8 @@ export const MypageTop = (props) => {
       <Header title="マイページ" backable={false} />
 
       <ul className="mypage-top-wrapper">
+        <h3 className="mypage-menu-list-title mg-top-0">ユーザー情報</h3>
+
         <img
           className="user-icon"
           src={props.nowUserDoc?.photo}
@@ -137,6 +143,29 @@ export const MypageTop = (props) => {
           content={props.nowUserDoc?.profile}
         />
 
+        <ListMenu
+          id="EDIT_ACCOUNT_LOCATION"
+          handleClick={handleSetGeolocation}
+          title="位置情報を現在地に設定"
+        />
+
+        <button className="btn-gray btn-sign-out" onClick={signOutFromApp}>
+          ログアウトする
+        </button>
+
+        <h3 className="mypage-menu-list-title">マッチング設定</h3>
+
+        <ListMenu
+          id={cmpConfig.state.view["011"]}
+          handleClick={() => props.handleViewState(cmpConfig.state.view["011"])}
+          title="マッチングを許可する年齢幅を設定："
+          content={`年上：${
+            props.nowUserDoc?.setting?.matching?.age?.diff?.plus || ""
+          } 歳まで / 年下：${
+            props.nowUserDoc?.setting?.matching?.age?.diff?.minus
+          } 歳まで `}
+        />
+
         {/* <ListMenu
           id={cmpConfig.state.view["006"]}
           handleClick={() =>
@@ -156,14 +185,10 @@ export const MypageTop = (props) => {
           title="出身大学を編集："
           content={props.nowUserDoc?.history?.university}
         /> */}
+        <h3 className="mypage-menu-list-title">その他</h3>
 
         <ListMenu
-          id="EDIT_ACCOUNT_LOCATION"
-          handleClick={handleSetGeolocation}
-          title="位置情報を現在地に設定"
-        />
-        <ListMenu
-          id={cmpConfig.state.view["099"]}
+          id={cmpConfig.state.view["000"]}
           handleClick={() => {
             showConfirmModal({
               content: {
@@ -171,8 +196,10 @@ export const MypageTop = (props) => {
               },
               children: (
                 <div>
-                  <p>version: {appInfo.version + " __ " + appInfo.mode}</p>
-                  <p>連絡先: conneqtu@gmail.com</p>
+                  <p>version: {appInfo.version + "__" + appInfo.mode}</p>
+                  <a href="mailto:conneqtu@gmail.com">
+                    連絡先: conneqtu@gmail.com
+                  </a>
                   <button onClick={eraceModal} className="btn-gray">
                     閉じる
                   </button>
@@ -191,12 +218,9 @@ export const MypageTop = (props) => {
         <ListMenu
           id="DELETE_ACCOUNT"
           handleClick={confirmDeleteAccount}
-          title="アカウントを削除"
+          title={<span className="orange">アカウントを削除</span>}
         />
       </ul>
-      <button className="btn-gray" onClick={signOutFromApp}>
-        ログアウトする
-      </button>
     </>
   );
 };

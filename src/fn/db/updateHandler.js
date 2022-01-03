@@ -11,8 +11,10 @@ import "./firestore.ready";
 
 const db = getFirestore();
 
-export const updateUserData = async (updateData) => {
-  const docRef = doc(db, db_name.user, updateData.uid);
+export const updateUserData = async (updateDataAndUid) => {
+  const updateData = { ...updateDataAndUid };
+  delete updateData.uid;
+  const docRef = doc(db, db_name.user, updateDataAndUid.uid);
   await updateDoc(docRef, updateData);
 };
 
