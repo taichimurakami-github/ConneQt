@@ -40,6 +40,41 @@ export const ShowFoundUsersList = (props) => {
     return distance < KM_BOUNDARY;
   };
 
+  const isUserFullfillMatchingConditions = (targetUserDoc) => {
+    //相手も自分も年齢制限に引っかかっていないか確認
+    //diff === 0 だったら、年齢制限はチェックしない
+    const diff = props.nowUserDoc.age - targetUserDoc.age; //年齢差(signed)
+
+    if (diff < 0) {
+      //相手が自分より年上
+      const condition = {
+        me: Number(props.nowUserDoc.setting.matching.age.diff.plus),
+        with: Number(targetUserDoc.setting.matching.age.diff.minus),
+      };
+
+      //1. 自分のage.diff.plus < |diff| ならば、自分の許容範囲外
+      //2. 相手のage.diff.minus < |diff| ならば、相手の許容範囲外
+      if (condition.me < Math.abs(diff) || condition.with < Math.abs(diff)) {
+        return false;
+      }
+    } else if (diff > 0) {
+      //相手が自分より年下
+      const condition = {
+        me: Number(props.nowUserDoc.setting.matching.age.diff.minus),
+        with: Number(targetUserDoc.setting.matching.age.diff.plus),
+      };
+
+      //1. 自分のage.diff.plus < |diff| ならば、自分の許容範囲外
+      //2. 相手のage.diff.minus < |diff| ならば、相手の許容範囲外
+      if (condition.me < Math.abs(diff) || condition.with < Math.abs(diff)) {
+        return false;
+      }
+    }
+
+    //ここまで引っ掛からなかったらOK
+    return true;
+  };
+
   /**
    * 1. 該当ユーザーを検索し、selectedUserに登録する
    * 2. 表示コンテンツをUserProfileに変更する
@@ -62,6 +97,9 @@ export const ShowFoundUsersList = (props) => {
     for (const user of Object.values(props.allUserDocs)) {
       //undefinedユーザー（退会済みのユーザー）ではないユーザーのみ処理
       if (!user) continue;
+
+      //マッチング条件を満たしていない場合は表示しない
+      if (!isUserFullfillMatchingConditions(user)) continue;
 
       //friend, requestに記録されているユーザーではなく、かつ近くにいる場合のみshowableUserDocsに保存
       !unAbleToShowUserUidArr.includes(user.uid) &&
