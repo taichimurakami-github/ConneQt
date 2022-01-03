@@ -1,10 +1,8 @@
 export const validateAccountData = (mode, data) => {
   switch (mode) {
     case "string-01":
-      console.log(data);
       //文字列じゃなかったらOUT
       if (typeof data !== "string") {
-        console.log("A");
         return false;
       }
 
@@ -12,7 +10,6 @@ export const validateAccountData = (mode, data) => {
 
       //入力されてなかったらOUT
       if (splitStr.length === 0) {
-        console.log("B");
         return false;
       }
 
@@ -21,7 +18,18 @@ export const validateAccountData = (mode, data) => {
         splitStr.filter((str) => str === " " || str === "　").length ===
         splitStr.length
       ) {
-        console.log("C");
+        return false;
+      }
+
+      return true;
+
+    case "number-01":
+      if (Number.isNaN(data)) {
+        return false;
+      }
+
+      //最大値は100までにする
+      if (Number(data) > 100) {
         return false;
       }
 
@@ -64,7 +72,7 @@ export const validateZipcode = (zipcode) => {
 
   //ハイフン以外に、数字以外の文字列を入力してたら終了
   //数値変換後、7桁出なければ終了
-  if (isNaN(parsedZipcode) || parsedZipcode.length !== 7) return false;
+  if (Number.isNaN(parsedZipcode) || parsedZipcode.length !== 7) return false;
 
   //バリデーション成功
   return parsedZipcode;

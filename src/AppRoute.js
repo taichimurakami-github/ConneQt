@@ -108,9 +108,8 @@ export const AuthHandler = () => {
     const authUserDoc_unSubFunc = onSnapshot(
       doc(db, "users", user.uid),
       (doc) => {
-        console.log("changed doc data");
+        console.log("your doc data has been changed.");
         const data = doc.data();
-        console.log(doc.data());
 
         //undefinedだったらこれ以下の処理を実行しない(アカウント消去時)
         if (data) {

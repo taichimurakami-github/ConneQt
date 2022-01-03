@@ -8,6 +8,7 @@ import { AgeOptions } from "./UI/Options";
 import { AppRouteContext } from "../AppRoute";
 
 import "../styles/mypage.scss";
+import { EditMatchingAge } from "./Mypage/EditMatchingAge";
 
 export const MypageHandler = (props) => {
   const [viewState, setViewState] = useState(cmpConfig.state.view["001"]);
@@ -58,7 +59,7 @@ export const MypageHandler = (props) => {
     })();
   };
 
-  const handleComponent = () => {
+  const handleView = () => {
     switch (viewState) {
       case cmpConfig.state.view["001"]:
         return (
@@ -113,10 +114,18 @@ export const MypageHandler = (props) => {
           />
         );
 
+      case cmpConfig.state.view["011"]:
+        return (
+          <EditMatchingAge
+            viewState={viewState}
+            handleViewState={setViewState}
+          />
+        );
+
       default:
         return undefined;
     }
   };
 
-  return <>{handleComponent()}</>;
+  return <>{handleView()}</>;
 };
