@@ -50,9 +50,12 @@ export const EditMatchingAge = (props) => {
   };
 
   const isAbleToSubmit = () => {
+    const isInputDifferFromBeforeValue =
+      overAgeRestriction !== authUserDoc.setting.matching.age.diff.plus ||
+      belowAgeRestriction !== authUserDoc.setting.matching.age.diff.minus;
+
     return (
-      overAgeRestriction !== authUserDoc.setting.matching.age.diff.plus &&
-      belowAgeRestriction !== authUserDoc.setting.matching.age.diff.plus &&
+      isInputDifferFromBeforeValue &&
       validateAccountData("number-01", overAgeRestriction) &&
       validateAccountData("number-01", belowAgeRestriction)
     );
@@ -70,14 +73,21 @@ export const EditMatchingAge = (props) => {
         <h2 className="input-target-title" style={{ marginBottom: "30px" }}>
           マッチング年齢幅を設定
         </h2>
+        <p className="description">
+          マッチングする年齢幅を設定してください。<br></br>
+          年上、年下それぞれ別々に設定できます。<br></br>
+          なお、半角英数字で0〜100の数字のみ設定できます。
+        </p>
         <ControlledInputText
           id="over-age-restriction"
           valueState={overAgeRestriction}
           setValueState={setOverAgeRestriction}
           required={true}
           text={{
-            placeholder: "年上の年齢幅を半角で入力",
+            label: "年上に対する許容年齢幅を設定",
+            placeholder: "半角英数字で入力",
           }}
+          pattern="^[1-9][0-9]*$"
         ></ControlledInputText>
 
         <ControlledInputText
@@ -86,8 +96,10 @@ export const EditMatchingAge = (props) => {
           setValueState={setBelowAgeRestriction}
           required={true}
           text={{
+            label: "年下に対する年齢許容幅を設定",
             placeholder: "年下の年齢幅を半角で入力",
           }}
+          pattern="^[1-9][0-9]*$"
         ></ControlledInputText>
 
         <button
