@@ -54,8 +54,30 @@ const userDocTemplate = {
     sent: [],
     rejected: [],
   },
-
+  setting: {
+    matching: {
+      age: {
+        diff: { plus: 2, minus: 2 },
+      },
+      hometown: {
+        prefecture: true,
+        city: true,
+      },
+      history: {
+        university: true,
+      },
+    },
+  },
   meta: [], //firestoreでOR検索するための苦肉の策として入れる。
 };
+/**
+ * 年齢差
+ * 県、市を含めるか
+ * 大学を含めるか
+ *
+ * ＜将来的に＞
+ * 学部、学科を含めるか
+ *
+ */
 
 export { firebaseConfig, firestoreQueryConfig, userDocTemplate, db_name };

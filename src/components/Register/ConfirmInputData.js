@@ -60,7 +60,7 @@ export const ConfirmInputData = (props) => {
         <button
           className="btn-gray"
           onClick={() => {
-            props.handleViewState(cmpConfig.state.view["002"]);
+            props.handleViewState(cmpConfig.state.view["001"]);
           }}
         >
           入力画面に戻る
