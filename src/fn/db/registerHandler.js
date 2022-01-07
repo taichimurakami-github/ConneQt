@@ -1,5 +1,7 @@
+import firebase from "firebase/compat/app";
+import "firebase/storage";
 import { doc, getFirestore, onSnapshot, setDoc } from "firebase/firestore";
-import { db_name } from "../../firebase.config";
+import { db_name, firebaseConfig } from "../../firebase.config";
 import "./firestore.ready";
 
 const db = getFirestore();
@@ -59,4 +61,13 @@ export const registerUpdateHookForChatroom = (chatRoomID, setter) => {
     console.log(doc.data());
     setter(doc.data());
   });
+};
+
+export const registerUserImageToStorage = async (fileData, authUserDoc) => {
+  const firebaseApp = firebase.initializeApp(firebaseConfig);
+  const storageRef = firebaseApp
+    .storage()
+    .ref()
+    .child(`users/images/${authUserDoc.uid}`);
+  return await storageRef.put(fileData);
 };

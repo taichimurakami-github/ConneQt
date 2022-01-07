@@ -53,8 +53,10 @@ button {
 }
 
 .user-icon {
-  object-fit: contain;
+  object-fit: cover;
   border-radius: 10000px;
+  width: 120px;
+  height: 120px;
 }
 
 .name {

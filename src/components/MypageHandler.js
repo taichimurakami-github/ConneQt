@@ -9,6 +9,7 @@ import { AppRouteContext } from "../AppRoute";
 
 import "../styles/mypage.scss";
 import { EditMatchingAge } from "./Mypage/EditMatchingAge";
+import { EditUserImage } from "./Mypage/EditUserImage";
 
 export const MypageHandler = (props) => {
   const [viewState, setViewState] = useState(cmpConfig.state.view["001"]);
@@ -69,6 +70,16 @@ export const MypageHandler = (props) => {
             handleExecUpdate={handleUpdateAuthUserDoc}
             nowUserDoc={props.nowUserDoc}
             signOut={props.signOut}
+          />
+        );
+
+      case cmpConfig.state.view["002"]:
+        return (
+          <EditUserImage
+            handleViewState={setViewState}
+            handleSubmit={handleSubmitToDB}
+            handleExecUpdate={handleUpdateAuthUserDoc}
+            nowUserDoc={props.nowUserDoc}
           />
         );
 
