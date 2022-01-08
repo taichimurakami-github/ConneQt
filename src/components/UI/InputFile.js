@@ -19,6 +19,7 @@ export const UncontrolledInputFIle = (props) => {
         type="file"
         onChange={handleFile}
         accept={props.accept}
+        required={props?.required}
         multiple={props?.multiple || false}
       ></input>
     </>

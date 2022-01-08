@@ -1,5 +1,4 @@
-import firebase from "firebase/compat/app";
-import "firebase/storage";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { doc, getFirestore, onSnapshot, setDoc } from "firebase/firestore";
 import { db_name, firebaseConfig } from "../../firebase.config";
 import "./firestore.ready";
@@ -64,10 +63,15 @@ export const registerUpdateHookForChatroom = (chatRoomID, setter) => {
 };
 
 export const registerUserImageToStorage = async (fileData, authUserDoc) => {
-  const firebaseApp = firebase.initializeApp(firebaseConfig);
-  const storageRef = firebaseApp
-    .storage()
-    .ref()
-    .child(`users/images/${authUserDoc.uid}`);
-  return await storageRef.put(fileData);
+  const storage = getStorage();
+  const filePath = `users/images/${authUserDoc.uid}`;
+  const storageRef = ref(storage, filePath);
+  console.log(storageRef);
+  console.log(fileData);
+
+  //storageにアップロード
+  await uploadBytes(storageRef, fileData);
+
+  //storageからのDownload linkを取得してreturn
+  return await getDownloadURL(storageRef).then((url) => url);
 };

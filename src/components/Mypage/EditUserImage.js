@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { AppRouteContext } from "../../AppRoute";
 import { registerUserImageToStorage } from "../../fn/db/registerHandler";
 import { Header } from "../UI/Header";
 import { UncontrolledInputFIle } from "../UI/InputFile";
 import { cmpConfig } from "./config";
 
 export const EditUserImage = (props) => {
+  const { showErrorModal, showLoadingModal } = useContext(AppRouteContext);
   const [imageState, setImageState] = useState(null);
   const [imagePreviewSrc, setImagePreviewSrc] = useState("");
 
@@ -21,8 +23,26 @@ export const EditUserImage = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     (async () => {
-      await registerUserImageToStorage(imageState);
-      console.log("done!");
+      try {
+        showLoadingModal();
+        //storageにユーザーアイコンの画像データを格納（既にある場合は上書き）
+        //storageへのdownload linkが帰ってくる
+        const ref = await registerUserImageToStorage(
+          imageState,
+          props.nowUserDoc
+        );
+
+        //userDoc.photoを更新
+        props.handleSubmit(ref);
+      } catch (e) {
+        console.log(e);
+        showErrorModal({
+          content: {
+            title: "画像のアップロード中にエラーが発生しました。",
+            text: ["お手数ですがもう一度やり直してください。"],
+          },
+        });
+      }
     })();
   };
 
@@ -49,6 +69,7 @@ export const EditUserImage = (props) => {
             setImageState(fileData);
           }}
           accept="image/*"
+          required={true}
         />
 
         {imageState && imagePreviewSrc !== "" && (
@@ -59,7 +80,11 @@ export const EditUserImage = (props) => {
           ></img>
         )}
 
-        <button className="btn-orange" type="submit">
+        <button
+          className="btn-orange"
+          type="submit"
+          disabled={!Boolean(imageState)}
+        >
           この画像に変更する
         </button>
       </form>
