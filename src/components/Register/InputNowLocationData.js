@@ -41,7 +41,7 @@ export const InputNowLocationData = (props) => {
       <Header title="現在地を登録" handleBack={handleGoBack} />
 
       <div className="register-form-container">
-        <h2>あなたの現在地を登録</h2>
+        <h2>マッチング用に現在地を登録</h2>
 
         <p className="description">
           本アプリは、近場にいるユーザー検索を行う際、<br></br>

@@ -115,14 +115,16 @@ export const InputHometownData = (props) => {
           pattern="\d{3}-?\d{4}"
           statefulNavComponent={
             <p className="data-showcase">
-              登録内容：
+              <span className="orange">登録内容：</span>
               {isAbleToGoNext() ? (
                 <strong className="orange">
                   {props.registerUserData.hometown.prefecture +
                     props.registerUserData.hometown.city}
                 </strong>
               ) : (
-                "正しい郵便番号が入力されていません。"
+                <span className="darkgray">
+                  正しい郵便番号が入力されていません。
+                </span>
               )}
             </p>
           }

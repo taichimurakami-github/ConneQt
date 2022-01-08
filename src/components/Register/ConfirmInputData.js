@@ -1,11 +1,16 @@
-import { useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { AppRouteContext } from "../../AppRoute";
+import { getImageDataURL } from "../../fn/app/getImageDataURL";
 import { ChoiceActionButton } from "../UI/Button";
 import { Header } from "../UI/Header";
 import { cmpConfig } from "./config";
 
 export const ConfirmInputData = (props) => {
-  const { eraceModal, showConfirmModal } = useContext(AppRouteContext);
+  const { eraceModal, showConfirmModal, showLoadingModal, showErrorModal } =
+    useContext(AppRouteContext);
+
+  const [previewImageDataURL, setPreviewImageDataURL] = useState(undefined);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     showConfirmModal({
@@ -22,12 +27,41 @@ export const ConfirmInputData = (props) => {
       ),
     });
   };
+
+  //previewImageDataURLを動的変更
+  useEffect(() => {
+    (async () => {
+      if (!props.registerUserData.photoData) return;
+
+      showLoadingModal();
+      try {
+        setPreviewImageDataURL(
+          await getImageDataURL(props.registerUserData.photoData)
+        );
+        eraceModal();
+      } catch (e) {
+        console.log(e);
+        showErrorModal({
+          content: {
+            title: "画像の取得に失敗しました。",
+            text: ["お手数ですが、設定する画像を再選択してください。"],
+          },
+        });
+      }
+    })();
+  }, []);
+
   return (
     <>
       <Header title="入力情報の確認" handleBack={props.handleGoBack} />
       <form className="register-form-container" onSubmit={handleSubmit}>
         <h2>入力内容は以下の通りです。</h2>
         <ul>
+          <img
+            src={previewImageDataURL || props.registerUserData.photo}
+            className="user-icon"
+            alt="アカウントプロフィール画像"
+          ></img>
           <li className="description">
             <h3>お名前</h3>
             <p>{props.registerUserData.name}</p>

@@ -43,7 +43,6 @@ export const InputHistoryData = (props) => {
           </>
         ),
       });
-      //   props.handleGoNext();
     } else {
       showErrorModal({
         content: {
@@ -112,13 +111,15 @@ export const InputHistoryData = (props) => {
           required={true}
           statefulNavComponent={
             <p className="data-showcase">
-              登録内容：
+              <span className="orange">登録内容：</span>
               {props.registerUserData.history.university !== "" ? (
                 <strong className="orange">
                   {props.registerUserData.history.university}
                 </strong>
               ) : (
-                "出身校の所在地の郵便番号を正しく入力してください"
+                <span className="darkgray">
+                  出身校の所在地の郵便番号を正しく入力してください
+                </span>
               )}
             </p>
           }
