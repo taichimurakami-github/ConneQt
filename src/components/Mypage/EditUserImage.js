@@ -7,7 +7,11 @@ import { cmpConfig } from "./config";
 
 export const EditUserImage = (props) => {
   const { showErrorModal, showLoadingModal } = useContext(AppRouteContext);
-  const [imageState, setImageState] = useState(null);
+
+  //inputで一度ファイル選択をせずにエクスプローラーを閉じるとundefinedになるので、それを初期値とする
+  const [imageState, setImageState] = useState(undefined);
+
+  //preview用の画像データをimageURLで格納
   const [imagePreviewSrc, setImagePreviewSrc] = useState("");
 
   const handlePreview = () => {
