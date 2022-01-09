@@ -1,14 +1,11 @@
-export const setGeolocation = (locationSetter) => {
-  const successCallback = (pos) => {
-    locationSetter({
+export const setGeolocation = (callback) => {
+  const successCallback = (pos) =>
+    callback.success({
       lat: pos.coords.latitude,
       lng: pos.coords.longitude,
     });
-  };
 
-  const errorCallback = () => {
-    console.log("failed to fetch geolocation");
-  };
+  const errorCallback = (e) => callback.error(e);
 
   navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
 };

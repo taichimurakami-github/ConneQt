@@ -21,6 +21,7 @@ import "./styles/App.scss";
 import { doc, getFirestore, onSnapshot } from "firebase/firestore";
 
 import { AppRouteContext } from "./AppRoute";
+import { db_name } from "./firebase.config";
 
 export const App = (props) => {
   /**
@@ -51,6 +52,7 @@ export const App = (props) => {
   useEffect(() => {
     (async () => {
       //authUserDoc.friendが取得されていない、あるいはフレンドがいない状態なら実行しない
+      console.log(authUserDoc.friend);
       if (!Object.keys(authUserDoc.friend).length > 0) return;
 
       const listenTargetChatRoomIDs = [];
@@ -72,7 +74,7 @@ export const App = (props) => {
       const chatroom_unSubFuncArr = listenTargetChatRoomIDs.map(
         (chatRoomID) => {
           return onSnapshot(
-            doc(db, "chatRoom", chatRoomID),
+            doc(db, db_name.chatRoom, chatRoomID),
             //success callback
             (doc) => {
               //現在のchatRoomDataStateに要素を追加
@@ -117,6 +119,7 @@ export const App = (props) => {
     newUserUidArray.length > 0 &&
       (async () => {
         const r = await getUserDocsByDataArray(newUserUidArray);
+        console.log({ ...relatedUserDocsState, ...r });
         setRelatedUserDocsState({
           ...relatedUserDocsState,
           ...r,

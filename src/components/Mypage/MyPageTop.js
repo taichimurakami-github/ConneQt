@@ -8,6 +8,7 @@ import { ChoiceActionButton } from "../UI/Button";
 import { cmpConfig } from "./config";
 import { AppRouteContext } from "../../AppRoute";
 import { appInfo } from "../../app.config";
+import { setGeolocation } from "../../fn/app/geolocation";
 
 export const MypageTop = (props) => {
   const {
@@ -50,45 +51,33 @@ export const MypageTop = (props) => {
           callback={{
             yes: () => {
               showLoadingModal();
-              navigator.geolocation.getCurrentPosition(
-                successCallback,
-                errorCallback
-              );
+              //現在地取得
+              setGeolocation({
+                success: (data) => {
+                  props.handleExecUpdate({
+                    location: data,
+                  });
+                },
+                error: (e) => {
+                  let errorMessage =
+                    e.code === 1
+                      ? "現在地の取得を許可してください。"
+                      : "位置情報の取得中にエラーが発生しました。";
+
+                  showErrorModal({
+                    content: {
+                      title: "現在地の取得に失敗しました。",
+                      text: [errorMessage],
+                    },
+                  });
+                },
+              });
             },
             no: eraceModal,
           }}
         />
       ),
     });
-
-    const successCallback = (data) => {
-      props.handleExecUpdate(
-        {
-          location: {
-            lat: data.coords.latitude,
-            lng: data.coords.longitude,
-          },
-        },
-        {
-          content: {
-            title: "現在地の取得と設定に成功しました",
-          },
-        }
-      );
-    };
-
-    const errorCallback = (e) => {
-      let errorMessage = "位置情報の取得中にエラーが発生しました。";
-
-      if (e.code === 1) errorMessage = "現在地の取得を許可してください。";
-
-      showErrorModal({
-        content: {
-          title: "現在地の取得に失敗しました。",
-          text: [errorMessage],
-        },
-      });
-    };
   };
 
   const confirmDeleteAccount = () => {
@@ -197,9 +186,15 @@ export const MypageTop = (props) => {
               },
               children: (
                 <div>
-                  <p>version: {appInfo.version + "__" + appInfo.mode}</p>
-                  <a href="mailto:conneqtu@gmail.com">
-                    連絡先: conneqtu@gmail.com
+                  <p>
+                    version:{" "}
+                    <span className="orange">{`${appInfo.version} (${appInfo.mode})`}</span>
+                  </p>
+                  <p style={{ margin: "10px auto" }}>
+                    developed by {appInfo.copyright}
+                  </p>
+                  <a href={`mailto:${appInfo.contact}`}>
+                    連絡先: {appInfo.contact}
                   </a>
                   <button onClick={eraceModal} className="btn-gray">
                     閉じる
