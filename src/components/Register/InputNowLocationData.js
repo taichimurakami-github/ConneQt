@@ -67,14 +67,29 @@ export const InputNowLocationData = (props) => {
           }
           onClick={() => {
             showLoadingModal();
-            setGeolocation((value) => {
-              props.dispatchUserData({
-                type: "set",
-                value: {
-                  location: { ...value },
-                },
-              });
-              eraceModal();
+            setGeolocation({
+              success: (data) => {
+                props.dispatchUserData({
+                  type: "set",
+                  value: {
+                    location: { ...data },
+                  },
+                });
+                eraceModal();
+              },
+              error: (e) => {
+                let errorMessage =
+                  e.code === 1
+                    ? "現在地の取得を許可してください。"
+                    : "位置情報の取得中にエラーが発生しました。";
+
+                showErrorModal({
+                  content: {
+                    title: "現在地の取得に失敗しました。",
+                    text: [errorMessage],
+                  },
+                });
+              },
             });
           }}
         >
