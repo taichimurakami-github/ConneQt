@@ -1,8 +1,7 @@
-import React, { useContext, useState, useRef, useEffect } from "react";
+import React, { useContext, useState, useRef } from "react";
 import { AppRouteContext } from "../../AppRoute";
 import { registerUserImageToStorage } from "../../fn/db/registerHandler";
 import { Header } from "../UI/Header";
-import Resizer from "react-image-file-resizer";
 import { cmpConfig } from "./config";
 import { getImageDataURL } from "../../fn/app/getImageDataURL";
 
@@ -14,16 +13,6 @@ export const EditUserImage = (props) => {
 
   //preview画像をクリックした際にinputをクリックするためにrefを用意
   const imageInputRef = useRef(null);
-
-  // const handlePreview = () => {
-  //   if (imageState === null) return;
-
-  //   //ファイルをdataURLとして読み込み
-  //   //imgsrcへ
-  //   const reader = new FileReader();
-  //   reader.readAsDataURL(imageState);
-  //   reader.onload = () => setImagePreviewSrc(String(reader.result));
-  // };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -50,17 +39,6 @@ export const EditUserImage = (props) => {
       }
     })();
   };
-  useEffect(() => {
-    imageDataURL &&
-      (() => {
-        console.log("loaded");
-        const image = new Image();
-        image.src = imageDataURL;
-        image.onload = () => {
-          console.log(image.naturalWidth, image.naturalHeight);
-        };
-      })();
-  }, [imageDataURL]);
 
   return (
     <>
@@ -81,20 +59,10 @@ export const EditUserImage = (props) => {
             src={imageDataURL || props.nowUserDoc.photo}
             alt={props.nowUserDoc?.name + "さんの新しいプロフィール画像"}
             onClick={() => {
-              console.log(imageInputRef);
-              // imageInputRef.current.click();
+              imageInputRef.current && imageInputRef.current.click();
             }}
           ></img>
         }
-
-        {/* <UncontrolledInputFIle
-          id="NEW_USER_IMAGE_INPUT"
-          setValueState={(fileData) => {
-            setImageState(fileData);
-          }}
-          accept="image/*"
-          required={true}
-        /> */}
 
         <input
           id="NEW_USER_IMAGE_INPUT"
