@@ -9,7 +9,7 @@ export const ConfirmInputData = (props) => {
   const { eraceModal, showConfirmModal, showLoadingModal, showErrorModal } =
     useContext(AppRouteContext);
 
-  const [previewImageDataURL, setPreviewImageDataURL] = useState(undefined);
+  // const [previewImageDataURL, setPreviewImageDataURL] = useState(undefined);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -29,27 +29,27 @@ export const ConfirmInputData = (props) => {
   };
 
   //previewImageDataURLを動的変更
-  useEffect(() => {
-    (async () => {
-      if (!props.registerUserData.photoData) return;
+  // useEffect(() => {
+  //   (async () => {
+  //     if (!props.registerUserData.photoData) return;
 
-      showLoadingModal();
-      try {
-        setPreviewImageDataURL(
-          await getImageDataURL(props.registerUserData.photoData)
-        );
-        eraceModal();
-      } catch (e) {
-        console.log(e);
-        showErrorModal({
-          content: {
-            title: "画像の取得に失敗しました。",
-            text: ["お手数ですが、設定する画像を再選択してください。"],
-          },
-        });
-      }
-    })();
-  }, []);
+  //     showLoadingModal();
+  //     try {
+  //       setPreviewImageDataURL(
+  //         await getImageDataURL(props.registerUserData.photoData)
+  //       );
+  //       eraceModal();
+  //     } catch (e) {
+  //       console.log(e);
+  //       showErrorModal({
+  //         content: {
+  //           title: "画像の取得に失敗しました。",
+  //           text: ["お手数ですが、設定する画像を再選択してください。"],
+  //         },
+  //       });
+  //     }
+  //   })();
+  // }, []);
 
   return (
     <>
@@ -58,7 +58,9 @@ export const ConfirmInputData = (props) => {
         <h2>入力内容は以下の通りです。</h2>
         <ul>
           <img
-            src={previewImageDataURL || props.registerUserData.photo}
+            src={
+              props.registerUserData.photoData || props.registerUserData.photo
+            }
             className="user-icon"
             alt="アカウントプロフィール画像"
           ></img>

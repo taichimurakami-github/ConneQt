@@ -1,4 +1,10 @@
-import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytes,
+  uploadString,
+} from "firebase/storage";
 import { doc, getFirestore, onSnapshot, setDoc } from "firebase/firestore";
 import { db_name, firebaseConfig } from "../../firebase.config";
 import "./firestore.ready";
@@ -66,11 +72,9 @@ export const registerUserImageToStorage = async (fileData, authUserDoc) => {
   const storage = getStorage();
   const filePath = `users/images/${authUserDoc.uid}`;
   const storageRef = ref(storage, filePath);
-  console.log(storageRef);
-  console.log(fileData);
 
   //storageにアップロード
-  await uploadBytes(storageRef, fileData);
+  await uploadString(storageRef, fileData, "data_url");
 
   //storageからのDownload linkを取得してreturn
   return await getDownloadURL(storageRef).then((url) => url);
