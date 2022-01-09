@@ -1,6 +1,5 @@
-import { useState, useEffect, useContext } from "react";
+import { useContext } from "react";
 import { AppRouteContext } from "../../AppRoute";
-import { getImageDataURL } from "../../fn/app/getImageDataURL";
 import { ChoiceActionButton } from "../UI/Button";
 import { Header } from "../UI/Header";
 import { cmpConfig } from "./config";
@@ -8,8 +7,6 @@ import { cmpConfig } from "./config";
 export const ConfirmInputData = (props) => {
   const { eraceModal, showConfirmModal, showLoadingModal, showErrorModal } =
     useContext(AppRouteContext);
-
-  // const [previewImageDataURL, setPreviewImageDataURL] = useState(undefined);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -27,29 +24,6 @@ export const ConfirmInputData = (props) => {
       ),
     });
   };
-
-  //previewImageDataURLを動的変更
-  // useEffect(() => {
-  //   (async () => {
-  //     if (!props.registerUserData.photoData) return;
-
-  //     showLoadingModal();
-  //     try {
-  //       setPreviewImageDataURL(
-  //         await getImageDataURL(props.registerUserData.photoData)
-  //       );
-  //       eraceModal();
-  //     } catch (e) {
-  //       console.log(e);
-  //       showErrorModal({
-  //         content: {
-  //           title: "画像の取得に失敗しました。",
-  //           text: ["お手数ですが、設定する画像を再選択してください。"],
-  //         },
-  //       });
-  //     }
-  //   })();
-  // }, []);
 
   return (
     <>

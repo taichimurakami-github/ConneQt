@@ -1,10 +1,9 @@
-import { useState, useEffect, useContext } from "react";
+import { useContext } from "react";
 import { validateAccountData } from "../../fn/app/validateAccountData";
 import { getImageDataURL } from "../../fn/app/getImageDataURL";
 
 import { ChoiceActionButton } from "../UI/Button";
 import { Header } from "../UI/Header";
-import { UncontrolledInputFIle } from "../UI/InputFile";
 import { ControlledInputText } from "../UI/InputText";
 import { AgeOptions } from "../UI/Options";
 
@@ -14,29 +13,9 @@ export const InputBasicData = (props) => {
   const { showConfirmModal, showErrorModal, eraceModal } =
     useContext(AppRouteContext);
 
-  // //inputで一度ファイル選択をせずにエクスプローラーを閉じるとundefinedになるので、それを初期値とする
-  // const [imageState, setImageState] = useState(
-  //   props.registerUserData.photoData
-  // );
-
-  // //preview用の画像データをimageURLで格納
-  // const [imagePreviewSrc, setImagePreviewSrc] = useState("");
-
   const isAbleToGoNext = () => {
     return validateAccountData("string-01", props.registerUserData.name);
   };
-
-  // const handlePreviewImage = () => {
-  //   if (imageState === null) return;
-
-  //   //ファイルをdataURLとして読み込み
-  //   //imgsrcへ
-  //   const reader = new FileReader();
-  //   reader.readAsDataURL(imageState);
-  //   reader.onload = () => {
-  //     setImagePreviewSrc(String(reader.result));
-  //   };
-  // };
 
   const handleGoNext = () => {
     if (!isAbleToGoNext()) {
@@ -74,10 +53,6 @@ export const InputBasicData = (props) => {
     props.handleGoBack();
   };
 
-  // useEffect(() => {
-  //   imageState && handlePreviewImage();
-  // }, [imageState]);
-
   return (
     <>
       <Header title="基本情報入力" handleBack={handleGoBack} />
@@ -93,7 +68,7 @@ export const InputBasicData = (props) => {
           alt="アカウントプロフィール画像"
         ></img>
 
-        <label for="userIconImage"></label>
+        <label for="userIconImage">ユーザーアイコンを設定</label>
         <input
           id="userIconImage"
           type="file"
@@ -107,22 +82,6 @@ export const InputBasicData = (props) => {
           accept="image/*"
           required={true}
         ></input>
-
-        {/* <UncontrolledInputFIle
-          id="userIconImage"
-          setValueState={(fileData) => {
-            setImageState(fileData);
-            props.dispatchUserData({
-              type: "set",
-              value: { photoData: fileData },
-            });
-          }}
-          text={{
-            label: "ユーザーアイコン画像を選択",
-          }}
-          accept="image/*"
-          required={true}
-        /> */}
 
         <ControlledInputText
           id="userName"
