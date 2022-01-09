@@ -57,7 +57,9 @@ export const EditUserImage = (props) => {
           <img
             className="user-icon"
             src={imageDataURL || props.nowUserDoc.photo}
-            alt={props.nowUserDoc?.name + "さんの新しいプロフィール画像"}
+            alt={
+              props.nowUserDoc?.name + "さんの新しいアカウントプロフィール画像"
+            }
             onClick={() => {
               imageInputRef.current && imageInputRef.current.click();
             }}

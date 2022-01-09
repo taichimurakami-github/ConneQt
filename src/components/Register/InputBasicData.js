@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import { validateAccountData } from "../../fn/app/validateAccountData";
 import { getImageDataURL } from "../../fn/app/getImageDataURL";
 
@@ -12,6 +12,9 @@ import { AppRouteContext } from "../../AppRoute";
 export const InputBasicData = (props) => {
   const { showConfirmModal, showErrorModal, eraceModal } =
     useContext(AppRouteContext);
+
+  //preview画像をクリックした際にinputをクリックするためにrefを用意
+  const imageInputRef = useRef(null);
 
   const isAbleToGoNext = () => {
     return validateAccountData("string-01", props.registerUserData.name);
@@ -59,13 +62,16 @@ export const InputBasicData = (props) => {
 
       <div className="register-form-container">
         <img
+          className="user-icon"
           src={
             props.registerUserData.photoData
               ? props.registerUserData.photoData
               : props.registerUserData.photo
           }
-          className="user-icon"
           alt="アカウントプロフィール画像"
+          onClick={() => {
+            imageInputRef.current && imageInputRef.current.click();
+          }}
         ></img>
 
         <label for="userIconImage">ユーザーアイコンを設定</label>
@@ -81,6 +87,7 @@ export const InputBasicData = (props) => {
           }}
           accept="image/*"
           required={true}
+          ref={imageInputRef}
         ></input>
 
         <ControlledInputText
