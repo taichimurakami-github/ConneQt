@@ -66,7 +66,7 @@ export const RegisterHandler = (props) => {
           //storageにデータを格納し、該当データへのdownload linkを取得
           submitUserData.photo = await registerUserImageToStorage(
             registerUserData.photoData,
-            props.authState.uid
+            props.authState
           );
         }
 

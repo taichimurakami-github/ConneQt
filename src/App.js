@@ -163,6 +163,7 @@ export const App = (props) => {
           <MypageHandler
             nowUserDoc={authUserDoc}
             signOut={props.signOutFromApp}
+            chatRoomData={chatRoomDataState}
           />
         );
 

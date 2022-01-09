@@ -78,6 +78,7 @@ export const MypageHandler = (props) => {
             handleExecUpdate={handleUpdateAuthUserDoc}
             nowUserDoc={props.nowUserDoc}
             signOut={props.signOut}
+            chatRoomData={props.chatRoomData}
           />
         );
 

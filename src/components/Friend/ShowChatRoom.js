@@ -80,7 +80,8 @@ export const ShowChatRoom = (props) => {
     const chatRoomID = props.metaData.chatRoomID;
     const targetFriendUid = props.metaData.doc.with.uid;
     showLoadingModal();
-    if (props.chatRoomData[props.metaData.chatRoomID]) {
+    if (props.chatRoomData[chatRoomID]?.metaData) {
+      //chatRoomData.metaDataが存在
       //相手が存在している -> chatRoom.metaDataと、
       //双方のfriendからrequest.rejected配列にuidを移行
       //ただし、相手のfriend配列内にはデータを残しておき、「退会したユーザー」扱いとする
@@ -160,7 +161,7 @@ const ChatViewComponent = (props) => {
 
   return (
     <>
-      <ul>
+      <ul className="chat-content-container" style={{ paddingBottom: "200px" }}>
         {parseChatData.map((val) => {
           return (
             <>
@@ -232,12 +233,18 @@ const InputChatText = (props) => {
 
   const handleOnSubmit = (e) => {
     e.preventDefault();
+    console.log("aa");
     props.handleOnSubmit(inputState);
+    setInputState("");
   };
 
   return (
     <>
-      <form className="chat-input-wrapper" onSubmit={handleOnSubmit}>
+      <form
+        className="chat-input-wrapper"
+        style={{ background: "white" }}
+        onSubmit={handleOnSubmit}
+      >
         <textarea
           className="input-text-area"
           value={inputState}

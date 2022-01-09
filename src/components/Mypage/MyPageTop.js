@@ -21,10 +21,14 @@ export const MypageTop = (props) => {
   } = useContext(AppRouteContext);
 
   const handleDeleteAccount = async () => {
+    //削除対象のuserDocをコピー
     const targetDoc = { ...authUserDoc };
     showLoadingModal();
+
     console.log("deleting your account...");
-    await deleteAuthUserDoc(targetDoc);
+
+    //アカウント削除
+    await deleteAuthUserDoc(targetDoc, props.chatRoomData);
     signOutFromApp();
     eraceModal();
     showConfirmModal({

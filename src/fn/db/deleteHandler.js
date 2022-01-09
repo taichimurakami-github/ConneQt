@@ -71,13 +71,13 @@ export const deleteExistingFriend = async (
    * }
    */
   //チャットルームから、metaDataを消去
-  await updateDoc(chatRoomRef, {
+  return await updateDoc(chatRoomRef, {
     metaData: deleteField(),
   });
 };
 
 /**
- * 退会済みのユーザーのチャットルームを削除
+ * 退会済みのユーザーと、チャットルームを削除
  * @param {*} chatRoomID
  * @param {*} nowUserData
  * @param {*} targetUserData
@@ -96,25 +96,45 @@ export const deleteWithdrawalFriend = async (
   });
 
   //チャットルームそのものを消去
-  await deleteDoc(chatRoomRef).catch((e) => console.log(e));
+  return await deleteDoc(chatRoomRef).catch((e) => console.log(e));
 };
+
+/**
+ * 該当するチャットルームを削除する
+ * @param {ChatRoomDataState} authUserDoc
+ */
 
 /**
  * 引数に指定したユーザーをデータベースから削除する
  * @param {UserDoc} authUserDoc
  * @returns
  */
-export const deleteAuthUserDoc = async (authUserDoc) => {
-  console.log("deleteAuthUserDoc");
-  console.log(authUserDoc);
-
-  //friendに登録しているchatRoomのディアクティベートを行う
+export const deleteAuthUserDoc = async (authUserDoc, chatRoomData) => {
+  /**
+   * request userDocs関連
+   */
+  //friendに登録しているchatRoomのディアクティベート、
+  //もしくはchatRoomそのものの削除を行う
   for (const key of Object.keys(authUserDoc.friend)) {
-    //chatRoomのディアクティベート(metaDataを消去)
     try {
-      updateDoc(doc(db, db_name.chatRoom, authUserDoc.friend[key].chatRoomID), {
-        metaData: deleteField(),
-      });
+      const chatRoomID = authUserDoc.friend[key].chatRoomID;
+
+      if (chatRoomData[chatRoomID]?.meta) {
+        //chatRoomData.chatRoomID.metaが存在
+        // >> 該当friendがまだ存在
+        // >> chatRoomのディアクティベート(metaDataを消去)
+        updateDoc(
+          doc(db, db_name.chatRoom, authUserDoc.friend[key].chatRoomID),
+          {
+            metaData: deleteField(),
+          }
+        );
+      } else {
+        //chatRoomData.chatRoomID.metaが存在しない
+        // >> 該当friendに既に削除された
+        // >> chatRoomそのものを削除
+        deleteDoc(doc(db, db_name.chatRoom, chatRoomID));
+      }
     } catch (e) {
       console.log(e);
     }
@@ -142,6 +162,9 @@ export const deleteAuthUserDoc = async (authUserDoc) => {
     }
   }
 
+  /**
+   * firebase storage関連
+   */
   //storageからユーザーアイコン画像を消去
   const storage = getStorage();
   const desertRef = ref(storage, `users/images/${authUserDoc.uid}`);
