@@ -119,8 +119,8 @@ export const deleteAuthUserDoc = async (authUserDoc, chatRoomData) => {
     try {
       const chatRoomID = authUserDoc.friend[key].chatRoomID;
 
-      if (chatRoomData[chatRoomID]?.meta) {
-        //chatRoomData.chatRoomID.metaが存在
+      if (chatRoomData[chatRoomID]?.metaData) {
+        //chatRoomData.chatRoomID.metaDataが存在
         // >> 該当friendがまだ存在
         // >> chatRoomのディアクティベート(metaDataを消去)
         updateDoc(
