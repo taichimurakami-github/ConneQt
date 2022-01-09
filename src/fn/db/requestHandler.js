@@ -6,14 +6,15 @@ import {
   setDoc,
 } from "firebase/firestore";
 import { getFirestore } from "firebase/firestore";
+import { db_name } from "../../firebase.config";
 import "./firestore.ready";
 
 const db = getFirestore();
 
 const sendRequest = async (senderUid, receiverUid) => {
   // create ref
-  const senderDocRef = doc(db, "users", senderUid);
-  const receiverDocRef = doc(db, "users", receiverUid);
+  const senderDocRef = doc(db, db_name.user, senderUid);
+  const receiverDocRef = doc(db, db_name.user, receiverUid);
 
   //リクエスト送信者のUserDocを更新
   //request.sent にリクエスト受信者のuidを入れる
@@ -43,7 +44,7 @@ const approveRequest = async (approvingUserUid, approvedUserUid) => {
     Math.floor(1000 * Math.random()).toString(16);
 
   //チャットルームの雛形を作成 && チャットルームを開設
-  await setDoc(doc(db, "chatRoom", chatRoomID), {
+  await setDoc(doc(db, db_name.chatRoom, chatRoomID), {
     data: [],
     metaData: {
       user01: approvingUserUid,
@@ -56,8 +57,8 @@ const approveRequest = async (approvingUserUid, approvedUserUid) => {
    */
 
   // create ref
-  const approvingUserDoc = doc(db, "users", approvingUserUid);
-  const approvedUserDoc = doc(db, "users", approvedUserUid);
+  const approvingUserDoc = doc(db, db_name.user, approvingUserUid);
+  const approvedUserDoc = doc(db, db_name.user, approvedUserUid);
 
   // リクエストを許可される側のUserDocを更新
   // request.sent からリクエスト受信者のuidを削除 >> friendに追加
@@ -81,8 +82,8 @@ const rejectRequest = async (rejectingUserUid, rejectedUserUid) => {
    */
 
   // create ref
-  const rejectingUserDocRef = doc(db, "users", rejectingUserUid);
-  const rejectedUserDocRef = doc(db, "users", rejectedUserUid);
+  const rejectingUserDocRef = doc(db, db_name.user, rejectingUserUid);
+  const rejectedUserDocRef = doc(db, db_name.user, rejectedUserUid);
 
   // リクエストを拒否する側のUserDocを更新
   // request.received からリクエスト送信者のuidを削除 >> request.rejectedに追加

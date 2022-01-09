@@ -186,9 +186,15 @@ export const MypageTop = (props) => {
               },
               children: (
                 <div>
-                  <p>version: {appInfo.version + "__" + appInfo.mode}</p>
-                  <a href="mailto:conneqtu@gmail.com">
-                    連絡先: conneqtu@gmail.com
+                  <p>
+                    version:{" "}
+                    <span className="orange">{`${appInfo.version} (${appInfo.mode})`}</span>
+                  </p>
+                  <p style={{ margin: "10px auto" }}>
+                    developed by {appInfo.copyright}
+                  </p>
+                  <a href={`mailto:${appInfo.contact}`}>
+                    連絡先: {appInfo.contact}
                   </a>
                   <button onClick={eraceModal} className="btn-gray">
                     閉じる
