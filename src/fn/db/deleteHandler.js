@@ -6,6 +6,7 @@ import {
   arrayUnion,
   arrayRemove,
 } from "firebase/firestore";
+import { getStorage, ref, deleteObject } from "firebase/storage";
 import { getFirestore } from "firebase/firestore";
 import { db_name } from "../../firebase.config";
 import "./firestore.ready";
@@ -140,6 +141,13 @@ export const deleteAuthUserDoc = async (authUserDoc) => {
       console.log(e);
     }
   }
+
+  //storageからユーザーアイコン画像を消去
+  const storage = getStorage();
+  const desertRef = ref(storage, `users/images/${authUserDoc.uid}`);
+  deleteObject(desertRef).catch((e) => {
+    console.log(e);
+  });
 
   //authUserDoc削除
   await deleteDoc(doc(db, db_name.user, authUserDoc.uid)).catch((e) =>

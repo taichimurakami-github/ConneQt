@@ -48,13 +48,19 @@ button {
   }
 }
 
+h2 {
+  margin-bottom: 15px;
+}
+
 .clickable:hover {
   cursor: pointer;
 }
 
 .user-icon {
-  object-fit: contain;
+  object-fit: cover;
   border-radius: 10000px;
+  width: 120px;
+  height: 120px;
 }
 
 .name {
@@ -87,4 +93,8 @@ button {
 
 .orange {
   color: orange;
+}
+
+.darkgray {
+  color: $darkgray;
 }

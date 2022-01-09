@@ -1,14 +1,20 @@
-import { useContext } from "react";
-import { AppRouteContext } from "../../AppRoute";
+import { useContext, useRef } from "react";
 import { validateAccountData } from "../../fn/app/validateAccountData";
+import { getImageDataURL } from "../../fn/app/getImageDataURL";
+
 import { ChoiceActionButton } from "../UI/Button";
 import { Header } from "../UI/Header";
 import { ControlledInputText } from "../UI/InputText";
 import { AgeOptions } from "../UI/Options";
 
+import { AppRouteContext } from "../../AppRoute";
+
 export const InputBasicData = (props) => {
   const { showConfirmModal, showErrorModal, eraceModal } =
     useContext(AppRouteContext);
+
+  //preview画像をクリックした際にinputをクリックするためにrefを用意
+  const imageInputRef = useRef(null);
 
   const isAbleToGoNext = () => {
     return validateAccountData("string-01", props.registerUserData.name);
@@ -56,10 +62,33 @@ export const InputBasicData = (props) => {
 
       <div className="register-form-container">
         <img
-          src={props.registerUserData.photo}
           className="user-icon"
+          src={
+            props.registerUserData.photoData
+              ? props.registerUserData.photoData
+              : props.registerUserData.photo
+          }
           alt="アカウントプロフィール画像"
+          onClick={() => {
+            imageInputRef.current && imageInputRef.current.click();
+          }}
         ></img>
+
+        <label for="userIconImage">ユーザーアイコンを設定</label>
+        <input
+          id="userIconImage"
+          type="file"
+          onChange={async (e) => {
+            e.target.files[0] &&
+              props.dispatchUserData({
+                type: "set",
+                value: { photoData: await getImageDataURL(e.target.files[0]) },
+              });
+          }}
+          accept="image/*"
+          required={true}
+          ref={imageInputRef}
+        ></input>
 
         <ControlledInputText
           id="userName"
@@ -127,7 +156,7 @@ export const InputBasicData = (props) => {
           }}
           text={{
             yes: "次へ進む >",
-            no: "< 前に戻る",
+            no: "< ログアウト",
           }}
           attributes={{
             yes: {

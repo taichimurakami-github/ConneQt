@@ -9,6 +9,7 @@ import { AppRouteContext } from "../AppRoute";
 
 import "../styles/mypage.scss";
 import { EditMatchingAge } from "./Mypage/EditMatchingAge";
+import { EditUserImage } from "./Mypage/EditUserImage";
 
 export const MypageHandler = (props) => {
   const [viewState, setViewState] = useState(cmpConfig.state.view["001"]);
@@ -32,6 +33,10 @@ export const MypageHandler = (props) => {
       let updateData;
 
       switch (viewState) {
+        case cmpConfig.state.view["002"]:
+          updateData = { uid: props.nowUserDoc.uid, photo: data };
+          break;
+
         case cmpConfig.state.view["003"]:
           updateData = { uid: props.nowUserDoc.uid, name: data };
           break;
@@ -51,8 +56,12 @@ export const MypageHandler = (props) => {
       //アップデートを実行
       await updateUserData(updateData);
 
-      //loadingモーダルを隠す
-      eraceModal();
+      //loadingモーダルを消し、confirmModalを表示
+      showConfirmModal({
+        content: {
+          title: "アカウントデータを更新しました。",
+        },
+      });
 
       //myPageTopに遷移
       setViewState(cmpConfig.state.view["001"]);
@@ -69,6 +78,16 @@ export const MypageHandler = (props) => {
             handleExecUpdate={handleUpdateAuthUserDoc}
             nowUserDoc={props.nowUserDoc}
             signOut={props.signOut}
+          />
+        );
+
+      case cmpConfig.state.view["002"]:
+        return (
+          <EditUserImage
+            handleViewState={setViewState}
+            handleSubmit={handleSubmitToDB}
+            handleExecUpdate={handleUpdateAuthUserDoc}
+            nowUserDoc={props.nowUserDoc}
           />
         );
 

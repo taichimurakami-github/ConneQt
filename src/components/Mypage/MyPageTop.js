@@ -120,6 +120,7 @@ export const MypageTop = (props) => {
           className="user-icon"
           src={props.nowUserDoc?.photo}
           alt={props.nowUserDoc?.name + "さんのプロフィール画像"}
+          onClick={() => props.handleViewState(cmpConfig.state.view["002"])}
         ></img>
 
         <ListMenu

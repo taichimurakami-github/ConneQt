@@ -2,7 +2,10 @@ import { useContext, useReducer, useState, useEffect } from "react";
 import { userDocTemplate } from "../firebase.config";
 
 import { AppRouteContext } from "../AppRoute";
-import { registerAuthUserDoc } from "../fn/db/registerHandler";
+import {
+  registerAuthUserDoc,
+  registerUserImageToStorage,
+} from "../fn/db/registerHandler";
 
 import { cmpConfig } from "./Register/config";
 import { InputBasicData } from "./Register/InputBasicData";
@@ -32,15 +35,18 @@ export const RegisterHandler = (props) => {
   const [registerUserData, dispatchUserData] = useReducer(userDataReducerFunc, {
     // auto complete meta data
     ...userDocTemplate,
-    uid: props?.authState?.uid,
-    email: props?.authState?.email,
+    uid: props.authState.uid,
+    email: props.authState.email,
 
     // initial value from authState
-    name: props?.authState?.displayName,
-    photo: props?.authState?.photoURL,
+    name: props.authState?.displayName,
+    photo: props.authState?.photoURL,
 
     //set initial value for input
     age: "23",
+
+    // user icon set from device data
+    photoData: undefined,
   });
 
   const [viewState, setViewState] = useState(cmpConfig.state.view["001"]);
@@ -52,26 +58,55 @@ export const RegisterHandler = (props) => {
     (async () => {
       showLoadingModal();
       try {
-        await registerAuthUserDoc({ ...registerUserData });
+        //登録用データとして入力データをコピー
+        const submitUserData = { ...registerUserData };
+
+        //任意に設定したユーザーアイコンデータがある場合
+        if (registerUserData.photoData) {
+          //storageにデータを格納し、該当データへのdownload linkを取得
+          submitUserData.photo = await registerUserImageToStorage(
+            registerUserData.photoData,
+            props.authState.uid
+          );
+        }
+
+        //photoData(file APIデータ)を削除
+        delete submitUserData.photoData;
+
+        //firestoreにuserDocを登録
+        await registerAuthUserDoc(submitUserData);
+
+        //appRoute.authStateを設定 >> 自動ログイン処理
         props.handleAuthUserDoc(props.authState);
-        showConfirmModal({
-          content: {
-            title: "アカウント登録に成功しました！",
-            text: [
-              "まずは下部メニュー「見つける」から、",
-              "周囲に友達候補がいるか確認しましょう！",
-            ],
-          },
-        });
       } catch (e) {
+        console.log(e);
+
+        //登録画面の最初に戻す
+        setViewState(cmpConfig.state.view["001"]);
+
+        //エラーメッセージを表示
         showErrorModal({
           content: {
             title: "アカウント登録に失敗しました",
             text: [
-              "アクセス権が存在しない可能性があります。",
-              "登録には、事前登録フォームでのお申し込みが必要です。",
+              "お手数ですが、アカウント登録作業をやり直してください。",
+              "登録ができない場合、下記メールアドレスまでご連絡ください。",
             ],
           },
+          children: (
+            <>
+              <a
+                className="orange"
+                style={{ display: "block", margin: "10px auto;" }}
+                href="mailto:conneqtu@gmail.com"
+              >
+                conneqtu@gmail.com
+              </a>
+              <button className="btn-gray btn-close" onClick={eraceModal}>
+                閉じる
+              </button>
+            </>
+          ),
         });
       }
     })();

@@ -1,5 +1,12 @@
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytes,
+  uploadString,
+} from "firebase/storage";
 import { doc, getFirestore, onSnapshot, setDoc } from "firebase/firestore";
-import { db_name } from "../../firebase.config";
+import { db_name, firebaseConfig } from "../../firebase.config";
 import "./firestore.ready";
 
 const db = getFirestore();
@@ -59,4 +66,16 @@ export const registerUpdateHookForChatroom = (chatRoomID, setter) => {
     console.log(doc.data());
     setter(doc.data());
   });
+};
+
+export const registerUserImageToStorage = async (fileData, authUserDoc) => {
+  const storage = getStorage();
+  const filePath = `users/images/${authUserDoc.uid}`;
+  const storageRef = ref(storage, filePath);
+
+  //storageにアップロード
+  await uploadString(storageRef, fileData, "data_url");
+
+  //storageからのDownload linkを取得してreturn
+  return await getDownloadURL(storageRef).then((url) => url);
 };
