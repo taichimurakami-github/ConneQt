@@ -1,4 +1,4 @@
-export const curStrLength = (str, length = 30, lastStr = "...") => {
+export const cutStrLength = (str, length = 30, lastStr = "...") => {
   if (typeof str !== "string") return "";
   if (str.length < length) return str;
 

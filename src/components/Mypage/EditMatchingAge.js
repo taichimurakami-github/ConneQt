@@ -5,6 +5,7 @@ import { Header } from "../UI/Header";
 import { ControlledInputText } from "../UI/InputText";
 import { validateAccountData } from "../../fn/app/validateAccountData";
 import { updateUserData } from "../../fn/db/updateHandler";
+import { MatchingAgeDiffOptions } from "../UI/Options";
 
 export const EditMatchingAge = (props) => {
   const { authUserDoc, showLoadingModal, showConfirmModal, showErrorModal } =
@@ -27,8 +28,8 @@ export const EditMatchingAge = (props) => {
         await updateUserData({
           uid: authUserDoc.uid,
           "setting.matching.age.diff": {
-            plus: overAgeRestriction,
-            minus: belowAgeRestriction,
+            plus: Number(overAgeRestriction),
+            minus: Number(belowAgeRestriction),
           },
         });
         showConfirmModal({
@@ -50,14 +51,10 @@ export const EditMatchingAge = (props) => {
   };
 
   const isAbleToSubmit = () => {
-    const isInputDifferFromBeforeValue =
-      overAgeRestriction !== authUserDoc.setting.matching.age.diff.plus ||
-      belowAgeRestriction !== authUserDoc.setting.matching.age.diff.minus;
-
+    console.log(typeof overAgeRestriction, typeof belowAgeRestriction);
     return (
-      isInputDifferFromBeforeValue &&
-      validateAccountData("number-01", overAgeRestriction) &&
-      validateAccountData("number-01", belowAgeRestriction)
+      overAgeRestriction !== props.defaultValue.plus ||
+      belowAgeRestriction !== props.defaultValue.minus
     );
   };
 
@@ -80,27 +77,29 @@ export const EditMatchingAge = (props) => {
         </p>
         <ControlledInputText
           id="over-age-restriction"
+          element="select"
           valueState={overAgeRestriction}
           setValueState={setOverAgeRestriction}
           required={true}
           text={{
             label: "年上に対する許容年齢幅を設定",
-            placeholder: "半角英数字で入力",
           }}
-          pattern="^[1-9][0-9]*$"
-        ></ControlledInputText>
+        >
+          <MatchingAgeDiffOptions />
+        </ControlledInputText>
 
         <ControlledInputText
           id="below-age-restriction"
+          element="select"
           valueState={belowAgeRestriction}
           setValueState={setBelowAgeRestriction}
           required={true}
           text={{
             label: "年下に対する年齢許容幅を設定",
-            placeholder: "年下の年齢幅を半角で入力",
           }}
-          pattern="^[1-9][0-9]*$"
-        ></ControlledInputText>
+        >
+          <MatchingAgeDiffOptions />
+        </ControlledInputText>
 
         <button
           disabled={!isAbleToSubmit()}

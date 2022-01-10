@@ -1,4 +1,4 @@
-import { curStrLength } from "../../fn/util/cutStrLength";
+import { cutStrLength } from "../../fn/util/cutStrLength";
 import "../../styles/UI/UsersList.scss";
 
 export const UsersList = (props) => {
@@ -35,7 +35,7 @@ export const UsersList = (props) => {
               <div className="text-container p-events-none">
                 <p className="name p-events-none">{val?.name}</p>
                 <p className="profile p-events-none">
-                  {curStrLength(val?.profile, 15, "...")}
+                  {cutStrLength(val?.profile, 15, "...")}
                 </p>
               </div>
 

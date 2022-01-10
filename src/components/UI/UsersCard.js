@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { curStrLength } from "../../fn/util/cutStrLength";
+import { cutStrLength } from "../../fn/util/cutStrLength";
 
 import "../../styles/UI/UsersCard.scss";
 
@@ -67,7 +67,7 @@ export const UsersCard = (props) => {
                 <p className="university">
                   出身大学：<b>{val?.history.university}</b>
                 </p>
-                <p className="profile">{curStrLength(val?.profile, 35)}</p>
+                <p className="profile">{cutStrLength(val?.profile, 35)}</p>
 
                 <button
                   id={val.uid}

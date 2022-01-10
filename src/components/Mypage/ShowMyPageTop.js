@@ -22,6 +22,17 @@ export const ShowMypageTop = (props) => {
 
   const userIconImageRef = useRef(null);
 
+  const getMatchingAgeText = (mode) => {
+    const diff =
+      mode === "plus"
+        ? props.nowUserDoc?.setting?.matching?.age?.diff?.plus
+        : props.nowUserDoc?.setting?.matching?.age?.diff?.minus;
+
+    if (diff === 0) return "マッチングしない";
+    else if (diff === 100) return "制限なし";
+    else diff + "歳まで";
+  };
+
   const handleDeleteAccount = async () => {
     //削除対象のuserDocをコピー
     const targetDoc = { ...authUserDoc };
@@ -176,11 +187,9 @@ export const ShowMypageTop = (props) => {
           id={cmpConfig.state.view["011"]}
           handleClick={() => props.handleViewState(cmpConfig.state.view["011"])}
           title="マッチングを許可する年齢幅を設定："
-          content={`年上：${
-            props.nowUserDoc?.setting?.matching?.age?.diff?.plus || ""
-          } 歳まで / 年下：${
-            props.nowUserDoc?.setting?.matching?.age?.diff?.minus
-          } 歳まで `}
+          content={`年上：${getMatchingAgeText(
+            "plus"
+          )} / 年下：${getMatchingAgeText("minus")} `}
         />
 
         {/* <ListMenu

@@ -13,3 +13,18 @@ export const AgeOptions = () => {
     </>
   );
 };
+
+export const MatchingAgeDiffOptions = () => {
+  return (
+    <>
+      <option value={0}>０（年齢差なし）</option>
+      <option value={1}>１歳差まで</option>
+      <option value={2}>２歳差まで</option>
+      <option value={3}>３歳差まで</option>
+      <option value={4}>４歳差まで</option>
+      <option value={5}>５歳差まで</option>
+      <option value={6}>６歳差まで</option>
+      <option value={100}>特に制限しない</option>
+    </>
+  );
+};

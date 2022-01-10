@@ -2,6 +2,7 @@ import { appConfig } from "../../app.config";
 import "../../styles/UI/Menu.scss";
 import darkgrayArrowGt from "../../images/arrow-gt-darkgray.svg";
 import images from "../../images/Menu/_entry";
+import { cutStrLength } from "../../fn/util/cutStrLength";
 
 export const PageMenu = (props) => {
   const handlePageContent = (e) => {
@@ -87,7 +88,7 @@ export const ListMenu = (props) => {
       }`}
     >
       <h3 className="nav-title">{props.title}</h3>
-      <p className="nav-content">{props?.content}</p>
+      <p className="nav-content">{cutStrLength(props?.content)}</p>
       <img className="arrow-gt absolute" src={darkgrayArrowGt} alt=""></img>
     </li>
   );

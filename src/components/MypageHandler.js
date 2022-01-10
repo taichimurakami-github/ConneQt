@@ -141,6 +141,10 @@ export const MypageHandler = (props) => {
           <EditMatchingAge
             viewState={viewState}
             handleViewState={setViewState}
+            defaultValue={{
+              plus: props.nowUserDoc?.setting?.matching?.age?.diff?.plus,
+              minus: props.nowUserDoc?.setting?.matching?.age?.diff?.minus,
+            }}
           />
         );
 
