@@ -25,12 +25,12 @@ export const ShowMypageTop = (props) => {
   const getMatchingAgeText = (mode) => {
     const diff =
       mode === "plus"
-        ? props.nowUserDoc?.setting?.matching?.age?.diff?.plus
-        : props.nowUserDoc?.setting?.matching?.age?.diff?.minus;
+        ? authUserDoc?.setting?.matching?.age?.diff?.plus
+        : authUserDoc?.setting?.matching?.age?.diff?.minus;
 
     if (diff === 0) return "マッチングしない";
     else if (diff === 100) return "制限なし";
-    else diff + "歳まで";
+    else return diff + "歳まで";
   };
 
   const handleDeleteAccount = async () => {
