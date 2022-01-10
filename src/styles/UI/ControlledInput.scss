@@ -1,0 +1,22 @@
+@import "../common/assets";
+
+label {
+  display: block;
+  line-height: 2.2;
+}
+
+input,
+select,
+textarea {
+  display: block;
+  padding: 10px;
+  width: 90%;
+  max-width: 250px;
+  margin: 0 auto 30px;
+}
+
+textarea {
+  resize: none;
+  max-width: 500px;
+  height: 130px;
+}

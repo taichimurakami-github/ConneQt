@@ -1,11 +1,12 @@
 import { useState } from "react";
+import { validateAccountData } from "../../fn/app/validateAccountData";
 import { Header } from "../UI/Header";
+import { ControlledInputText } from "../UI/InputText";
 import { cmpConfig } from "./config";
 
-
 export const EditText = (props) => {
-
-  const [inputState, setInputState] = useState("");
+  const [inputState, setInputState] = useState(props.defaultValue);
+  let ControlledInputProps = {};
 
   const generateHeaderTitle = () => {
     switch (props.viewState) {
@@ -14,22 +15,37 @@ export const EditText = (props) => {
       case cmpConfig.state.view["003"]:
         return "お名前を編集";
       case cmpConfig.state.view["004"]:
-        return "状態を編集";
+        return "年齢を編集";
       case cmpConfig.state.view["005"]:
+        ControlledInputProps = {
+          text: {
+            label: "プロフィールを100文字以内で入力",
+            placeholder: "プロフィールを入力",
+          },
+          maxLength: 100,
+          statefulNavComponent: (
+            <p>
+              {inputState.length}/{100}
+            </p>
+          ),
+        };
         return "プロフィール編集";
       default:
         return "";
     }
-  }
+  };
 
+  const isAbleToSubmit = () => {
+    return (
+      inputState !== props.defaultValue &&
+      validateAccountData("string-01", inputState)
+    );
+  };
 
-
-  const handleInput = (e) => {
-    setInputState(e.target.value);
-  }
-
-  const handleSubmit = () => props.handleSubmit(props.type, inputState);
-
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    props.handleSubmit(inputState);
+  };
 
   return (
     <>
@@ -38,17 +54,34 @@ export const EditText = (props) => {
         backable={true}
         handleBack={() => props.handleViewState(cmpConfig.state.view["001"])}
       />
-      <h2 className="input-target-title">{props.title}</h2>
-      <input
-        onChange={handleInput}
-        placeholder={props.title}
-        value={inputState}
-        className="text-input"
-      />
-      <button className="btn-orange" onClick={handleSubmit}>この内容に変更する</button>
-      <button className="btn-gray" onClick={() => props.handleViewState(cmpConfig.state.view["001"])}>
+
+      <form onSubmit={handleSubmit}>
+        <h2 className="input-target-title">{props.title}</h2>
+        <ControlledInputText
+          id={props.viewState}
+          element={props.inputMode}
+          valueState={inputState}
+          setValueState={setInputState}
+          required={true}
+          {...ControlledInputProps}
+        >
+          {props.children}
+        </ControlledInputText>
+        <button
+          className="btn-orange"
+          type="submit"
+          disabled={!isAbleToSubmit()}
+        >
+          この内容に変更する
+        </button>
+      </form>
+
+      <button
+        className="btn-gray"
+        onClick={() => props.handleViewState(cmpConfig.state.view["001"])}
+      >
         前のページに戻る
       </button>
     </>
-  )
-}
+  );
+};

@@ -1,0 +1,65 @@
+@import "../common/assets";
+
+.carousel-wrapper {
+  position: relative;
+  border-radius: 20px;
+  border: $yellow 2px solid;
+  max-width: 500px;
+  width: 90%;
+  margin: auto;
+  padding: 30px 10px;
+}
+
+.navigation {
+  $space: -10px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: $orange;
+  color: white;
+  font-weight: bold;
+  font-size: 3rem;
+  width: 35px;
+  height: 100px;
+  box-shadow: 2px 2px 3px 3px lightgray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &.left {
+    left: $space;
+  }
+
+  &.right {
+    right: $space;
+  }
+
+  &:not(.active) {
+    display: none;
+  }
+}
+
+.user-card {
+  font-size: 1.6rem;
+
+  &:not(.active) {
+    display: none;
+  }
+  .name .age,
+  .hometown,
+  .university {
+    line-height: 2;
+  }
+
+  .age {
+    margin-bottom: 15px;
+  }
+
+  .profile {
+    margin-top: 30px;
+  }
+
+  button {
+    margin-bottom: 0;
+  }
+}

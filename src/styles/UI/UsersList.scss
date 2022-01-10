@@ -1,0 +1,97 @@
+@import "../common/assets";
+
+$icon-size: 50px;
+$button-size: 100px;
+
+.request-users-container {
+  width: 95%;
+  max-width: 750px;
+  margin: 0 auto 35px;
+  padding: 20px 10px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 2px 2px 5px 5px lightgray;
+
+  .title {
+    font-size: 1.6rem;
+    margin-bottom: 15px;
+  }
+
+  &.sent {
+    .title {
+      color: $yellow;
+    }
+    border: 2px solid $yellow;
+  }
+  &.received {
+    .title {
+      color: $orange;
+    }
+    border: 2px solid $orange;
+  }
+}
+
+.user-list {
+  display: flex;
+  align-items: center;
+  column-gap: 5px;
+  padding: 10px 5px;
+  max-width: 750px;
+  margin: auto;
+  border-bottom: 1px solid lightgray;
+  &:first-child {
+    border-top: 1px solid lightgray;
+  }
+
+  .user-icon {
+    object-fit: contain;
+    width: $icon-size;
+    height: $icon-size;
+    border-radius: 10000px;
+  }
+
+  .text-container {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    // justify-content: center;
+    padding-left: 5px;
+    width: calc(100% - #{$button-size} - #{$icon-size});
+  }
+
+  .name {
+    font-weight: bold;
+  }
+
+  .name,
+  .profile {
+    pointer-events: none;
+  }
+
+  button {
+    width: $button-size;
+    font-size: 1.3rem;
+    padding: 5px;
+    margin: 0;
+  }
+
+  &.found-user {
+    .text-container {
+      width: 100%;
+    }
+  }
+}
+
+.friend-users-container {
+  .title {
+    color: $darkgray;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+
+  .user-list {
+    border: 1px lightgray solid;
+    border-right: 0;
+    border-left: 0;
+  }
+}

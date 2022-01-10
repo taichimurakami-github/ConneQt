@@ -2,252 +2,251 @@
 import { appConfig } from "./app.config";
 
 // lib imports
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { useState, useEffect } from "react";
+
+import { useState, useEffect, useContext } from "react";
 
 // components imports
-import { SignUp } from "./components/SignUp";
 import { FindUserHandler } from "./components/FindUserHandler";
 import { FriendHandler } from "./components/FriendHandler";
 import { MypageHandler } from "./components/MypageHandler";
-import { Modal } from "./components/Modal";
-import { Menu } from "./components/UI/Menu";
+import { PageMenu } from "./components/UI/Menu";
 
 // fn imports
-import { getAuthUserDoc, registerAuthUserDoc } from "./fn/db/firestore.handler";
+import { getRelatedUserDocs, getUserDocsByDataArray } from "./fn/db/getHandler";
 // import handleOnWriteHook from "../functions";
 
 // app common style imports
 import "./styles/App.scss";
-import { generateDummyUserDocs } from "./devTools/dummyUserListData";
 
-export const App = () => {
+import { doc, getFirestore, onSnapshot } from "firebase/firestore";
 
+import { AppRouteContext } from "./AppRoute";
+import { db_name } from "./firebase.config";
+
+export const App = (props) => {
   /**
    * setState definitions
    */
-  const [authState, setAuthState] = useState(null);
-  const [userData, setUserData] = useState(
-    generateDummyUserDocs()[0]
+  const { authUserDoc, eraceModal } = useContext(AppRouteContext);
+  // const [nowUserDoc, setNowUserDoc] = useState({...authUserDoc})
+  const [relatedUserDocsState, setRelatedUserDocsState] = useState({});
+  const [pageContentState, setPageContentState] = useState(
+    appConfig.pageContents["003"]
   );
-  const [allUserDocsState, setAllUserDocsState] = useState(
-    generateDummyUserDocs()
-  );
-  // const [userData, setUserData] = useState(null);
-  // const [allUserDocsState, setAllUserDocsState] = useState([]);
-  const [isSignedIn, setIsSignedIn] = useState(false);
-  const [modalState, setModalState] = useState({ ...appConfig.initialState.App.modalState });
-  const [pageContentState, setPageContentState] = useState(appConfig.pageContents["001"]);
-
-  // const 
-
-  /**
-   * modal state functions
-   */
-  const eraceModal = () => setModalState({ ...appConfig.initialState.App.modalState });
-  const createLoadingModal = () => setModalState({
-    ...modalState,
-    display: true,
-    closeable: false,
-    type: appConfig.components.modal.type["001"]
-  });
-
-
-  /**
-   * handle Page Content(Main content) by appConfig.pageContents data
-   * @param {string} id 
-   * @returns 
-   */
-  const handlePageContent = (id) => {
-    switch (id) {
-      //SIGN_UP
-      case appConfig.pageContents["001"]:
-        return <SignUp />;
-
-      //USERS_LIST
-      case appConfig.pageContents["002"]:
-        return <FindUserHandler
-          user={userData}
-          allUserDocs={allUserDocsState}
-          handleAllUserDocsState={setAllUserDocsState}
-          handlePageContent={setPageContentState}
-          handleModalState={setModalState}
-        />;
-
-      case appConfig.pageContents["003"]:
-        return <FriendHandler
-          appUser={userData}
-        />;
-
-      case appConfig.pageContents["004"]:
-        return <MypageHandler
-          fetchAndRenewUserData={fetchAndRenewUserData}
-          handleModalState={setModalState}
-          eraceModal={eraceModal}
-          authData={authState}
-          user={userData} />;
-
-      default:
-        return undefined;
-    }
-  }
-
-  useEffect(() => {
-    console.log("allUserDocsState changed!");
-  }, [allUserDocsState]);
-
-  /**
-   * update useState: userData
-   */
-  const fetchAndRenewUserData = async (options = { init: false }) => {
-    //loadingをつける
-    createLoadingModal();
-
-    //authを通ったユーザーを指定
-    //返り値は Object(見つかった) or null(見つからなかった)
-    const isUserStateExists = userData ? true : false;
-    const user = isUserStateExists ? { ...userData } : await getAuthUserDoc(authState);
-    console.log(`isUsersStateExists?: ${isUserStateExists}`);
-
-    //見つからなかったらDBに登録して改めてusedataを取得・登録 >> Mypageを表示 & ようこそ！モーダルを表示
-    //見つかったらそのままuserdataを登録 >> 表示するページはいじらない
-    if (user) {
-      /**
-       * ここでfirestoreの変更をhookする関数を起動しておきたい
-       * ログイン時に１回だけ起動できれば良い？はず
-       */
-      // registerUpdateHook(`/users/${user.uid}`);
-      // handleOnWriteHook(`users/${user.uid}`);
-
-      //ユーザー登録済み
-      console.log("you're registered.");
-      // console.log(user);
-
-      if (isUserStateExists) {
-        console.log("your userdata has already exist.");
-      }
-      else {
-        setUserData(user);
-      }
-
-      eraceModal();
-
-    }
-    else {
-      console.log("you're NOT registered.");
-
-      //ユーザー未登録
-      setUserData(await registerAuthUserDoc(authState));
-      setPageContentState(appConfig.pageContents["004"]);
-      setModalState({
-        display: true,
-        closable: true,
-        type: appConfig.components.modal.type["002"],
-        content: {
-          title: "Hey! へようこそ！",
-          text: [
-            "hey!へようこそ！",
-            "これは初回登録時にのみ表示されるメッセージです。",
-            "まずはあなたのアカウント設定を行いましょう"
-          ],
-          buttonText: "閉じる"
-        }
-      })
-    }
-
-    //loadingを消す
-    // eraceModal();
-  }
-
+  const [chatRoomDataState, setChatRoomDataState] = useState({});
 
   /**
    * useEffect functions
    */
 
-  //ログイン状態を判定・処理
-  useEffect(() => {
-    //loadingエフェクトを起動
-    setModalState({
-      display: true,
-      closable: false,
-      type: appConfig.components.modal.type["001"],
-      content: null
-    });
-
-    const auth = getAuth();
-    // setPageContentState(appConfig.pageContents["002"]);
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // User is signed in, see docs for a list of available properties
-        // https://firebase.google.com/docs/reference/js/firebase.User
-        console.log("you have signed in as : " + user.email);
-
-        // AuthState, SignInStateを更新
-        setAuthState(user);
-        setIsSignedIn(true);
-
-        //loadingエフェクトを終了
-        eraceModal();
-
-      } else {
-        // User is signed out
-        // ...
-        console.log("you have signed out!");
-
-        /**
-         * SET AUTH FOR TRUE DUE TO DEVELOPMENT
-         * PLEASE FIX IT BEFORE CHANGE MODE TO PRODUCTION!
-         */
-        // setAuthState(null);
-        // setAuthState(true);
-        // setIsSignedIn(true);
-
-
-        setIsSignedIn(false);
-        setPageContentState(appConfig.pageContents["001"]);
-
-        //loadingエフェクトを終了
-        eraceModal();
-      }
-    });
-  }, []);
-
-
-  //認証状態が変化したらアップデートを行う
   useEffect(() => {
     (async () => {
-
-      isSignedIn && authState && await fetchAndRenewUserData({ init: true });
-      // Users Listを表示コンテンツに指定
-      setPageContentState(appConfig.pageContents["002"]);
+      const r = await getRelatedUserDocs(authUserDoc);
+      setRelatedUserDocsState(r);
+      eraceModal();
     })();
-  }, [isSignedIn]);
+  }, []);
 
+  //chatRoomDataStateのUpdateHookを登録
+  //friendが新しく追加された場合は、chatRoomDataStateを自動更新し、updateHookを付与する
+  useEffect(() => {
+    (async () => {
+      //authUserDoc.friendが取得されていない、あるいはフレンドがいない状態なら実行しない
+      if (!Object.keys(authUserDoc.friend).length > 0) return;
 
+      const listenTargetChatRoomIDs = [];
+      const nowListeningChatRoomIDs = Object.keys(chatRoomDataState);
 
+      for (const friendObj of Object.values(authUserDoc.friend)) {
+        //friend.chatRoomIDがリッスンされていないchatRoomだったら
+        //listenTargetChatRoomIDsに登録
+        if (!nowListeningChatRoomIDs.includes(friendObj.chatRoomID)) {
+          listenTargetChatRoomIDs.push(friendObj.chatRoomID);
+        }
+      }
+
+      //新たに追加するchatRoomがなかったらここで終了
+      if (!listenTargetChatRoomIDs.length > 0) return;
+
+      //新しくchatRoomをリッスンする
+      const db = getFirestore();
+      const chatroom_unSubFuncArr = listenTargetChatRoomIDs.map(
+        (chatRoomID) => {
+          return onSnapshot(
+            doc(db, db_name.chatRoom, chatRoomID),
+            //success callback
+            (doc) => {
+              //現在のchatRoomDataStateに要素を追加
+              const data = doc.data();
+              if (data) {
+                //多重state更新に対処するため、バッチ処理とする
+                setChatRoomDataState((beforeChatRoomDataState) => {
+                  return {
+                    ...beforeChatRoomDataState,
+                    [chatRoomID]: data,
+                  };
+                });
+              }
+            },
+            //error callback
+            (error) => {
+              console.log(error);
+            }
+          );
+        }
+      );
+
+      //authUserStateにunsubFuncを登録
+      props.registerUnsubFunc(chatroom_unSubFuncArr, "chatRoom");
+    })();
+  }, [authUserDoc.friend]);
+
+  //friend, requestユーザーがアップデートされた場合、該当ユーザーがallUserDocs内に存在していなかったら取得する
+  useEffect(() => {
+    const newUserUidArray = [];
+    const nowRelatedUsersUidArray = [
+      ...Object.keys(authUserDoc.friend),
+      ...authUserDoc.request.received,
+      ...authUserDoc.request.sent,
+    ];
+
+    //現在所持しているrelatedUserDocs内に、authUserDocsが保持しているrelatedUser(request.sent, request.received, friend)のデータが存在しない場合
+    //新たにfetchする対象とする
+    for (const uid of nowRelatedUsersUidArray) {
+      !relatedUserDocsState.hasOwnProperty(uid) && newUserUidArray.push(uid);
+    }
+
+    //新しいユーザーを取得し、relatedUserDocsに追加
+    newUserUidArray.length > 0 &&
+      (async () => {
+        const r = await getUserDocsByDataArray(newUserUidArray);
+        console.log({ ...relatedUserDocsState, ...r });
+        setRelatedUserDocsState({
+          ...relatedUserDocsState,
+          ...r,
+        });
+      })();
+  }, [
+    authUserDoc.friend,
+    authUserDoc.request.received,
+    authUserDoc.request.sent,
+  ]);
+
+  // const deleteExistChatRoomData = (tRoomID = "") => {
+  //   if ((chatRoomID = "")) return;
+
+  //   const validatedChatRoomDataState = { ...chatRoomDataState };
+  //   delete validatedChatRoomDataState[chatRoomID];
+
+  //   setChatRoomDataState(validatedChatRoomDataState);
+  // };
+
+  /**
+   * handle Page Content(Main content) by appConfig.pageContents data
+   * @param {string} id
+   * @returns
+   */
+  const handlePageContent = (id) => {
+    switch (id) {
+      case appConfig.pageContents["003"]:
+        return (
+          <FriendHandler
+            nowUserDoc={authUserDoc}
+            allUserDocs={relatedUserDocsState}
+            chatRoomData={chatRoomDataState}
+            handleChatRoom={setChatRoomDataState}
+            handleRelatedUserDocs={setRelatedUserDocsState}
+            handlePageContent={setPageContentState}
+          />
+        );
+
+      case appConfig.pageContents["004"]:
+        return (
+          <MypageHandler
+            nowUserDoc={authUserDoc}
+            signOut={props.signOutFromApp}
+            chatRoomData={chatRoomDataState}
+          />
+        );
+
+      default:
+        return (
+          <FindUserHandler
+            nowUserDoc={authUserDoc}
+            allUserDocs={relatedUserDocsState}
+            handleAllUserDocsState={setRelatedUserDocsState}
+            handlePageContent={setPageContentState}
+          />
+        );
+    }
+  };
 
   /**
    * render
    */
   return (
     <div className="App">
-      {
-        handlePageContent(pageContentState)
-      }
+      {handlePageContent(pageContentState)}
       <div className="spacer" style={{ height: "100px" }}></div>
-      {
-        authState && userData && (
-          <Menu
-            pageContentState={pageContentState}
-            handlePageContent={setPageContentState}
-          />
-        )
-      }
-      <Modal
-        state={modalState}
-        handleModalState={setModalState}
-      />
+      {authUserDoc && (
+        <PageMenu
+          pageContentState={pageContentState}
+          handlePageContent={setPageContentState}
+        />
+      )}
     </div>
   );
-}
+};
+
+//chatRoomDataStateが登録されているときは、
+//chatRoomのデータ削除を検知して自動的に削除
+// useEffect(() => {
+//   if (Object.keys(chatRoomDataState).length > 0) {
+//     const validatedChatRoomDataState = { ...chatRoomDataState };
+//     for (const prop in chatRoomDataState) {
+//       !chatRoomDataState[prop] && delete validatedChatRoomDataState[prop];
+//       console.log(chatRoomDataState[prop]);
+//     }
+//     setChatRoomDataState(validatedChatRoomDataState);
+//   }
+// }, [chatRoomDataState]);
+
+// const getAllUserDocsSnapshot = async (setter) => {
+//   const db = getFirestore();
+//   return onSnapshot(collection(db, "users"), (snapshot) => {
+//     snapshot.docChanges().forEach((change) => {
+//       if (change.type === "added") {
+//         console.log("New UserDoc: ", change.doc.data());
+//         const newAllUserDocs = [...relatedUserDocsState];
+//         const changedDocData = change.doc.data();
+//         newAllUserDocs[changedDocData.uid] = changedDocData;
+//         for (let i = 0; i < newAllUserDocs.length; i++) {
+//           if (newAllUserDocs[i].uid === changedDocData.uid) {
+//             newAllUserDocs[i] = changedDocData;
+//             break;
+//           }
+//         }
+//         setter(newAllUserDocs);
+//       }
+//       if (change.type === "modified") {
+//         const newAllUserDocs = [...relatedUserDocsState];
+//         const changedDocData = change.doc.data();
+//         newAllUserDocs[changedDocData.uid] = changedDocData;
+//         for (let i = 0; i < newAllUserDocs.length; i++) {
+//           if (newAllUserDocs[i].uid === changedDocData.uid) {
+//             newAllUserDocs[i] = changedDocData;
+//             break;
+//           }
+//         }
+//         console.log("Modified UserDoc: ", change.doc.data());
+//         setter(newAllUserDocs);
+//       }
+//       if (change.type === "removed") {
+//         console.log("Removed UserDoc: ", change.doc.data());
+//         const newAllUserDocs = [...relatedUserDocsState];
+//         delete newAllUserDocs[change.doc.data().uid];
+//         setter(newAllUserDocs);
+//       }
+//     });
+//   });
+// };

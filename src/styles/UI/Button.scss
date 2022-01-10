@@ -1,0 +1,10 @@
+@import "../common/assets";
+
+.modal-confirm-button-container {
+  display: flex;
+
+  .btn-no,
+  .btn-yes {
+    min-width: 100px;
+  }
+}
