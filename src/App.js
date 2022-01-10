@@ -78,13 +78,15 @@ export const App = (props) => {
             //success callback
             (doc) => {
               //現在のchatRoomDataStateに要素を追加
-              const newData = {
-                ...chatRoomDataState,
-              };
               const data = doc.data();
               if (data) {
-                newData[chatRoomID] = data;
-                setChatRoomDataState(newData);
+                //多重state更新に対処するため、バッチ処理とする
+                setChatRoomDataState((beforeChatRoomDataState) => {
+                  return {
+                    ...beforeChatRoomDataState,
+                    [chatRoomID]: data,
+                  };
+                });
               }
             },
             //error callback
