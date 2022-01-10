@@ -42,7 +42,6 @@ export const ShowMypageTop = (props) => {
   };
 
   const handleSetGeolocation = () => {
-    console.log("set your location ...");
     showConfirmModal({
       content: {
         title: "現在地を取得します",
@@ -120,15 +119,25 @@ export const ShowMypageTop = (props) => {
         ></img>
         <button
           className="btn-orange"
-          style={{
-            marginTop: "0",
-          }}
+          style={{ marginTop: "0" }}
           onClick={() => {
             userIconImageRef && userIconImageRef.current.click();
           }}
         >
           プロフィール写真を変更
         </button>
+
+        <li style={{ marginBottom: "5px" }}>
+          出身校 ：
+          <b>
+            {props.nowUserDoc?.hometown?.prefecture +
+              " " +
+              props.nowUserDoc?.hometown?.city}
+          </b>
+        </li>
+        <li style={{ marginBottom: "15px" }}>
+          出身地 ： <b>{props.nowUserDoc?.history?.university}</b>
+        </li>
 
         <ListMenu
           id={cmpConfig.state.view["003"]}
@@ -141,7 +150,7 @@ export const ShowMypageTop = (props) => {
           id={cmpConfig.state.view["004"]}
           handleClick={() => props.handleViewState(cmpConfig.state.view["004"])}
           title="年齢を編集："
-          content={props.nowUserDoc?.age}
+          content={props.nowUserDoc?.age + " 歳"}
         />
 
         <ListMenu

@@ -18,12 +18,10 @@ export const getImageDataURL = async (fileBlob, options = {}) => {
     const reader = new FileReader();
     reader.readAsDataURL(fileBlob);
     reader.onload = () => {
-      console.log(fileBlob);
       //リサイズを実行
       const image = new Image();
       image.src = reader.result;
       image.onload = () => {
-        console.log(image.naturalWidth, image.naturalHeight);
         //アスペクト比に従ってデータを算出(横幅基準のaspect-ratio使用)
         const width = parsedOptions.size;
         const height =

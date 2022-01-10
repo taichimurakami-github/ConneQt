@@ -52,7 +52,6 @@ export const App = (props) => {
   useEffect(() => {
     (async () => {
       //authUserDoc.friendが取得されていない、あるいはフレンドがいない状態なら実行しない
-      console.log(authUserDoc.friend);
       if (!Object.keys(authUserDoc.friend).length > 0) return;
 
       const listenTargetChatRoomIDs = [];
