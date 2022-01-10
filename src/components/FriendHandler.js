@@ -155,6 +155,7 @@ export const FriendHandler = (props) => {
             relatedUserDocs={props.allUserDocs}
             handleSelectedUserDoc={setSelectedUserDocState}
             handleViewState={setViewState}
+            handlePageContent={props.handlePageContent}
             handleTargetChatRoomData={setSelectedChatRoomDataState}
             chatRoomData={props.chatRoomData}
           />

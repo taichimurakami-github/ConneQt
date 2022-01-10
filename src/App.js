@@ -31,7 +31,7 @@ export const App = (props) => {
   // const [nowUserDoc, setNowUserDoc] = useState({...authUserDoc})
   const [relatedUserDocsState, setRelatedUserDocsState] = useState({});
   const [pageContentState, setPageContentState] = useState(
-    appConfig.pageContents["001"]
+    appConfig.pageContents["003"]
   );
   const [chatRoomDataState, setChatRoomDataState] = useState({});
 
@@ -156,6 +156,7 @@ export const App = (props) => {
             chatRoomData={chatRoomDataState}
             handleChatRoom={setChatRoomDataState}
             handleRelatedUserDocs={setRelatedUserDocsState}
+            handlePageContent={setPageContentState}
           />
         );
 

@@ -3,6 +3,7 @@ import cmpConfig from "./config";
 import { Header } from "../UI/Header";
 import { UsersList } from "../UI/UsersList";
 import { AppRouteContext } from "../../AppRoute";
+import { appConfig } from "../../app.config";
 
 export const ShowFriendList = (props) => {
   const { authUserDoc, showErrorModal } = useContext(AppRouteContext);
@@ -179,7 +180,17 @@ export const ShowFriendList = (props) => {
               }
             })
           ) : (
-            <p>"見つける" から友達を探しましょう！</p>
+            <p>
+              "見つける" から友達を探しましょう！<br></br>
+              <button
+                className="btn-orange"
+                onClick={() => {
+                  props.handlePageContent(appConfig.pageContents["002"]);
+                }}
+              >
+                友達を見つける
+              </button>
+            </p>
           )}
         </ul>
       </div>
