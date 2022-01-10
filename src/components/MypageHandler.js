@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { updateUserData } from "../fn/db/updateHandler";
 
 import { cmpConfig } from "./Mypage/config";
-import { MypageTop } from "./Mypage/MyPageTop";
+import { ShowMypageTop } from "./Mypage/ShowMyPageTop";
 import { EditText } from "./Mypage/EditText";
 import { AgeOptions } from "./UI/Options";
 import { AppRouteContext } from "../AppRoute";
@@ -72,7 +72,7 @@ export const MypageHandler = (props) => {
     switch (viewState) {
       case cmpConfig.state.view["001"]:
         return (
-          <MypageTop
+          <ShowMypageTop
             handleViewState={setViewState}
             handleSubmit={handleSubmitToDB}
             handleExecUpdate={handleUpdateAuthUserDoc}
@@ -102,6 +102,7 @@ export const MypageHandler = (props) => {
             text={{
               placeholder: "お名前を入力してください。",
             }}
+            defaultValue={props.nowUserDoc.name}
           />
         );
 
@@ -112,7 +113,7 @@ export const MypageHandler = (props) => {
             handleViewState={setViewState}
             handleSubmit={handleSubmitToDB}
             inputMode="select"
-            defaultValue="under-22"
+            defaultValue={props.nowUserDoc.age}
           >
             <AgeOptions />
           </EditText>
@@ -131,6 +132,7 @@ export const MypageHandler = (props) => {
             text={{
               placeholder: "プロフィールを100文字以内で入力してください。",
             }}
+            defaultValue={props.nowUserDoc.profile}
           />
         );
 

@@ -16,16 +16,16 @@ const sendRequest = async (senderUid, receiverUid) => {
   const senderDocRef = doc(db, db_name.user, senderUid);
   const receiverDocRef = doc(db, db_name.user, receiverUid);
 
-  //リクエスト送信者のUserDocを更新
-  //request.sent にリクエスト受信者のuidを入れる
-  await updateDoc(senderDocRef, {
-    "request.sent": arrayUnion(receiverUid),
-  });
-
   //リクエスト受信者のUserDocを更新
   //request.received にリクエスト送信者のuidを入れる
   await updateDoc(receiverDocRef, {
     "request.received": arrayUnion(senderUid),
+  });
+
+  //リクエスト送信者のUserDocを更新
+  //request.sent にリクエスト受信者のuidを入れる
+  await updateDoc(senderDocRef, {
+    "request.sent": arrayUnion(receiverUid),
   });
 
   console.log("...done!");

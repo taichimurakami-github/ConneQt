@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import { deleteAuthUserDoc } from "../../fn/db/deleteHandler";
 
 import { Header } from "../UI/Header";
@@ -10,7 +10,7 @@ import { AppRouteContext } from "../../AppRoute";
 import { appInfo } from "../../app.config";
 import { setGeolocation } from "../../fn/app/geolocation";
 
-export const MypageTop = (props) => {
+export const ShowMypageTop = (props) => {
   const {
     authUserDoc,
     eraceModal,
@@ -19,6 +19,8 @@ export const MypageTop = (props) => {
     showErrorModal,
     signOutFromApp,
   } = useContext(AppRouteContext);
+
+  const userIconImageRef = useRef(null);
 
   const handleDeleteAccount = async () => {
     //削除対象のuserDocをコピー
@@ -114,7 +116,19 @@ export const MypageTop = (props) => {
           src={props.nowUserDoc?.photo}
           alt={props.nowUserDoc?.name + "さんのプロフィール画像"}
           onClick={() => props.handleViewState(cmpConfig.state.view["002"])}
+          ref={userIconImageRef}
         ></img>
+        <button
+          className="btn-orange"
+          style={{
+            marginTop: "0",
+          }}
+          onClick={() => {
+            userIconImageRef && userIconImageRef.current.click();
+          }}
+        >
+          プロフィール写真を変更
+        </button>
 
         <ListMenu
           id={cmpConfig.state.view["003"]}

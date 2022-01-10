@@ -1,10 +1,11 @@
 import { useState } from "react";
+import { validateAccountData } from "../../fn/app/validateAccountData";
 import { Header } from "../UI/Header";
 import { ControlledInputText } from "../UI/InputText";
 import { cmpConfig } from "./config";
 
 export const EditText = (props) => {
-  const [inputState, setInputState] = useState("");
+  const [inputState, setInputState] = useState(props.defaultValue);
   let ControlledInputProps = {};
 
   const generateHeaderTitle = () => {
@@ -34,6 +35,13 @@ export const EditText = (props) => {
     }
   };
 
+  const isAbleToSubmit = () => {
+    return (
+      inputState !== props.defaultValue &&
+      validateAccountData("string-01", inputState)
+    );
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     props.handleSubmit(inputState);
@@ -59,7 +67,11 @@ export const EditText = (props) => {
         >
           {props.children}
         </ControlledInputText>
-        <button className="btn-orange" type="submit">
+        <button
+          className="btn-orange"
+          type="submit"
+          disabled={!isAbleToSubmit()}
+        >
           この内容に変更する
         </button>
       </form>
