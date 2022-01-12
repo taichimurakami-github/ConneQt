@@ -1,10 +1,12 @@
+@import "./common/assets";
+
 .register-form-container {
   padding: 10px;
 }
 
 .description {
-  margin: 30px auto;
-  line-height: 1.7;
+  margin: 25px auto;
+  line-height: 1.6;
 }
 
 button:disabled {
@@ -13,4 +15,23 @@ button:disabled {
 
 .has-stateful-nav {
   margin-bottom: 10px;
+}
+
+.school-search-result-list {
+  .school-name {
+    padding: 10px 5px;
+    border-radius: 5px;
+    width: 90%;
+    max-width: 300px;
+    margin: 10px auto;
+    background: $orange;
+    color: white;
+    box-shadow: 2px 2px 5px 1px lightgray;
+
+    &:hover,
+    &.selected {
+      background: white;
+      color: $orange;
+    }
+  }
 }

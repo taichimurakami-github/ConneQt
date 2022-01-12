@@ -55,16 +55,9 @@ export const InputNowLocationData = (props) => {
 
         <button
           className={`getNowLocation ${
-            props.registerUserData.location?.lat &&
-            props.registerUserData.location?.lng
-              ? "btn-gray"
-              : "btn-orange"
+            isAbleToGoNext() ? "btn-gray" : "btn-orange"
           }`}
           type="button"
-          disabled={
-            props.registerUserData.location?.lat &&
-            props.registerUserData.location?.lng
-          }
           onClick={() => {
             showLoadingModal();
             setGeolocation({
@@ -93,10 +86,7 @@ export const InputNowLocationData = (props) => {
             });
           }}
         >
-          {props.registerUserData.location?.lat &&
-          props.registerUserData.location?.lng
-            ? "現在地を取得しました。"
-            : "現在地の設定を開始"}
+          {isAbleToGoNext() ? "現在地を再取得する" : "現在地の設定を開始"}
         </button>
         <ChoiceActionButton
           callback={{

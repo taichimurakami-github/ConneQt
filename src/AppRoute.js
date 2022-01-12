@@ -229,14 +229,21 @@ export const AuthHandler = () => {
          *  >> ログイン完了、アプリ開始処理
          */
         return (
-          <App
+          <RegisterHandler
+            handleSignOut={signOutFromApp}
+            handleAuthUserDoc={handleAuthUserDoc}
             authState={authState}
-            setAuthState={setAuthState}
-            authUserDoc={authUserDoc}
-            signOutFromApp={signOutFromApp}
-            registerUnsubFunc={registerUnsubFunc}
           />
         );
+      // return (
+      //   <App
+      //     authState={authState}
+      //     setAuthState={setAuthState}
+      //     authUserDoc={authUserDoc}
+      //     signOutFromApp={signOutFromApp}
+      //     registerUnsubFunc={registerUnsubFunc}
+      //   />
+      // );
 
       default:
         /**

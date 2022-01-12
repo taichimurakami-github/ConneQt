@@ -30,6 +30,9 @@ export const ConfirmInputData = (props) => {
       <Header title="入力情報の確認" handleBack={props.handleGoBack} />
       <form className="register-form-container" onSubmit={handleSubmit}>
         <h2>入力内容は以下の通りです。</h2>
+        <p className="description">
+          「※」のついているものは後から変更できません。
+        </p>
         <ul>
           <img
             src={
@@ -43,7 +46,7 @@ export const ConfirmInputData = (props) => {
             <p>{props.registerUserData.name}</p>
           </li>
           <li className="description">
-            <h3>性別</h3>
+            <h3>※性別</h3>
             <p>{props.registerUserData.gender === "male" ? "男性" : "女性"}</p>
           </li>
           <li className="description">
@@ -55,14 +58,14 @@ export const ConfirmInputData = (props) => {
             <p>{props.registerUserData.profile}</p>
           </li>
           <li className="description">
-            <h3>出身地</h3>
+            <h3>※出身地</h3>
             <p>
               {props.registerUserData.hometown.prefecture}{" "}
               {props.registerUserData.hometown.city}
             </p>
           </li>
           <li className="description">
-            <h3>出身校</h3>
+            <h3>※出身校</h3>
             <p>{props.registerUserData.history.university}</p>
           </li>
           <li className="description">
