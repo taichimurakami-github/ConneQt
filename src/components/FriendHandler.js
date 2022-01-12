@@ -151,7 +151,6 @@ export const FriendHandler = (props) => {
       case cmpConfig.state.view["001"]:
         return (
           <ShowFriendList
-            nowUserDoc={props.nowUserDoc}
             relatedUserDocs={props.allUserDocs}
             handleSelectedUserDoc={setSelectedUserDocState}
             handleViewState={setViewState}

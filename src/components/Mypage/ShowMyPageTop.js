@@ -30,7 +30,7 @@ export const ShowMypageTop = (props) => {
 
     if (diff === 0) return "マッチングしない";
     else if (diff === 100) return "制限なし";
-    else return diff + "歳まで";
+    else return diff + "歳差まで";
   };
 
   const handleDeleteAccount = async () => {

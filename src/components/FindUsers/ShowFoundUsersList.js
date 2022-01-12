@@ -20,7 +20,7 @@ export const ShowFoundUsersList = (props) => {
     const KM_BOUNDARY = 10;
     const R = Math.PI / 180;
 
-    const loc1 = { ...props.nowUserDoc.location };
+    const loc1 = { ...authUserDoc.location };
     const loc2 = { ...targetUserDoc.location };
 
     loc1.lat = R * loc1.lat;
@@ -41,14 +41,17 @@ export const ShowFoundUsersList = (props) => {
   };
 
   const isUserFullfillMatchingConditions = (targetUserDoc) => {
+    //相手と自分の性別が一致していなかったらマッチングしない
+    if (targetUserDoc.gender !== authUserDoc.gender) return false;
+
     //相手も自分も年齢制限に引っかかっていないか確認
     //diff === 0 だったら、年齢制限はチェックしない
-    const diff = props.nowUserDoc.age - targetUserDoc.age; //年齢差(signed)
+    const diff = authUserDoc.age - targetUserDoc.age; //年齢差(signed)
 
     if (diff < 0) {
       //相手が自分より年上
       const condition = {
-        me: Number(props.nowUserDoc.setting.matching.age.diff.plus),
+        me: Number(authUserDoc.setting.matching.age.diff.plus),
         with: Number(targetUserDoc.setting.matching.age.diff.minus),
       };
 
@@ -60,7 +63,7 @@ export const ShowFoundUsersList = (props) => {
     } else if (diff > 0) {
       //相手が自分より年下
       const condition = {
-        me: Number(props.nowUserDoc.setting.matching.age.diff.minus),
+        me: Number(authUserDoc.setting.matching.age.diff.minus),
         with: Number(targetUserDoc.setting.matching.age.diff.plus),
       };
 
@@ -88,10 +91,10 @@ export const ShowFoundUsersList = (props) => {
   const generateShowableUserDocs = () => {
     const shoableUserDocsArr = [];
     const unAbleToShowUserUidArr = [
-      ...Object.keys(props.nowUserDoc.friend),
-      ...props.nowUserDoc.request.received,
-      ...props.nowUserDoc.request.sent,
-      ...props.nowUserDoc.request.rejected,
+      ...Object.keys(authUserDoc.friend),
+      ...authUserDoc.request.received,
+      ...authUserDoc.request.sent,
+      ...authUserDoc.request.rejected,
     ];
 
     for (const user of Object.values(props.allUserDocs)) {
@@ -169,10 +172,10 @@ export const ShowFoundUsersList = (props) => {
 //  */
 // const isAbleToSendRequest = (targetUserDoc) => {
 //   const checkTargetParents = [
-//     props.nowUserDoc.request.received,
-//     props.nowUserDoc.request.sent,
-//     props.nowUserDoc.request.rejected,
-//     props.nowUserDoc.friend,
+//     authUserDoc.request.received,
+//     authUserDoc.request.sent,
+//     authUserDoc.request.rejected,
+//     authUserDoc.friend,
 //   ];
 
 //   for (const checkTargetParent of checkTargetParents) {
@@ -202,13 +205,13 @@ export const ShowFoundUsersList = (props) => {
 // const generateShowableUserDocs = () => {
 //   // appState allUserDocs, nowUserDocが正しく取得されていない場合（初期状態など）は
 //   // 表示できるユーザーを0とする
-//   if (props.allUserDocs.length === 0 || !props.nowUserDoc) return [];
+//   if (props.allUserDocs.length === 0 || !authUserDoc) return [];
 
 //   const showableUserDocsArr = [];
 
 //   for (const userDoc of props.allUserDocs) {
 //     // 自分自身は表示しない
-//     if (userDoc.uid === props.nowUserDoc.uid) continue;
+//     if (userDoc.uid === authUserDoc.uid) continue;
 
 //     // リクエストを送れる状態のユーザーのみ配列に追加
 //     isAbleToSendRequest(userDoc) && showableUserDocsArr.push(userDoc);
