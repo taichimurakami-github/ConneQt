@@ -139,6 +139,9 @@ export const ShowMypageTop = (props) => {
         </button>
 
         <li style={{ marginBottom: "5px" }}>
+          性別 ：<b>{props.nowUserDoc.gender === "male" ? "男性" : "女性"}</b>
+        </li>
+        <li style={{ marginBottom: "5px" }}>
           出身校 ：
           <b>
             {props.nowUserDoc?.hometown?.prefecture +

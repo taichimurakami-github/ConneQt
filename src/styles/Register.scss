@@ -3,10 +3,14 @@
 }
 
 .description {
-  margin: 20px auto;
+  margin: 30px auto;
   line-height: 1.7;
 }
 
 button:disabled {
   background: lightgray;
+}
+
+.has-stateful-nav {
+  margin-bottom: 10px;
 }

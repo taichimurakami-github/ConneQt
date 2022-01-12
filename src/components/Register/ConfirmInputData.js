@@ -43,6 +43,10 @@ export const ConfirmInputData = (props) => {
             <p>{props.registerUserData.name}</p>
           </li>
           <li className="description">
+            <h3>性別</h3>
+            <p>{props.registerUserData.gender === "male" ? "男性" : "女性"}</p>
+          </li>
+          <li className="description">
             <h3>年齢</h3>
             <p>{props.registerUserData.age}</p>
           </li>

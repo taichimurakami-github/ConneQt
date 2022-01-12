@@ -44,6 +44,7 @@ export const RegisterHandler = (props) => {
 
     //set initial value for input
     age: "23",
+    gender: "male",
 
     // user icon set from device data
     photoData: undefined,

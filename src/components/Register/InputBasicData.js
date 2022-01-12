@@ -5,7 +5,7 @@ import { getImageDataURL } from "../../fn/app/getImageDataURL";
 import { ChoiceActionButton } from "../UI/Button";
 import { Header } from "../UI/Header";
 import { ControlledInputText } from "../UI/InputText";
-import { AgeOptions } from "../UI/Options";
+import { AgeOptions, GenderOptions } from "../UI/Options";
 
 import { AppRouteContext } from "../../AppRoute";
 
@@ -108,6 +108,24 @@ export const InputBasicData = (props) => {
         />
 
         <ControlledInputText
+          id="userGender"
+          element="select"
+          valueState={props.registerUserData.gender}
+          setValueState={(inputValue) => {
+            props.dispatchUserData({
+              type: "set",
+              value: { gender: inputValue },
+            });
+          }}
+          text={{
+            label: "性別(選択してください)",
+          }}
+          required={true}
+        >
+          <GenderOptions />
+        </ControlledInputText>
+
+        <ControlledInputText
           id="userAge"
           element="select"
           valueState={props.registerUserData.age}
@@ -144,7 +162,7 @@ export const InputBasicData = (props) => {
           required={true}
           statefulNavComponent={
             <p>
-              {props.registerUserData.profile.length}/{100}
+              入力文字数：{props.registerUserData.profile.length}/{100}
             </p>
           }
         />

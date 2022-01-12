@@ -34,6 +34,7 @@ const userDocTemplate = {
   uid: "",
   name: "",
   age: "",
+  gender: "",
   email: "",
   photo: "",
   hometown: {

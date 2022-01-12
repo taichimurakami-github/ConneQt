@@ -110,7 +110,7 @@ export const InputHistoryData = (props) => {
           }}
           required={true}
           statefulNavComponent={
-            <p className="data-showcase">
+            <p>
               <span className="orange">登録内容：</span>
               {props.registerUserData.history.university !== "" ? (
                 <strong className="orange">

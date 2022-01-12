@@ -28,3 +28,12 @@ export const MatchingAgeDiffOptions = () => {
     </>
   );
 };
+
+export const GenderOptions = () => {
+  return (
+    <>
+      <option value="male">男性</option>
+      <option value="female">女性</option>
+    </>
+  );
+};
