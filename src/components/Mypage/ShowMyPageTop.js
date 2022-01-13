@@ -9,6 +9,7 @@ import { cmpConfig } from "./config";
 import { AppRouteContext } from "../../AppRoute";
 import { appInfo } from "../../app.config";
 import { setGeolocation } from "../../fn/app/geolocation";
+import { getAgeFromBirthday } from "../../fn/util/getAgeFromBirthday";
 
 export const ShowMypageTop = (props) => {
   const {
@@ -140,6 +141,9 @@ export const ShowMypageTop = (props) => {
 
         <li style={{ marginBottom: "5px" }}>
           性別 ：<b>{props.nowUserDoc.gender === "male" ? "男性" : "女性"}</b>
+        </li>
+        <li style={{ marginBottom: "5px" }}>
+          年齢 ：<b>{getAgeFromBirthday(props.nowUserDoc.birthday)} 歳</b>
         </li>
         <li style={{ marginBottom: "5px" }}>
           出身校 ：

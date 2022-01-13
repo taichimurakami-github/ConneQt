@@ -3,6 +3,7 @@ import { useContext, useMemo } from "react";
 import { Header } from "../UI/Header";
 import { UsersCard } from "../UI/UsersCard";
 
+import { getAgeFromBirthday } from "../../fn/util/getAgeFromBirthday";
 import { AppRouteContext } from "../../AppRoute";
 import cmpConfig from "./config";
 
@@ -46,7 +47,10 @@ export const ShowFoundUsersList = (props) => {
 
     //相手も自分も年齢制限に引っかかっていないか確認
     //diff === 0 だったら、年齢制限はチェックしない
-    const diff = authUserDoc.age - targetUserDoc.age; //年齢差(signed)
+
+    const targetUserAge = getAgeFromBirthday(targetUserDoc?.birthday);
+    const authUserAge = getAgeFromBirthday(authUserDoc?.birthday);
+    const diff = authUserAge - targetUserAge; //年齢差(signed)
 
     if (diff < 0) {
       //相手が自分より年上

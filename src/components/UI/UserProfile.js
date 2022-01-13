@@ -1,3 +1,5 @@
+import { getAgeFromBirthday } from "../../fn/util/getAgeFromBirthday";
+import { parseLFToReactBr } from "../../fn/util/parseText";
 import "../../styles/UI/UserProfile.scss";
 
 export const UserProfile = (props) => {
@@ -16,8 +18,10 @@ export const UserProfile = (props) => {
       )}
 
       {props.userDoc?.name && <p className="name">{props.userDoc?.name}</p>}
-      {props.userDoc?.age && (
-        <p className="age">{props.userDoc?.age + " 歳"}</p>
+      {props.userDoc?.birthday && (
+        <p className="age">
+          {getAgeFromBirthday(props.userDoc.birthday) + " 歳"}
+        </p>
       )}
       {props.userDoc?.hometown && (
         <p className="hometown">
@@ -31,7 +35,7 @@ export const UserProfile = (props) => {
       {props.userDoc?.profile && (
         <div className="profile">
           <h3 style={{ textAlign: "center", lineHeight: "2" }}>プロフィール</h3>
-          {props.userDoc?.profile}
+          {parseLFToReactBr(props.userDoc.profile)}
         </div>
       )}
     </div>

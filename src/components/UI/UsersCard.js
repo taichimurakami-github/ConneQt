@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { cutStrLength } from "../../fn/util/cutStrLength";
+import { getAgeFromBirthday } from "../../fn/util/getAgeFromBirthday";
 
 import "../../styles/UI/UsersCard.scss";
 
@@ -56,7 +57,7 @@ export const UsersCard = (props) => {
 
                 <p className="name">{val?.name}</p>
                 <p className="age">
-                  <b>{val?.age}</b> 歳
+                  <b>{getAgeFromBirthday(val.birthday)}</b> 歳
                 </p>
                 <p className="hometown">
                   出身地：

@@ -12,6 +12,7 @@ import { UserProfile } from "../UI/UserProfile";
 import { AppRouteContext } from "../../AppRoute";
 
 import "../../styles/chat.scss";
+import { parseLFToReactBr } from "../../fn/util/parseText";
 
 export const ShowChatRoom = (props) => {
   const { showLoadingModal, eraceModal } = useContext(AppRouteContext);
@@ -163,6 +164,8 @@ const ChatViewComponent = (props) => {
     <>
       <ul className="chat-content-container" style={{ paddingBottom: "200px" }}>
         {parseChatData.map((val) => {
+          const r = parseLFToReactBr(val.text);
+          console.log(r);
           return (
             <>
               <div
@@ -182,7 +185,7 @@ const ChatViewComponent = (props) => {
                   ></img>
                 )}
 
-                <p className="text-container">{val.text}</p>
+                <p className="text-container">{parseLFToReactBr(val.text)}</p>
               </div>
             </>
           );
@@ -233,7 +236,6 @@ const InputChatText = (props) => {
 
   const handleOnSubmit = (e) => {
     e.preventDefault();
-    console.log("aa");
     props.handleOnSubmit(inputState);
     setInputState("");
   };
