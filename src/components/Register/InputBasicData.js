@@ -4,8 +4,8 @@ import { getImageDataURL } from "../../fn/app/getImageDataURL";
 
 import { ChoiceActionButton } from "../UI/Button";
 import { Header } from "../UI/Header";
-import { ControlledInputText } from "../UI/InputText";
-import { AgeOptions, GenderOptions } from "../UI/Options";
+import { ControlledInputText, ControlledSelectYmd } from "../UI/InputText";
+import { GenderOptions } from "../UI/Options";
 
 import { AppRouteContext } from "../../AppRoute";
 
@@ -125,23 +125,15 @@ export const InputBasicData = (props) => {
           <GenderOptions />
         </ControlledInputText>
 
-        <ControlledInputText
-          id="userAge"
-          element="select"
-          valueState={props.registerUserData.age}
-          setValueState={(inputValue) => {
+        <ControlledSelectYmd
+          valueState={props.registerUserData.birthday}
+          setValueState={(value) => {
             props.dispatchUserData({
               type: "set",
-              value: { age: inputValue },
+              value: { birthday: value },
             });
           }}
-          text={{
-            label: "年齢(選択してください)",
-          }}
-          required={true}
-        >
-          <AgeOptions />
-        </ControlledInputText>
+        />
 
         <ControlledInputText
           id="userProfile"

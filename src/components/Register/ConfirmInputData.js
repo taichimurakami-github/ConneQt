@@ -30,10 +30,10 @@ export const ConfirmInputData = (props) => {
       <Header title="入力情報の確認" handleBack={props.handleGoBack} />
       <form className="register-form-container" onSubmit={handleSubmit}>
         <h2>入力内容は以下の通りです。</h2>
-        <p className="description">
+        <p className="description orange">
           「※」のついているものは後から変更できません。
         </p>
-        <ul>
+        <ul style={{ marginBottom: "100px" }}>
           <img
             src={
               props.registerUserData.photoData || props.registerUserData.photo
@@ -47,11 +47,17 @@ export const ConfirmInputData = (props) => {
           </li>
           <li className="description">
             <h3>※性別</h3>
-            <p>{props.registerUserData.gender === "male" ? "男性" : "女性"}</p>
+            <p className="orange">
+              {props.registerUserData.gender === "male" ? "男性" : "女性"}
+            </p>
           </li>
           <li className="description">
-            <h3>年齢</h3>
-            <p>{props.registerUserData.age}</p>
+            <h3>※生年月日</h3>
+            <p className="orange">
+              {" " + props.registerUserData.birthday.y + " "}年
+              {" " + props.registerUserData.birthday.m + " "}月
+              {" " + props.registerUserData.birthday.d + " "}日
+            </p>
           </li>
           <li className="description">
             <h3>プロフィール</h3>
@@ -59,18 +65,16 @@ export const ConfirmInputData = (props) => {
           </li>
           <li className="description">
             <h3>※出身地</h3>
-            <p>
+            <p className="orange">
               {props.registerUserData.hometown.prefecture}{" "}
               {props.registerUserData.hometown.city}
             </p>
           </li>
           <li className="description">
             <h3>※出身校</h3>
-            <p>{props.registerUserData.history.university}</p>
-          </li>
-          <li className="description">
-            <h3>お名前</h3>
-            <p>{props.registerUserData.name}</p>
+            <p className="orange">
+              {props.registerUserData.history.university}
+            </p>
           </li>
         </ul>
 

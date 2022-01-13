@@ -160,12 +160,12 @@ export const ShowMypageTop = (props) => {
           content={props.nowUserDoc?.name}
         />
 
-        <ListMenu
+        {/* <ListMenu
           id={cmpConfig.state.view["004"]}
           handleClick={() => props.handleViewState(cmpConfig.state.view["004"])}
           title="年齢を編集："
           content={props.nowUserDoc?.age + " 歳"}
-        />
+        /> */}
 
         <ListMenu
           id={cmpConfig.state.view["005"]}

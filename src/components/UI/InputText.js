@@ -1,4 +1,5 @@
 import "../../styles/UI/ControlledInput.scss";
+import { DateOptions, MonthOptions, YearOptions } from "./Options";
 
 export const ControlledInputText = (props) => {
   const handleChange = (e) => {
@@ -55,6 +56,52 @@ export const ControlledInputText = (props) => {
         ></input>
       )}
       {props?.statefulNavComponent}
+    </>
+  );
+};
+
+export const ControlledSelectYmd = (props) => {
+  const selectedDate = props.valueState;
+  const setSelectedDate = props.setValueState;
+
+  const handleSelect = (key, val) => {
+    setSelectedDate({ ...props.valueState, [key]: val });
+  };
+
+  return (
+    <>
+      <label>生年月日を入力</label>
+      <div className="ymd-selects-wrapper">
+        <select
+          className="long-select"
+          onChange={(e) => {
+            handleSelect("y", e.target.value);
+          }}
+          value={selectedDate.y}
+        >
+          <YearOptions number={100} valueState={selectedDate} />
+        </select>
+        年
+        <select
+          className="short-select"
+          onChange={(e) => {
+            handleSelect("m", e.target.value);
+          }}
+          value={selectedDate.m}
+        >
+          <MonthOptions valueState={selectedDate} />
+        </select>
+        月
+        <select
+          className="short-select"
+          onChange={(e) => {
+            handleSelect("d", e.target.value);
+          }}
+          value={selectedDate.d}
+        >
+          <DateOptions valueState={selectedDate} />
+        </select>
+      </div>
     </>
   );
 };

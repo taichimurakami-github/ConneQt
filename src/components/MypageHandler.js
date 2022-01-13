@@ -4,7 +4,7 @@ import { updateUserData } from "../fn/db/updateHandler";
 import { cmpConfig } from "./Mypage/config";
 import { ShowMypageTop } from "./Mypage/ShowMyPageTop";
 import { EditText } from "./Mypage/EditText";
-import { AgeOptions } from "./UI/Options";
+// import { AgeOptions } from "./UI/Options";
 import { AppRouteContext } from "../AppRoute";
 
 import "../styles/mypage.scss";
@@ -108,15 +108,16 @@ export const MypageHandler = (props) => {
 
       case cmpConfig.state.view["004"]:
         return (
-          <EditText
-            viewState={viewState}
-            handleViewState={setViewState}
-            handleSubmit={handleSubmitToDB}
-            inputMode="select"
-            defaultValue={props.nowUserDoc.age}
-          >
-            <AgeOptions />
-          </EditText>
+          <></>
+          // <EditText
+          //   viewState={viewState}
+          //   handleViewState={setViewState}
+          //   handleSubmit={handleSubmitToDB}
+          //   inputMode="select"
+          //   defaultValue={props.nowUserDoc.age}
+          // >
+          //   <AgeOptions />
+          // </EditText>
         );
 
       case cmpConfig.state.view["005"]:

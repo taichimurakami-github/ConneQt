@@ -33,7 +33,7 @@ const db_name = {
 const userDocTemplate = {
   uid: "",
   name: "",
-  age: "",
+  birthday: { y: "", m: "", d: "" },
   gender: "",
   email: "",
   photo: "",

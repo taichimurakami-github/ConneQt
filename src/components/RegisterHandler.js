@@ -43,7 +43,7 @@ export const RegisterHandler = (props) => {
     photo: props.authState?.photoURL,
 
     //set initial value for input
-    age: "23",
+    birthday: { y: "1995", m: "1", d: "1" },
     gender: "male",
 
     // user icon set from device data

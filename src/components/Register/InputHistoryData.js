@@ -28,7 +28,7 @@ export const InputHistoryData = (props) => {
     if (isAbleToGoNext()) {
       showConfirmModal({
         content: {
-          title: "出身校名は後から変更できません。",
+          title: "出身校名はアカウント登録後に変更できません。",
           text: ["記入ミスがないかご確認ください。"],
         },
         children: (
@@ -72,6 +72,14 @@ export const InputHistoryData = (props) => {
    * @returns
    */
   const handleSelectResult = (name) => {
+    if (name === props.registerUserData.history.university) {
+      return showConfirmModal({
+        content: {
+          title: name + " は既に選択されています。",
+        },
+      });
+    }
+
     //入力出身校名をそのまま登録する場合、バリデーションを通す
     if (name === "" && !validateAccountData("string-01", inputStr)) {
       return showErrorModal({
@@ -255,7 +263,9 @@ const SchoolNameList = (props) => {
       <button
         className={`btn-orange`}
         disabled={
-          props.registeredUniversity === props.inputStr || props.inputStr === ""
+          props.registeredUniversity === props.inputStr ||
+          props.registeredUniversity === "" ||
+          props.inputStr === ""
         }
         onClick={() => {
           props.handleClick("");

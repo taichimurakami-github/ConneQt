@@ -1,17 +1,61 @@
-export const AgeOptions = () => {
-  return (
-    <>
-      <option value="22">22歳以下</option>
-      <option value="23">23</option>
-      <option value="24">24</option>
-      <option value="25">25</option>
-      <option value="26">26</option>
-      <option value="27">27</option>
-      <option value="28">28</option>
-      <option value="29">29</option>
-      <option value="30">30歳以上</option>
-    </>
-  );
+export const DateOptions = (props) => {
+  const isLeapYear = (year) =>
+    year % 4 === 0 && !(year % 100 === 0 && year % 400 !== 0);
+
+  const dateForEachMonth = [
+    31,
+    isLeapYear(props.valueState.y) ? 29 : 28, //うるう年のときのみ29日
+    31,
+    30,
+    31,
+    30,
+    31,
+    31,
+    30,
+    31,
+    30,
+    31,
+  ];
+  const returnElems = [];
+
+  for (let i = 1; i <= dateForEachMonth[Number(props.valueState.m) - 1]; i++) {
+    returnElems.push(
+      <option value={i} key={"date-" + i}>
+        {i}
+      </option>
+    );
+  }
+
+  return <>{[...returnElems]}</>;
+};
+
+export const MonthOptions = (props) => {
+  const returnElems = [];
+
+  for (let i = 1; i <= 12; i++) {
+    returnElems.push(
+      <option value={i} key={"month-" + i}>
+        {i}
+      </option>
+    );
+  }
+
+  return <>{[...returnElems]}</>;
+};
+
+export const YearOptions = (props) => {
+  const returnElems = [];
+  const nowYear = new Date().getFullYear();
+
+  for (let i = nowYear; i >= nowYear - props.number; i--) {
+    returnElems.push(
+      <option value={i} key={"year-" + i}>
+        {i}
+      </option>
+    );
+  }
+
+  return <>{[...returnElems]}</>;
 };
 
 export const MatchingAgeDiffOptions = () => {
