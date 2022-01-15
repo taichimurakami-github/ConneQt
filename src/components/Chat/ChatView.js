@@ -1,4 +1,7 @@
 import { useRef, useMemo, useEffect } from "react";
+import { appConfig } from "../../app.config";
+import { getDayOfJP } from "../../fn/app/getDayAsJP";
+import { LSHandler } from "../../fn/app/handleLocalStorage";
 import { InputChatText } from "./ChatInput";
 import { ChatListContent } from "./ChatList";
 
@@ -25,7 +28,7 @@ export const ChatView = (props) => {
 
   const getPostDate = (nowDateTimestamp, id) => {
     //sentAt時刻を取得
-    const nowDate = new Date(nowDateTimestamp.toDate());
+    const nowDate = nowDateTimestamp.toDate();
     const nowHours = String(nowDate.getHours());
     const nowMinutes =
       nowDate.getMinutes() < 10
@@ -37,7 +40,7 @@ export const ChatView = (props) => {
     //前の投稿より日付または月が進んでいたら日またぎと判定
     //現在の投稿の日付を返す
     const beforeDate =
-      id > 0 ? new Date(parseChatData[id - 1].sentAt.toDate()) : undefined;
+      id > 0 ? parseChatData[id - 1].sentAt.toDate() : undefined;
     if (
       id === 0 ||
       nowDate.getMonth() > beforeDate.getMonth() ||
@@ -46,7 +49,9 @@ export const ChatView = (props) => {
       return [
         sentAt,
         <h4 className="date-container">
-          {`${nowDate.getMonth() + 1}月${nowDate.getDate()}日`}
+          {`${nowDate.getMonth() + 1}月${nowDate.getDate()}日(${getDayOfJP(
+            nowDate.getDay()
+          )})`}
         </h4>,
       ];
     } else {
@@ -56,9 +61,15 @@ export const ChatView = (props) => {
 
   //自動スクロール
   useEffect(() => {
+    //既読処理
+    LSHandler.save(appConfig.localStorage["001"].id, {
+      [props.metaData.chatRoomID]: { checkedAt: Date.now() },
+    });
     if (newestChatRef?.current) newestChatRef.current.scrollIntoView();
     else newestChatRef.current.scrollTop = newestChatRef.current.scrollHeight;
   }, [newestChatRef.current]);
+
+  useEffect(() => {}, []);
 
   return (
     <div className="chat-view-component">

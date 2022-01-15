@@ -12,6 +12,14 @@ export const appConfig = {
       content: null,
     },
   },
+  localStorage: {
+    "001": {
+      id: "CHATROOM_USER_ACTION_LOG",
+      template: {
+        chatRoom: {},
+      },
+    },
+  },
   components: {
     modal: {
       type: {

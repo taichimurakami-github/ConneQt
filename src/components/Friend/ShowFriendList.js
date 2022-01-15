@@ -1,22 +1,23 @@
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import cmpConfig from "./config";
 import { Header } from "../UI/Header";
 import { UsersList } from "../UI/UsersList";
 import { AppRouteContext } from "../../AppRoute";
 import { appConfig } from "../../app.config";
 import { cutStrLength } from "../../fn/util/cutStrLength";
+import { LSHandler } from "../../fn/app/handleLocalStorage";
 
 export const ShowFriendList = (props) => {
   const { authUserDoc, showErrorModal } = useContext(AppRouteContext);
 
   const getTopMessageFromChatRoomData = (chatRoomID) => {
-    const chatRoomData = { ...props.chatRoomData[chatRoomID] };
+    const chatRoomData = props.chatRoomData[chatRoomID];
 
     // friendList上に表示される、一番新しいメッセージを表示
     // ただし、chatRoomData.data 配列内に要素がない場合は空文字列を返す
     if (chatRoomData?.data && chatRoomData.data?.length > 0) {
       //chatRoomData.data内に1つ以上のメッセージがあるときは、最後の要素をtopMessageDataに代入
-      const fullText = chatRoomData.data[chatRoomData.data.length - 1];
+      const fullText = chatRoomData.data[chatRoomData.data.length - 1].text;
       return cutStrLength(fullText, 30);
     } else {
       return "";
@@ -98,6 +99,27 @@ export const ShowFriendList = (props) => {
     props.handleViewState(cmpConfig.state.view["002"]);
   };
 
+  const isUserCheckedAllPosts = (chatRoomID) => {
+    const chatRoomData = props.chatRoomData[chatRoomID].data;
+    const lastCheckedTime = LSHandler.load(appConfig.localStorage["001"].id)[
+      chatRoomID
+    ].checkedAt;
+
+    //最後の投稿が自分だったらそもそも既読済みとする
+    if (chatRoomData[chatRoomData.length - 1].uid === authUserDoc.uid)
+      return true;
+    //最後の投稿が自分ではない場合、既読済みかどうか確認する
+    else {
+      const lastPostTime = chatRoomData[chatRoomData.length - 1].sentAt
+        .toDate()
+        .getTime();
+      console.log(lastCheckedTime, lastPostTime);
+      //最後にチャットルームを開いた時間 - 最後にチャットルームに投稿された時間 > 0 ならは、
+      //最新の投稿はチェックされた事になる
+      return lastPostTime < lastCheckedTime;
+    }
+  };
+
   return (
     <>
       <Header title="友達一覧" backable={false} />
@@ -138,16 +160,18 @@ export const ShowFriendList = (props) => {
             Object.keys(authUserDoc.friend).map((key) => {
               const userDoc = props.relatedUserDocs[key];
               const chatRoomID = authUserDoc.friend[key]?.chatRoomID;
-              if (
-                props.chatRoomData[chatRoomID] &&
-                props.chatRoomData[chatRoomID]?.metaData &&
-                userDoc
-              ) {
+              const chatRoomData = props.chatRoomData[chatRoomID];
+
+              if (chatRoomData && chatRoomData?.metaData && userDoc) {
                 //正常にチャットルームを確認できる場合
                 return (
                   <li
                     id={key}
-                    className={`user-list clickable`}
+                    className={`user-list clickable ${
+                      isUserCheckedAllPosts(chatRoomID)
+                        ? "checked"
+                        : "unchecked"
+                    }`}
                     key={key}
                     onClick={handleShowChatRoom}
                   >
@@ -156,12 +180,17 @@ export const ShowFriendList = (props) => {
                       src={userDoc?.photo}
                       alt={userDoc?.name + "さんのプロフィール画像"}
                     />
-                    <div className="text-container p-events-none">
+                    <div className="text-container wide p-events-none">
                       <p className="name p-events-none">{userDoc?.name}</p>
                       <p className="p-events-none">
                         {getTopMessageFromChatRoomData(chatRoomID)}
                       </p>
                     </div>
+                    <span
+                      className={`notification round orange blink ${
+                        isUserCheckedAllPosts(chatRoomID) ? "" : "active"
+                      }`}
+                    ></span>
                   </li>
                 );
               } else {
@@ -184,6 +213,7 @@ export const ShowFriendList = (props) => {
                       <p className="p-events-none">
                         {getTopMessageFromChatRoomData(chatRoomID)}
                       </p>
+                      <span>{Date.now()}</span>
                     </div>
                   </li>
                 );

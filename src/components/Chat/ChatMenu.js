@@ -2,7 +2,7 @@ import { UserProfile } from "../UI/UserProfile";
 
 export const ChatMenu = (props) => {
   return (
-    <>
+    <div className="app-view-container">
       {props.chatRoomData.metaData ? (
         <h2 className="chatroom-menu-title">
           {props.metaData.doc.with.name}さんのプロフィール
@@ -25,6 +25,6 @@ export const ChatMenu = (props) => {
           この友達を削除する
         </button>
       }
-    </>
+    </div>
   );
 };

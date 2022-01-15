@@ -109,3 +109,36 @@ h2 {
 
   @include erace-scrollbar();
 }
+
+.notification {
+  display: none;
+  &.active {
+    display: block;
+  }
+
+  &.round {
+    $size: 18px;
+    width: $size;
+    height: $size;
+    border-radius: 100px;
+  }
+
+  &.orange {
+    background: $orange;
+  }
+
+  &.blink {
+    animation: blink 1.5s infinite;
+    @keyframes blink {
+      0% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+  }
+}

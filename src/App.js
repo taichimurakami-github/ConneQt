@@ -22,6 +22,7 @@ import { doc, getFirestore, onSnapshot } from "firebase/firestore";
 
 import { AppRouteContext } from "./AppRoute";
 import { db_name } from "./firebase.config";
+import { LSHandler } from "./fn/app/handleLocalStorage";
 
 export const App = (props) => {
   /**
@@ -78,6 +79,15 @@ export const App = (props) => {
             (doc) => {
               //現在のchatRoomDataStateに要素を追加
               const data = doc.data();
+
+              // //localStorageのデータを更新
+              // const lastPostTime = data.data[data.data.length - 1].sentAt
+              //   .toDate()
+              //   .getTime();
+              // LSHandler.save(appConfig.localStorage["001"].id, {
+              //   [chatRoomID]: { checkedAt: lastPostTime },
+              // });
+
               if (data) {
                 //多重state更新に対処するため、バッチ処理とする
                 setChatRoomDataState((beforeChatRoomDataState) => {

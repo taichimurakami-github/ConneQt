@@ -64,7 +64,7 @@ $input-text-height: 150px;
     padding: 10px;
     border-radius: 5px;
     text-align: left;
-    word-wrap: break-word;
+    word-break: break-all;
     max-width: 70vw;
 
     &.me {
