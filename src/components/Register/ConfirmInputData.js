@@ -1,12 +1,12 @@
 import { useContext } from "react";
 import { AppRouteContext } from "../../AppRoute";
+
+import { cmpConfig } from "./config";
 import { ChoiceActionButton } from "../UI/Button";
 import { Header } from "../UI/Header";
-import { cmpConfig } from "./config";
 
 export const ConfirmInputData = (props) => {
-  const { eraceModal, showConfirmModal, showLoadingModal, showErrorModal } =
-    useContext(AppRouteContext);
+  const { eraceModal, showConfirmModal } = useContext(AppRouteContext);
 
   const handleSubmit = (e) => {
     e.preventDefault();

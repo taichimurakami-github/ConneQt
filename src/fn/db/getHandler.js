@@ -19,7 +19,7 @@ const db = getFirestore();
  * @returns {null | Object}
  */
 export const getAuthUserDoc = async (authData) => {
-  console.log(`searching user docs ... where uid = ${authData.uid}`);
+  // console.log(`searching user docs ... where uid = ${authData.uid}`);
 
   const docRef = doc(db, db_name.user, authData.uid);
   const result = await getDoc(docRef);

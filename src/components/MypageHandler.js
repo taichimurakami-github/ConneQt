@@ -106,19 +106,19 @@ export const MypageHandler = (props) => {
           />
         );
 
-      case cmpConfig.state.view["004"]:
-        return (
-          <></>
-          // <EditText
-          //   viewState={viewState}
-          //   handleViewState={setViewState}
-          //   handleSubmit={handleSubmitToDB}
-          //   inputMode="select"
-          //   defaultValue={props.nowUserDoc.age}
-          // >
-          //   <AgeOptions />
-          // </EditText>
-        );
+      //年齢の編集：無効化
+      // case cmpConfig.state.view["004"]:
+      // return (
+      // <EditText
+      //   viewState={viewState}
+      //   handleViewState={setViewState}
+      //   handleSubmit={handleSubmitToDB}
+      //   inputMode="select"
+      //   defaultValue={props.nowUserDoc.age}
+      // >
+      //   <AgeOptions />
+      // </EditText>
+      // );
 
       case cmpConfig.state.view["005"]:
         return (

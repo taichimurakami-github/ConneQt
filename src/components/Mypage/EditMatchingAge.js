@@ -1,10 +1,10 @@
 import { useContext, useState } from "react";
 import { AppRouteContext } from "../../AppRoute";
+import { updateUserData } from "../../fn/db/updateHandler";
+
 import { cmpConfig } from "./config";
 import { Header } from "../UI/Header";
 import { ControlledInputText } from "../UI/InputText";
-import { validateAccountData } from "../../fn/app/validateAccountData";
-import { updateUserData } from "../../fn/db/updateHandler";
 import { MatchingAgeDiffOptions } from "../UI/Options";
 
 export const EditMatchingAge = (props) => {

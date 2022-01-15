@@ -199,25 +199,6 @@ export const ShowMypageTop = (props) => {
           )} / 年下：${getMatchingAgeText("minus")} `}
         />
 
-        {/* <ListMenu
-          id={cmpConfig.state.view["006"]}
-          handleClick={() =>
-            props.handleViewState(cmpConfig.state.view["005"])
-          }
-          title="出身地を編集："
-          content={
-            props.nowUserDoc?.hometown.prefecture + " " + props.nowUserDoc?.hometown.city
-          }
-        />
-
-        <ListMenu
-          id={cmpConfig.state.view["007"]}
-          handleClick={() =>
-            props.handleViewState(cmpConfig.state.view["005"])
-          }
-          title="出身大学を編集："
-          content={props.nowUserDoc?.history?.university}
-        /> */}
         <h3 className="mypage-menu-list-title">その他</h3>
 
         <ListMenu

@@ -30,7 +30,7 @@ export const updateChatRoomData = async (sendData) => {
       sentAt: dateTime,
     }),
   });
-  console.log("...done!");
+  // console.log("...done!");
 };
 
 export const updateUserDocObjectData = async (

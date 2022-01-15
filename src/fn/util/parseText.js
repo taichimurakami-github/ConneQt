@@ -1,9 +1,5 @@
-export const parseLFToReactBr = (text) => {
-  const parsedArr = [...text].map((t) =>
-    t === "\n" || t === "\r" ? <br></br> : t
-  );
-
-  return [...text].reduce((accumulator, current) => {
+export const parseLFToReactBr = (text) =>
+  [...text].reduce((accumulator, current) => {
     const result = [...accumulator];
 
     if (current === "\n" || current === "\r") {
@@ -20,4 +16,3 @@ export const parseLFToReactBr = (text) => {
 
     return result;
   }, []);
-};

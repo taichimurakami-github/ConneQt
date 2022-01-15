@@ -25,7 +25,11 @@ export const ShowFriendList = (props) => {
     const targetUserDoc = props.relatedUserDocs[e.target.id];
 
     if (!targetUserDoc) {
-      return showErrorModal("ユーザー情報の取得に失敗しました。");
+      return showErrorModal({
+        content: {
+          title: "ユーザー情報の取得に失敗しました。",
+        },
+      });
     }
 
     // selectedUserDocStateを設定
@@ -39,7 +43,11 @@ export const ShowFriendList = (props) => {
     const targetUserDoc = props.relatedUserDocs[e.target.id];
 
     if (!targetUserDoc) {
-      return showErrorModal("ユーザー情報の取得に失敗しました。");
+      return showErrorModal({
+        content: {
+          title: "ユーザー情報の取得に失敗しました。",
+        },
+      });
     }
 
     // selectedUserDocStateを設定

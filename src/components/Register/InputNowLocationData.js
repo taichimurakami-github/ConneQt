@@ -1,9 +1,10 @@
 import { useContext } from "react";
 import { AppRouteContext } from "../../AppRoute";
+
 import { setGeolocation } from "../../fn/app/geolocation";
-import { validateAccountData } from "../../fn/app/validateAccountData";
-import { ChoiceActionButton } from "../UI/Button";
+
 import { Header } from "../UI/Header";
+import { ChoiceActionButton } from "../UI/Button";
 
 export const InputNowLocationData = (props) => {
   const { showLoadingModal, showErrorModal, eraceModal } =

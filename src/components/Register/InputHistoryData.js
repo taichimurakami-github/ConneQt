@@ -2,17 +2,13 @@ import { useState, useEffect, useContext } from "react";
 import { Header } from "../UI/Header";
 import schoolData from "../../local/schoolCode.json";
 import { ControlledInputText } from "../UI/InputText";
-import {
-  validateAccountData,
-  validateZipcode,
-} from "../../fn/app/validateAccountData";
+import { validateAccountData } from "../../fn/app/validateAccountData";
 import { ChoiceActionButton } from "../UI/Button";
 import { AppRouteContext } from "../../AppRoute";
 
 export const InputHistoryData = (props) => {
   const { showErrorModal, showConfirmModal, eraceModal } =
     useContext(AppRouteContext);
-  const [schoolZipcode, setSchoolZipcode] = useState("");
   const [inputStr, setInputStr] = useState("");
   const [resultArr, setResultArr] = useState([]);
 
@@ -71,7 +67,7 @@ export const InputHistoryData = (props) => {
    * @param {String} name : 出身校名 or ""(入力値をそのまま登録する場合)
    * @returns
    */
-  const handleSelectResult = (name) => {
+  const handleSelectResult = (name = "") => {
     if (name === props.registerUserData.history.university) {
       return showConfirmModal({
         content: {
@@ -268,7 +264,8 @@ const SchoolNameList = (props) => {
           props.inputStr === ""
         }
         onClick={() => {
-          props.handleClick("");
+          //inputStrをそのまま登録（引数なし）
+          props.handleClick();
         }}
       >
         入力した出身校名をそのまま登録
