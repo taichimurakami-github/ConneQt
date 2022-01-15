@@ -25,7 +25,11 @@ export const InputChatText = (props) => {
           value={inputState}
           onChange={handleTextInput}
         ></textarea>
-        <button type="submit" className="btn-orange">
+        <button
+          type="submit"
+          className="btn-orange"
+          disabled={inputState === ""}
+        >
           送信
         </button>
       </form>

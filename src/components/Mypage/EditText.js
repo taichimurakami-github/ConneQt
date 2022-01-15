@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { validateAccountData } from "../../fn/app/validateAccountData";
 import { Header } from "../UI/Header";
 import { ControlledInputText } from "../UI/InputText";
 import { cmpConfig } from "./config";
@@ -10,12 +9,20 @@ export const EditText = (props) => {
 
   const generateHeaderTitle = () => {
     switch (props.viewState) {
-      case cmpConfig.state.view["002"]:
-        return "アイコンを編集";
       case cmpConfig.state.view["003"]:
+        ControlledInputProps = {
+          text: {
+            label: "お名前を30文字以内で入力",
+            placeholder: "お名前を入力",
+          },
+          maxLength: 30,
+          statefulNavComponent: (
+            <p>
+              {inputState.length}/{30}
+            </p>
+          ),
+        };
         return "お名前を編集";
-      case cmpConfig.state.view["004"]:
-        return "年齢を編集";
       case cmpConfig.state.view["005"]:
         ControlledInputProps = {
           text: {
@@ -37,8 +44,7 @@ export const EditText = (props) => {
 
   const isAbleToSubmit = () => {
     return (
-      inputState !== props.defaultValue &&
-      validateAccountData("string-01", inputState)
+      inputState !== props.defaultValue && props.handleValidate(inputState)
     );
   };
 
@@ -63,6 +69,7 @@ export const EditText = (props) => {
           valueState={inputState}
           setValueState={setInputState}
           required={true}
+          maxLength={30}
           {...ControlledInputProps}
         >
           {props.children}

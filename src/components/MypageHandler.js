@@ -10,6 +10,7 @@ import { AppRouteContext } from "../AppRoute";
 import "../styles/mypage.scss";
 import { EditMatchingAge } from "./Mypage/EditMatchingAge";
 import { EditUserImage } from "./Mypage/EditUserImage";
+import { validateAccountData } from "../fn/app/validateAccountData";
 
 export const MypageHandler = (props) => {
   const [viewState, setViewState] = useState(cmpConfig.state.view["001"]);
@@ -98,9 +99,12 @@ export const MypageHandler = (props) => {
             viewState={viewState}
             handleViewState={setViewState}
             handleSubmit={handleSubmitToDB}
+            handleValidate={(str) => {
+              return validateAccountData("string-01", str) && str.length <= 30;
+            }}
             pattern=".*\S+.*"
             text={{
-              placeholder: "お名前を入力してください。",
+              placeholder: "お名前を30文字以内で入力",
             }}
             defaultValue={props.nowUserDoc.name}
           />
@@ -126,12 +130,12 @@ export const MypageHandler = (props) => {
             viewState={viewState}
             handleViewState={setViewState}
             handleValidate={(str) => {
-              if (str.length > 100) return false;
+              return validateAccountData("string-01", str) && str.length <= 100;
             }}
             handleSubmit={handleSubmitToDB}
             inputMode="textarea"
             text={{
-              placeholder: "プロフィールを100文字以内で入力してください。",
+              placeholder: "プロフィールを100文字以内で入力",
             }}
             defaultValue={props.nowUserDoc.profile}
           />

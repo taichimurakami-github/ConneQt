@@ -125,20 +125,22 @@ export const ShowFoundUsersList = (props) => {
   return (
     <>
       <Header title="友達を見つける" backable={false} />
-      {showableUserDocs.length > 0 && (
-        <h2
-          style={{
-            margin: "35px auto 15px",
-          }}
-        >
-          近くに{showableUserDocs.length}人の友達候補がいます！
-        </h2>
-      )}
-      <UsersCard
-        userDocs={showableUserDocs}
-        handleClick={handleSelectUser}
-        noUserMessage="近くにユーザーが見つかりませんでした。"
-      />
+      <div className="app-view-container">
+        {showableUserDocs.length > 0 && (
+          <h2
+            style={{
+              margin: "35px auto 15px",
+            }}
+          >
+            近くに{showableUserDocs.length}人の友達候補がいます！
+          </h2>
+        )}
+        <UsersCard
+          userDocs={showableUserDocs}
+          handleClick={handleSelectUser}
+          noUserMessage="近くにユーザーが見つかりませんでした。"
+        />
+      </div>
     </>
   );
 };

@@ -120,7 +120,7 @@ export const App = (props) => {
     newUserUidArray.length > 0 &&
       (async () => {
         const r = await getUserDocsByDataArray(newUserUidArray);
-        console.log({ ...relatedUserDocsState, ...r });
+        // console.log({ ...relatedUserDocsState, ...r });
         setRelatedUserDocsState({
           ...relatedUserDocsState,
           ...r,

@@ -6,7 +6,7 @@ $button-size: 100px;
 .request-users-container {
   width: 95%;
   max-width: 750px;
-  margin: 0 auto 35px;
+  margin: 30px auto 35px;
   padding: 20px 10px;
   background: white;
   border-radius: 20px;
@@ -56,11 +56,13 @@ $button-size: 100px;
     text-align: left;
     // justify-content: center;
     padding-left: 5px;
+    overflow: hidden;
     width: calc(100% - #{$button-size} - #{$icon-size});
   }
 
   .name {
     font-weight: bold;
+    white-space: nowrap;
   }
 
   .name,

@@ -4,6 +4,7 @@ import { Header } from "../UI/Header";
 import { UsersList } from "../UI/UsersList";
 import { AppRouteContext } from "../../AppRoute";
 import { appConfig } from "../../app.config";
+import { cutStrLength } from "../../fn/util/cutStrLength";
 
 export const ShowFriendList = (props) => {
   const { authUserDoc, showErrorModal } = useContext(AppRouteContext);
@@ -15,7 +16,8 @@ export const ShowFriendList = (props) => {
     // ただし、chatRoomData.data 配列内に要素がない場合は空文字列を返す
     if (chatRoomData?.data && chatRoomData.data?.length > 0) {
       //chatRoomData.data内に1つ以上のメッセージがあるときは、最後の要素をtopMessageDataに代入
-      return chatRoomData.data[chatRoomData.data.length - 1].text;
+      const fullText = chatRoomData.data[chatRoomData.data.length - 1];
+      return cutStrLength(fullText, 30);
     } else {
       return "";
     }

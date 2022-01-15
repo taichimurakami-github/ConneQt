@@ -119,7 +119,7 @@ export const ShowMypageTop = (props) => {
     <>
       <Header title="マイページ" backable={false} />
 
-      <ul className="mypage-top-wrapper">
+      <ul className="mypage-top-wrapper app-view-container">
         <h3 className="mypage-menu-list-title mg-top-0">ユーザー情報</h3>
 
         <img
@@ -241,6 +241,7 @@ export const ShowMypageTop = (props) => {
           title={<span className="orange">アカウントを削除</span>}
         />
       </ul>
+      <div className="spacer" style={{ height: "100px" }}></div>
     </>
   );
 };

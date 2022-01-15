@@ -1,6 +1,6 @@
 import { useRef, useMemo, useEffect } from "react";
 import { InputChatText } from "./ChatInput";
-import { ChatList, ChatListContent } from "./ChatList";
+import { ChatListContent } from "./ChatList";
 
 /**
  * チャット画面のコンポーネント
@@ -13,13 +13,7 @@ export const ChatView = (props) => {
    * チャットデータ内容をコンポーネント上に出力できる形に整形
    */
   const parseChatData = useMemo(() => {
-    const data = [...props.chatRoomData.data];
-    const orderedData = [];
-
-    //逆順に並べ替える（chatRoomData.id.dataは新しい順にpushされていくので、mapで取り出す際は逆になる）
-    for (let i = data.length - 1; i >= 0; i--) orderedData.push(data[i]);
-
-    return data;
+    return [...props.chatRoomData.data];
   }, [props.chatRoomData]);
 
   /**
@@ -28,6 +22,37 @@ export const ChatView = (props) => {
    * @returns
    */
   const isAuthUser = (uid) => uid === props.metaData.doc.me.uid;
+
+  const getPostDate = (nowDateTimestamp, id) => {
+    //sentAt時刻を取得
+    const nowDate = new Date(nowDateTimestamp.toDate());
+    const nowHours = String(nowDate.getHours());
+    const nowMinutes =
+      nowDate.getMinutes() < 10
+        ? `0${nowDate.getMinutes()}`
+        : `${nowDate.getMinutes()}`;
+    const sentAt = `${nowHours}:${nowMinutes}`;
+
+    //前の投稿と日付が変わったかチェック
+    //前の投稿より日付または月が進んでいたら日またぎと判定
+    //現在の投稿の日付を返す
+    const beforeDate =
+      id > 0 ? new Date(parseChatData[id - 1].sentAt.toDate()) : undefined;
+    if (
+      id === 0 ||
+      nowDate.getMonth() > beforeDate.getMonth() ||
+      nowDate.getDate() > beforeDate.getDate()
+    ) {
+      return [
+        sentAt,
+        <h4 className="date-container">
+          {`${nowDate.getMonth() + 1}月${nowDate.getDate()}日`}
+        </h4>,
+      ];
+    } else {
+      return [sentAt, undefined];
+    }
+  };
 
   //自動スクロール
   useEffect(() => {
@@ -42,32 +67,43 @@ export const ChatView = (props) => {
           const userDoc = isAuthUser(val.uid)
             ? props.metaData.doc.me
             : props.metaData.doc.with;
+          const [sentAt, dateComponent] = getPostDate(val.sentAt, id);
 
           return id === parseChatData.length - 1 ? (
-            <div
-              className={`chat-list-view-container ${
-                isAuthUser(val.uid) ? "right" : "left"
-              }`}
-              ref={newestChatRef}
-            >
-              <ChatListContent
-                val={val}
-                isAuthUser={isAuthUser(val.uid)}
-                doc={userDoc}
-              />
-            </div>
+            <>
+              {dateComponent}
+              <li
+                className={`chat-list-view-container ${
+                  isAuthUser(val.uid) ? "right" : "left"
+                }`}
+                ref={newestChatRef}
+                key={`chatlist-${id}`}
+              >
+                <ChatListContent
+                  val={val}
+                  isAuthUser={isAuthUser(val.uid)}
+                  doc={userDoc}
+                  sentAt={sentAt}
+                />
+              </li>
+            </>
           ) : (
-            <div
-              className={`chat-list-view-container ${
-                isAuthUser(val.uid) ? "right" : "left"
-              }`}
-            >
-              <ChatListContent
-                val={val}
-                isAuthUser={isAuthUser(val.uid)}
-                doc={userDoc}
-              />
-            </div>
+            <>
+              {dateComponent}
+              <li
+                className={`chat-list-view-container ${
+                  isAuthUser(val.uid) ? "right" : "left"
+                }`}
+                key={`chatlist-${id}`}
+              >
+                <ChatListContent
+                  val={val}
+                  isAuthUser={isAuthUser(val.uid)}
+                  doc={userDoc}
+                  sentAt={sentAt}
+                />
+              </li>
+            </>
           );
         })}
       </ul>

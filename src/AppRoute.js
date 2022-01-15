@@ -108,7 +108,7 @@ export const AuthHandler = () => {
     const authUserDoc_unSubFunc = onSnapshot(
       doc(db, "users", user.uid),
       (doc) => {
-        console.log("your doc data has been changed.");
+        // console.log("your doc data has been changed.");
         const data = doc.data();
 
         //undefinedだったらこれ以下の処理を実行しない(アカウント消去時)
@@ -128,12 +128,12 @@ export const AuthHandler = () => {
     // setPageContentState(appConfig.pageContents["002"]);
 
     onAuthStateChanged(auth, (user) => {
-      console.log(user);
+      // console.log(user);
       if (user) {
         // User is signed in, see docs for a list of available properties
         // https://firebase.google.com/docs/reference/js/firebase.User
         console.log("you have signed in as : " + user.email);
-        authState && console.log("you have already authenticated.");
+        // authState && console.log("you have already authenticated.");
 
         if (!authState) {
           //すでにauthStateが設定されている場合のみ実施
@@ -151,7 +151,7 @@ export const AuthHandler = () => {
         eraceModal();
       } else {
         // User is signed out
-        console.log("you have signed out!");
+        console.log("you have signed out");
 
         // AuthStateを初期化
         setAuthState(null);
@@ -170,7 +170,7 @@ export const AuthHandler = () => {
         const isUserStateExists = authUserDoc ? true : false;
         if (isUserStateExists) {
           //既にuserDocStateが存在しているかどうか判定
-          console.log("your userdata has already exist.");
+          // console.log("your userdata has already exist.");
           eraceModal();
           return;
         }
@@ -188,7 +188,7 @@ export const AuthHandler = () => {
           } else {
             //fetchedAuthUserData == nullだった
             //初回登録へ
-            console.log("you are new here.");
+            // console.log("you are new here.");
             setViewState(appConfig.routePageContents["002"]);
           }
         } catch (e) {

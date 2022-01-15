@@ -1,10 +1,14 @@
 @import "./common/assets";
+@import "./common/mixin";
+
 $header: 54px;
 $menu: 75px;
 $input-text-height: 150px;
+
 .chat-view-component {
   position: fixed;
   top: $header;
+  z-index: -1;
   left: 50%;
   transform: translateX(-50%);
 
@@ -20,15 +24,10 @@ $input-text-height: 150px;
 
   .chat-content-container {
     height: calc(100% - #{$input-text-height});
-    padding-top: 50px;
+    padding-top: 30px;
     padding-bottom: 15px;
     overflow: auto;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
-    -ms-overflow-style: none; /* IE, Edge 対応 */
-    scrollbar-width: none;
+    @include erace-scrollbar();
   }
   .chat-input-form {
     height: clac(#{$input-text-height} - 10px);
@@ -50,10 +49,23 @@ $input-text-height: 150px;
     height: $icon-size;
   }
 
+  .text-wrapper {
+    max-width: 65%;
+    display: flex;
+    align-items: flex-end;
+    column-gap: 5px;
+
+    &.me {
+      flex-direction: row-reverse;
+    }
+  }
+
   .text-container {
     padding: 10px;
     border-radius: 5px;
-    max-width: 60%;
+    text-align: left;
+    word-wrap: break-word;
+    max-width: 70vw;
 
     &.me {
       background: $yellow;
@@ -66,6 +78,24 @@ $input-text-height: 150px;
 
   &.right {
     flex-direction: row-reverse;
+  }
+}
+
+.date-container {
+  padding-top: 15px;
+  font-size: 1.4rem;
+}
+
+.sent-at-container {
+  font-size: 1.1rem;
+  color: $darkgray;
+  padding: 2px;
+
+  &.me {
+    text-align: right;
+  }
+  &.with {
+    text-align: left;
   }
 }
 
