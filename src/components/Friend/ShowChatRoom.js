@@ -11,7 +11,7 @@ import { Header } from "../UI/Header";
 import { UserProfile } from "../UI/UserProfile";
 import { AppRouteContext } from "../../AppRoute";
 
-import "../../styles/chat.scss";
+import "../../styles/ChatRoom.scss";
 import { parseLFToReactBr } from "../../fn/util/parseText";
 
 export const ShowChatRoom = (props) => {
@@ -160,20 +160,21 @@ const ChatViewComponent = (props) => {
     return data;
   }, [props.chatRoomData]);
 
+  const isAuthUser = (uid) => uid === props.metaData.doc.me.uid;
+
   return (
-    <>
-      <ul className="chat-content-container" style={{ paddingBottom: "200px" }}>
+    <div className="chat-view-component">
+      <ul className="chat-content-container">
         {parseChatData.map((val) => {
           const r = parseLFToReactBr(val.text);
-          console.log(r);
           return (
             <>
               <div
                 className={`chat-list-view-container ${
-                  val.uid === props.metaData.doc.me.uid ? "right" : "left"
+                  isAuthUser(val.uid) ? "right" : "left"
                 }`}
               >
-                {val.uid === props.metaData.doc.with.uid && (
+                {!isAuthUser(val.uid) && (
                   <img
                     className="user-icon"
                     src={props.metaData.doc.with?.photo || ""}
@@ -185,7 +186,13 @@ const ChatViewComponent = (props) => {
                   ></img>
                 )}
 
-                <p className="text-container">{parseLFToReactBr(val.text)}</p>
+                <p
+                  className={`text-container ${
+                    isAuthUser(val.uid) ? "me" : "with"
+                  }`}
+                >
+                  {parseLFToReactBr(val.text)}
+                </p>
               </div>
             </>
           );
@@ -194,7 +201,7 @@ const ChatViewComponent = (props) => {
       {props.chatRoomData?.metaData && (
         <InputChatText handleOnSubmit={props.handleSend} />
       )}
-    </>
+    </div>
   );
 };
 
@@ -243,7 +250,7 @@ const InputChatText = (props) => {
   return (
     <>
       <form
-        className="chat-input-wrapper"
+        className="chat-input-form flex-col-xyc"
         style={{ background: "white" }}
         onSubmit={handleOnSubmit}
       >

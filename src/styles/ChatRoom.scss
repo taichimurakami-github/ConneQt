@@ -1,0 +1,106 @@
+@import "./common/assets";
+$header: 54px;
+$menu: 75px;
+$input-text-height: 150px;
+.chat-view-component {
+  position: fixed;
+  top: $header;
+  left: 50%;
+  transform: translateX(-50%);
+
+  max-width: 500px;
+  overflow: hidden;
+  width: 100%;
+  height: calc(100vh - #{$header} - #{$menu});
+
+  .chat-content-container,
+  .chat-input-form {
+    width: 98%;
+  }
+
+  .chat-content-container {
+    height: calc(100% - #{$input-text-height});
+    padding-top: 50px;
+    padding-bottom: 15px;
+    overflow: auto;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    -ms-overflow-style: none; /* IE, Edge 対応 */
+    scrollbar-width: none;
+  }
+  .chat-input-form {
+    height: clac(#{$input-text-height} - 10px);
+  }
+}
+
+.chat-list-view-container {
+  $icon-size: 50px;
+  display: flex;
+  align-items: center;
+  column-gap: 15px;
+  padding-left: 10px;
+  padding-right: 10px;
+  max-width: 750px;
+  margin: 0 auto 15px;
+
+  .user-icon {
+    width: $icon-size;
+    height: $icon-size;
+  }
+
+  .text-container {
+    padding: 10px;
+    border-radius: 5px;
+    max-width: 60%;
+
+    &.me {
+      background: $yellow;
+    }
+    &.with {
+      color: white;
+      background: $darkgray;
+    }
+  }
+
+  &.right {
+    flex-direction: row-reverse;
+  }
+}
+
+.chat-input-form {
+  $margin-bottom: 10px;
+  height: calc(#{$input-text-height} - #{$margin-bottom});
+  margin-bottom: $margin-bottom;
+  border-radius: 10px;
+  box-shadow: 2px 2px 2px 2px lightgray;
+
+  .input-text-area {
+    resize: none;
+    padding: 5px;
+    height: 75px;
+    width: 90%;
+    margin: 0 auto;
+  }
+
+  .btn-orange {
+    margin-top: 10px;
+    margin-bottom: 0;
+  }
+}
+
+.chatroom-menu-title {
+  font-size: 1.8rem;
+}
+
+.data-showcase {
+  font-weight: bold;
+  margin: -15px auto 30px;
+}
+
+label {
+  text-decoration: underline 2px black;
+  text-underline-offset: 2px;
+  margin-bottom: 10px;
+}
