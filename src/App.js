@@ -28,7 +28,8 @@ export const App = (props) => {
   /**
    * setState definitions
    */
-  const { authUserDoc, eraceModal } = useContext(AppRouteContext);
+  const { authUserDoc, showConfirmModal, eraceModal } =
+    useContext(AppRouteContext);
   // const [nowUserDoc, setNowUserDoc] = useState({...authUserDoc})
   const [relatedUserDocsState, setRelatedUserDocsState] = useState({});
   const [pageContentState, setPageContentState] = useState(
@@ -44,7 +45,8 @@ export const App = (props) => {
     (async () => {
       const r = await getRelatedUserDocs(authUserDoc);
       setRelatedUserDocsState(r);
-      eraceModal();
+      // eraceModal();
+      showConfirmModal({ content: { title: "update test!" } });
     })();
   }, []);
 
@@ -80,14 +82,15 @@ export const App = (props) => {
               //現在のchatRoomDataStateに要素を追加
               const data = doc.data();
 
-              // //localStorageのデータを更新
-              // const lastPostTime = data.data[data.data.length - 1].sentAt
-              //   .toDate()
-              //   .getTime();
-              // LSHandler.save(appConfig.localStorage["001"].id, {
-              //   [chatRoomID]: { checkedAt: lastPostTime },
-              // });
+              // //localStorage内に該当データが存在しない場合は追加しておく
+              const lsData = LSHandler.load(appConfig.localStorage["001"].id);
+              if (!lsData || !lsData.hasOwnProperty(chatRoomID)) {
+                LSHandler.save(appConfig.localStorage["001"].id, {
+                  [chatRoomID]: { checkedAt: 0 },
+                });
+              }
 
+              // doc.dataが存在していればchatRoomDataStateを更新
               if (data) {
                 //多重state更新に対処するため、バッチ処理とする
                 setChatRoomDataState((beforeChatRoomDataState) => {

@@ -101,9 +101,13 @@ export const ShowFriendList = (props) => {
 
   const isUserCheckedAllPosts = (chatRoomID) => {
     const chatRoomData = props.chatRoomData[chatRoomID].data;
-    const lastCheckedTime = LSHandler.load(appConfig.localStorage["001"].id)[
-      chatRoomID
-    ].checkedAt;
+    const LSData = LSHandler.load(appConfig.localStorage["001"].id);
+
+    if (!LSData) return true;
+
+    const lastCheckedTime = LSData[chatRoomID]?.checkedAt;
+
+    if (!lastCheckedTime) return true;
 
     //最後の投稿が自分だったらそもそも既読済みとする
     if (chatRoomData[chatRoomData.length - 1].uid === authUserDoc.uid)
@@ -113,7 +117,6 @@ export const ShowFriendList = (props) => {
       const lastPostTime = chatRoomData[chatRoomData.length - 1].sentAt
         .toDate()
         .getTime();
-      console.log(lastCheckedTime, lastPostTime);
       //最後にチャットルームを開いた時間 - 最後にチャットルームに投稿された時間 > 0 ならは、
       //最新の投稿はチェックされた事になる
       return lastPostTime < lastCheckedTime;
