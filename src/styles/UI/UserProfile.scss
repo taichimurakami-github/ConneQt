@@ -7,11 +7,9 @@
   word-break: break-all;
 
   .user-icon {
-    object-fit: contain;
     width: $icon-size;
     max-width: 100%;
     height: $icon-size;
-    border-radius: 10000px;
     margin-bottom: 15px;
   }
 

@@ -25,14 +25,6 @@ export const appConfig = {
         type: null,
       },
     },
-    "003": {
-      id: "APP_INFO",
-      template: {
-        version: appInfo.version,
-        contact: appInfo.contact,
-        copyright: appInfo.copyright,
-      },
-    },
   },
   components: {
     modal: {
@@ -57,7 +49,7 @@ export const appConfig = {
 };
 
 export const appInfo = {
-  version: "2022.01.15__001",
+  version: "2022.01.15__002",
   mode: "beta",
   db: "firestore",
   contact: "conneqtu@gmail.com",
