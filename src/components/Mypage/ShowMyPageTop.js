@@ -200,6 +200,35 @@ export const ShowMypageTop = (props) => {
         />
 
         <h3 className="mypage-menu-list-title">その他</h3>
+        <ListMenu
+          id="EXECUTE_SUPER_RELOAD"
+          handleClick={() => {
+            showConfirmModal({
+              content: {
+                title: "アプリをアップデートする",
+                text: [
+                  "「はい」を押すと、アプリケーションを再起動します。",
+                  "アップデートがあれば、自動的に適用されます。",
+                ],
+              },
+              children: (
+                <ChoiceActionButton
+                  text={{
+                    yes: "はい",
+                    no: "いいえ",
+                  }}
+                  callback={{
+                    yes: () => {
+                      window.location.reload(true);
+                    },
+                    no: eraceModal,
+                  }}
+                />
+              ),
+            });
+          }}
+          title="アプリケーションのアップデートを実行"
+        />
 
         <ListMenu
           id={cmpConfig.state.view["000"]}

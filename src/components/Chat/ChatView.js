@@ -65,11 +65,15 @@ export const ChatView = (props) => {
     LSHandler.save(appConfig.localStorage["001"].id, {
       [props.metaData.chatRoomID]: { checkedAt: Date.now() },
     });
-    if (newestChatRef?.current) newestChatRef.current.scrollIntoView();
-    else newestChatRef.current.scrollTop = newestChatRef.current.scrollHeight;
-  }, [newestChatRef.current]);
 
-  useEffect(() => {}, []);
+    //まだ投稿がなければ、自動スクロールはいらないのでスルー
+    if (props.chatRoomData.length > 0) {
+      if (newestChatRef?.current) newestChatRef.current.scrollIntoView();
+      else
+        newestChatRef.current.scrollTop =
+          newestChatRef.current?.scrollHeight || 0;
+    }
+  }, [newestChatRef.current]);
 
   return (
     <div className="chat-view-component">
@@ -118,14 +122,12 @@ export const ChatView = (props) => {
           );
         })}
       </ul>
-
-      {props.chatRoomData?.metaData && (
-        <InputChatText
-          handleOnSubmit={(e) => {
-            props.handleSend(e);
-          }}
-        />
-      )}
+      <InputChatText
+        isActivated={props?.chatRoomData?.metaData ? true : false}
+        handleOnSubmit={(e) => {
+          props.handleSend(e);
+        }}
+      />
     </div>
   );
 };

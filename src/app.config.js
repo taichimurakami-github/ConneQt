@@ -19,6 +19,20 @@ export const appConfig = {
         chatRoom: {},
       },
     },
+    "002": {
+      id: "APP_USER_NAVIGATON_MODAL_ARGS",
+      template: {
+        type: null,
+      },
+    },
+    "003": {
+      id: "APP_INFO",
+      template: {
+        version: appInfo.version,
+        contact: appInfo.contact,
+        copyright: appInfo.copyright,
+      },
+    },
   },
   components: {
     modal: {

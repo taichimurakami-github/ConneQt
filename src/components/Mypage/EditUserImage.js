@@ -48,7 +48,7 @@ export const EditUserImage = (props) => {
         handleBack={() => props.handleViewState(cmpConfig.state.view["001"])}
       />
 
-      <form onSubmit={handleSubmit}>
+      <form className="app-view-container" onSubmit={handleSubmit}>
         <h2 className="input-target-title">
           新しいユーザーアイコンの画像を選択してください。
         </h2>

@@ -61,12 +61,10 @@ function registerValidSW(swUrl, config) {
       //追加：2022.01.15
       //PWA用の自動アップデート検知
       //wating状態のService Workerを検知し、onUpdateを発火
-      if (registration.waiting && config && config.onUpdate) {
+      console.log(registration.waiting);
+      if (registration.waiting && config && config?.onUpdate) {
         console.log("new version found. executing auto update ...");
         config.onUpdate(registration);
-        //強制自動アップデートを実行
-        registration.waiting?.postMessage({ type: "SKIP_WAITING" });
-        window.location.reload();
       }
 
       registration.onupdatefound = () => {

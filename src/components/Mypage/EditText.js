@@ -6,6 +6,7 @@ import { cmpConfig } from "./config";
 export const EditText = (props) => {
   const [inputState, setInputState] = useState(props.defaultValue);
   let ControlledInputProps = {};
+  let h2TitleText = "";
 
   const generateHeaderTitle = () => {
     switch (props.viewState) {
@@ -22,7 +23,8 @@ export const EditText = (props) => {
             </p>
           ),
         };
-        return "お名前を編集";
+
+        return (h2TitleText = "お名前を編集");
       case cmpConfig.state.view["005"]:
         ControlledInputProps = {
           text: {
@@ -36,7 +38,7 @@ export const EditText = (props) => {
             </p>
           ),
         };
-        return "プロフィール編集";
+        return (h2TitleText = "プロフィール編集");
       default:
         return "";
     }
@@ -61,8 +63,8 @@ export const EditText = (props) => {
         handleBack={() => props.handleViewState(cmpConfig.state.view["001"])}
       />
 
-      <form onSubmit={handleSubmit}>
-        <h2 className="input-target-title">{props.title}</h2>
+      <form className="app-view-container" onSubmit={handleSubmit}>
+        <h2 className="input-target-title">{h2TitleText}</h2>
         <ControlledInputText
           id={props.viewState}
           element={props.inputMode}

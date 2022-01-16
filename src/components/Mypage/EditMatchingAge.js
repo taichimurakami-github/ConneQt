@@ -66,7 +66,7 @@ export const EditMatchingAge = (props) => {
         handleBack={() => props.handleViewState(cmpConfig.state.view["001"])}
       />
 
-      <form onSubmit={handleSubmit}>
+      <form className="app-view-container" onSubmit={handleSubmit}>
         <h2 className="input-target-title" style={{ marginBottom: "30px" }}>
           マッチング年齢幅を設定
         </h2>

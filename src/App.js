@@ -45,8 +45,24 @@ export const App = (props) => {
     (async () => {
       const r = await getRelatedUserDocs(authUserDoc);
       setRelatedUserDocsState(r);
-      // eraceModal();
-      showConfirmModal({ content: { title: "update test!" } });
+      // const lsData = LSHandler.load(appConfig.localStorage["002"].id);
+      // if (lsData && lsData?.type) {
+      //   switch (lsData.type) {
+      //     case appConfig.components.modal.type["002"]:
+      //       showConfirmModal({ ...lsData });
+      //       break;
+
+      //     case appConfig.components.modal.type["003"]:
+      //       showErrorModal({ ...lsData });
+      //       break;
+
+      //     default:
+      //       eraceModal();
+      //   }
+      // } else {
+      //   eraceModal();
+      // }
+      eraceModal();
     })();
   }, []);
 

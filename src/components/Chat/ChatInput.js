@@ -13,6 +13,10 @@ export const InputChatText = (props) => {
     setInputState("");
   };
 
+  const isAbleToSend = () => {
+    return inputState !== "" && props.isActivated;
+  };
+
   return (
     <>
       <form
@@ -25,11 +29,7 @@ export const InputChatText = (props) => {
           value={inputState}
           onChange={handleTextInput}
         ></textarea>
-        <button
-          type="submit"
-          className="btn-orange"
-          disabled={inputState === ""}
-        >
+        <button type="submit" className="btn-orange" disabled={!isAbleToSend()}>
           送信
         </button>
       </form>

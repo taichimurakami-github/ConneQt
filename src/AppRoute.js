@@ -10,6 +10,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { doc, getFirestore, onSnapshot } from "firebase/firestore";
 import { getAuthUserDoc } from "./fn/db/getHandler";
 import { signOut } from "./fn/auth/firebase.auth";
+import { LSHandler } from "./fn/app/handleLocalStorage";
 
 export const AppRouteContext = createContext();
 
@@ -121,8 +122,13 @@ export const AuthHandler = () => {
     return registerUnsubFunc([authUserDoc_unSubFunc]);
   };
 
-  //ログイン状態を判定・処理
   useEffect(() => {
+    //localStorage.appNavの利用準備
+    //    if(!LSHandler.load(appConfig.localStorage["002"].id)){
+    // LSHandler.save(appConfig.localStorage["002"].id)
+    //    }
+
+    //ログイン状態を判定・処理
     showLoadingModal();
     const auth = getAuth();
     // setPageContentState(appConfig.pageContents["002"]);

@@ -101,13 +101,14 @@ export const ShowFriendList = (props) => {
 
   const isUserCheckedAllPosts = (chatRoomID) => {
     const chatRoomData = props.chatRoomData[chatRoomID].data;
+
+    //dataの長さが0だったら、まだチャットが投稿されていないので既読済みとする
+    if (chatRoomData.length === 0) return true;
+
+    //localStorageより、ユーザーが最後にチャットを確認した時間を取り出す
+    //ちなみに、LSData.chatRoomID.checkedAtは、存在していない場合はApp.js useEffect内で初期値0で定義される
     const LSData = LSHandler.load(appConfig.localStorage["001"].id);
-
-    if (!LSData) return true;
-
     const lastCheckedTime = LSData[chatRoomID]?.checkedAt;
-
-    if (!lastCheckedTime) return true;
 
     //最後の投稿が自分だったらそもそも既読済みとする
     if (chatRoomData[chatRoomData.length - 1].uid === authUserDoc.uid)
