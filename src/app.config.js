@@ -49,7 +49,7 @@ export const appConfig = {
 };
 
 export const appInfo = {
-  version: "2022.01.15__002",
+  version: "2022.01.15__003",
   mode: "beta",
   db: "firestore",
   contact: "conneqtu@gmail.com",

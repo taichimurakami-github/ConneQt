@@ -67,12 +67,15 @@ export const ChatView = (props) => {
     });
 
     //まだ投稿がなければ、自動スクロールはいらないのでスルー
-    if (props.chatRoomData.length > 0) {
-      if (newestChatRef?.current) newestChatRef.current.scrollIntoView();
-      else
-        newestChatRef.current.scrollTop =
-          newestChatRef.current?.scrollHeight || 0;
+    if (props.chatRoomData.data.length > 0 && newestChatRef?.current) {
+      console.log("aaa");
+      newestChatRef.current.scrollIntoView();
     }
+    //   else {
+    // console.log(newestChatRef.current?.scrollHeight);
+    // newestChatRef.current.scrollTop =
+    //   newestChatRef.current?.scrollHeight || 0;
+    //   }
   }, [newestChatRef.current]);
 
   return (
