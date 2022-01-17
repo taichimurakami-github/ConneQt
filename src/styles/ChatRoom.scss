@@ -3,8 +3,8 @@
 
 $header: 54px;
 $menu: 75px;
-$input-text-min-height: 115px;
-$input-text-focus-height: 300px;
+$input-text-min-height: 70px;
+$input-text-focus-height: 150px;
 
 .chat-view-component {
   position: fixed;
@@ -14,15 +14,22 @@ $input-text-focus-height: 300px;
   transform: translateX(-50%);
   display: flex;
   flex-direction: column;
+  padding-bottom: 10px;
 
   max-width: 500px;
   overflow: hidden;
   width: 100%;
   height: calc(100vh - #{$header} - #{$menu});
 
-  .chat-content-container,
-  .chat-input-form {
-    width: 98%;
+  &.focus {
+    top: calc(#{$header});
+
+    .chat-input-form {
+      height: $input-text-focus-height;
+      textarea {
+        background: lighten($orange, 45%);
+      }
+    }
   }
 
   .chat-content-container {
@@ -38,13 +45,6 @@ $input-text-focus-height: 300px;
     height: calc(#{$input-text-min-height} - 10px);
     margin: auto;
     transition: height 0.2s;
-
-    &:focus-within {
-      height: $input-text-focus-height;
-      textarea {
-        background: lighten($orange, 45%);
-      }
-    }
   }
 }
 
@@ -114,23 +114,25 @@ $input-text-focus-height: 300px;
 }
 
 .chat-input-form {
-  $margin-bottom: 10px;
-  $button-height: 50px;
-  margin-bottom: $margin-bottom;
+  padding: 10px;
+  width: calc(100% - 10px);
+  height: $input-text-min-height;
+  display: flex;
+  align-items: start;
+  column-gap: 10px;
   border-radius: 10px;
   box-shadow: 2px 2px 2px 2px lightgray;
 
   .input-text-area {
     resize: none;
     padding: 5px;
-    height: calc(100% - #{$button-height});
-    width: 90%;
+    height: 100%;
     margin: 0 auto;
   }
 
   .btn-orange {
-    margin-top: 10px;
-    margin-bottom: 0;
+    width: 60px;
+    margin: 0;
   }
 }
 

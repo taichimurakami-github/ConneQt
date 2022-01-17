@@ -156,7 +156,6 @@ export const FriendHandler = (props) => {
             relatedUserDocs={props.allUserDocs}
             handleSelectedUserDoc={setSelectedUserDocState}
             handleViewState={setViewState}
-            handlePageContent={props.handlePageContent}
             handleTargetChatRoomData={setSelectedChatRoomDataState}
             chatRoomData={props.chatRoomData}
           />
@@ -166,6 +165,7 @@ export const FriendHandler = (props) => {
         return (
           <ShowChatRoom
             handleViewState={setViewState}
+            handlePageContent={props.handlePageContent} //chatのフォーカス時メニュー消去に利用
             chatRoomData={props.chatRoomData}
             handleEraceChatRoom={handleEraceChatRoom}
             metaData={selectedChatRoomDataState}

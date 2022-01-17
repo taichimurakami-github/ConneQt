@@ -1,4 +1,4 @@
-import { useRef, useMemo, useEffect } from "react";
+import { useRef, useMemo, useEffect, useState } from "react";
 import { appConfig } from "../../app.config";
 import { getDayOfJP } from "../../fn/app/getDayAsJP";
 import { LSHandler } from "../../fn/app/handleLocalStorage";
@@ -10,6 +10,9 @@ import { ChatListContent } from "./ChatList";
  * @returns {React.ReactElement}
  */
 export const ChatView = (props) => {
+  //focus時のviewを調整するクラスを付与する
+  const [inputFocus, setInputFocus] = useState(false);
+
   //最新のチャットの位置を取得するためのref
   const newestChatRef = useRef(null);
 
@@ -87,7 +90,7 @@ export const ChatView = (props) => {
   }, [newestChatRef.current]);
 
   return (
-    <div className="chat-view-component">
+    <div className={`chat-view-component ${inputFocus ? "focus" : ""}`}>
       <ul className="chat-content-container">
         {parseChatData.map((val, id) => {
           const userDoc = isAuthUser(val.uid)
@@ -137,6 +140,7 @@ export const ChatView = (props) => {
       </ul>
       <InputChatText
         isActivated={props?.chatRoomData?.metaData ? true : false}
+        handleInputFocus={setInputFocus}
         handleOnSubmit={(e) => {
           props.handleSend(e);
         }}

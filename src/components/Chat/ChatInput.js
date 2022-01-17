@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 
 export const InputChatText = (props) => {
   const [inputState, setInputState] = useState("");
@@ -20,7 +20,7 @@ export const InputChatText = (props) => {
   return (
     <>
       <form
-        className="chat-input-form flex-col-xyc"
+        className="chat-input-form"
         style={{ background: "white" }}
         onSubmit={handleOnSubmit}
       >
@@ -28,6 +28,12 @@ export const InputChatText = (props) => {
           className="input-text-area"
           value={inputState}
           onChange={handleTextInput}
+          onFocus={() => {
+            props.handleInputFocus(true);
+          }}
+          onBlur={() => {
+            props.handleInputFocus(false);
+          }}
         ></textarea>
         <button type="submit" className="btn-orange" disabled={!isAbleToSend()}>
           送信

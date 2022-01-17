@@ -3,7 +3,7 @@ import { appConfig } from "./app.config";
 
 // lib imports
 
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, createContext } from "react";
 
 // components imports
 import { FindUserHandler } from "./components/FindUserHandler";
@@ -24,6 +24,8 @@ import { AppRouteContext } from "./AppRoute";
 import { db_name } from "./firebase.config";
 import { LSHandler } from "./fn/app/handleLocalStorage";
 
+export const AppMenuContext = createContext();
+
 export const App = (props) => {
   /**
    * setState definitions
@@ -36,6 +38,7 @@ export const App = (props) => {
     appConfig.pageContents["003"]
   );
   const [chatRoomDataState, setChatRoomDataState] = useState({});
+  const [appMenuVisibleState, setAppMenuVisibleState] = useState(true);
 
   /**
    * useEffect functions
@@ -161,15 +164,6 @@ export const App = (props) => {
     authUserDoc.request.sent,
   ]);
 
-  // const deleteExistChatRoomData = (tRoomID = "") => {
-  //   if ((chatRoomID = "")) return;
-
-  //   const validatedChatRoomDataState = { ...chatRoomDataState };
-  //   delete validatedChatRoomDataState[chatRoomID];
-
-  //   setChatRoomDataState(validatedChatRoomDataState);
-  // };
-
   /**
    * handle Page Content(Main content) by appConfig.pageContents data
    * @param {string} id
@@ -185,7 +179,6 @@ export const App = (props) => {
             chatRoomData={chatRoomDataState}
             handleChatRoom={setChatRoomDataState}
             handleRelatedUserDocs={setRelatedUserDocsState}
-            handlePageContent={setPageContentState}
           />
         );
 
@@ -215,12 +208,15 @@ export const App = (props) => {
    */
   return (
     <div className="App">
-      {handlePageContent(pageContentState)}
-      <div className="spacer" style={{ height: "100px" }}></div>
-      {authUserDoc && (
+      <AppMenuContext.Provider value={{ setAppMenuVisibleState }}>
+        {/* <div className="spacer" style={{ height: "100px" }}></div> */}
+        {handlePageContent(pageContentState)}
+      </AppMenuContext.Provider>
+      {authUserDoc && appMenuVisibleState && (
         <PageMenu
           pageContentState={pageContentState}
           handlePageContent={setPageContentState}
+          visibility={appMenuVisibleState}
         />
       )}
     </div>
