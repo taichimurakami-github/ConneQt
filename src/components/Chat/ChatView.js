@@ -10,7 +10,11 @@ import { ChatListContent } from "./ChatList";
  * @returns {React.ReactElement}
  */
 export const ChatView = (props) => {
+  //最新のチャットの位置を取得するためのref
   const newestChatRef = useRef(null);
+
+  //開いた時はスクロールアニメーションなし、開いた後にスクロールする時はアニメーションありにするフラグ
+  const isSoonAfterMounted = useRef(true);
 
   /**
    * チャットデータ内容をコンポーネント上に出力できる形に整形
@@ -48,7 +52,10 @@ export const ChatView = (props) => {
     ) {
       return [
         sentAt,
-        <h4 className="date-container">
+        <h4
+          className="date-container"
+          key={`section-${nowDate.getMonth() + 1}${nowDate.getDate()}`}
+        >
           {`${nowDate.getMonth() + 1}月${nowDate.getDate()}日(${getDayOfJP(
             nowDate.getDay()
           )})`}
@@ -68,7 +75,11 @@ export const ChatView = (props) => {
 
     //まだ投稿がなければ、自動スクロールはいらないのでスルー
     if (props.chatRoomData.data.length > 0 && newestChatRef?.current) {
-      newestChatRef.current.scrollIntoView();
+      //コンポーネントマウント時の自動スクロールはアニメーションなしにする
+      newestChatRef.current.scrollIntoView({
+        behavior: isSoonAfterMounted.current ? "auto" : "smooth",
+      });
+      isSoonAfterMounted.current && (isSoonAfterMounted.current = false);
     }
     // 一応残しておく
     // newestChatRef.current.scrollTop =
@@ -99,6 +110,7 @@ export const ChatView = (props) => {
                   isAuthUser={isAuthUser(val.uid)}
                   doc={userDoc}
                   sentAt={sentAt}
+                  key={`chatlist-content-${id}`}
                 />
               </li>
             </>
@@ -116,6 +128,7 @@ export const ChatView = (props) => {
                   isAuthUser={isAuthUser(val.uid)}
                   doc={userDoc}
                   sentAt={sentAt}
+                  key={`chatlist-content-${id}`}
                 />
               </li>
             </>
