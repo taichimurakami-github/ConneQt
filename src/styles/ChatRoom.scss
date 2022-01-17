@@ -30,7 +30,8 @@ $input-text-height: 150px;
     @include erace-scrollbar();
   }
   .chat-input-form {
-    height: clac(#{$input-text-height} - 10px);
+    height: calc(#{$input-text-height} - 10px);
+    margin: auto;
   }
 }
 
