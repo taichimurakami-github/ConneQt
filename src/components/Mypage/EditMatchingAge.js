@@ -71,9 +71,8 @@ export const EditMatchingAge = (props) => {
           マッチング年齢幅を設定
         </h2>
         <p className="description">
-          マッチングする年齢幅を設定してください。<br></br>
+          マッチングする年齢幅を選択してください。<br></br>
           年上、年下それぞれ別々に設定できます。<br></br>
-          なお、半角英数字で0〜100の数字のみ設定できます。
         </p>
         <ControlledInputText
           id="over-age-restriction"

@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from "react";
 import cmpConfig from "./config";
 import { Header } from "../UI/Header";
-import { UsersList } from "../UI/UsersList";
+import { FriendUserList, UsersList } from "../UI/UsersList";
 import { AppRouteContext } from "../../AppRoute";
 import { appConfig } from "../../app.config";
 import { cutStrLength } from "../../fn/util/cutStrLength";
@@ -9,20 +9,6 @@ import { LSHandler } from "../../fn/app/handleLocalStorage";
 
 export const ShowFriendList = (props) => {
   const { authUserDoc, showErrorModal } = useContext(AppRouteContext);
-
-  const getTopMessageFromChatRoomData = (chatRoomID) => {
-    const chatRoomData = props.chatRoomData[chatRoomID];
-
-    // friendList上に表示される、一番新しいメッセージを表示
-    // ただし、chatRoomData.data 配列内に要素がない場合は空文字列を返す
-    if (chatRoomData?.data && chatRoomData.data?.length > 0) {
-      //chatRoomData.data内に1つ以上のメッセージがあるときは、最後の要素をtopMessageDataに代入
-      const fullText = chatRoomData.data[chatRoomData.data.length - 1].text;
-      return cutStrLength(fullText, 30);
-    } else {
-      return "";
-    }
-  };
 
   const handleShowProfileOnRequestSent = (e) => {
     const targetUserDoc = props.relatedUserDocs[e.target.id];
@@ -99,31 +85,6 @@ export const ShowFriendList = (props) => {
     props.handleViewState(cmpConfig.state.view["002"]);
   };
 
-  const isUserCheckedAllPosts = (chatRoomID) => {
-    const chatRoomData = props.chatRoomData[chatRoomID].data;
-
-    //dataの長さが0だったら、まだチャットが投稿されていないので既読済みとする
-    if (chatRoomData.length === 0) return true;
-
-    //localStorageより、ユーザーが最後にチャットを確認した時間を取り出す
-    //ちなみに、LSData.chatRoomID.checkedAtは、存在していない場合はApp.js useEffect内で初期値0で定義される
-    const LSData = LSHandler.load(appConfig.localStorage["001"].id);
-    const lastCheckedTime = LSData[chatRoomID]?.checkedAt;
-
-    //最後の投稿が自分だったらそもそも既読済みとする
-    if (chatRoomData[chatRoomData.length - 1].uid === authUserDoc.uid)
-      return true;
-    //最後の投稿が自分ではない場合、既読済みかどうか確認する
-    else {
-      const lastPostTime = chatRoomData[chatRoomData.length - 1].sentAt
-        .toDate()
-        .getTime();
-      //最後にチャットルームを開いた時間 - 最後にチャットルームに投稿された時間 > 0 ならは、
-      //最新の投稿はチェックされた事になる
-      return lastPostTime < lastCheckedTime;
-    }
-  };
-
   return (
     <>
       <Header title="友達一覧" backable={false} />
@@ -159,7 +120,15 @@ export const ShowFriendList = (props) => {
 
       <div className="friend-users-container">
         <h3 className="title">あなたの友達一覧</h3>
-        <ul className="users-list-wrapper">
+        <FriendUserList
+          authUserDoc={authUserDoc}
+          friendData={authUserDoc.friend}
+          chatRoomData={props.chatRoomData}
+          relatedUserDocs={props.relatedUserDocs}
+          handleShowChatRoom={handleShowChatRoom}
+          handleShowUnactivatedChatRoom={handleShowUnactivatedChatRoom}
+        />
+        {/* <ul className="users-list-wrapper">
           {Object.keys(authUserDoc.friend).length !== 0 ? (
             Object.keys(authUserDoc.friend).map((key) => {
               const userDoc = props.relatedUserDocs[key];
@@ -236,7 +205,7 @@ export const ShowFriendList = (props) => {
               </button>
             </p>
           )}
-        </ul>
+        </ul> */}
       </div>
     </>
   );

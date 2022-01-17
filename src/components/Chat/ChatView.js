@@ -68,14 +68,11 @@ export const ChatView = (props) => {
 
     //まだ投稿がなければ、自動スクロールはいらないのでスルー
     if (props.chatRoomData.data.length > 0 && newestChatRef?.current) {
-      console.log("aaa");
       newestChatRef.current.scrollIntoView();
     }
-    //   else {
-    // console.log(newestChatRef.current?.scrollHeight);
+    // 一応残しておく
     // newestChatRef.current.scrollTop =
     //   newestChatRef.current?.scrollHeight || 0;
-    //   }
   }, [newestChatRef.current]);
 
   return (

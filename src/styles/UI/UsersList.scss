@@ -7,14 +7,14 @@ $button-size: 100px;
   width: 95%;
   max-width: 750px;
   margin: 30px auto 35px;
-  padding: 20px 10px;
+  padding: 15px 5px;
   background: white;
   border-radius: 20px;
   box-shadow: 2px 2px 5px 5px lightgray;
 
   .title {
     font-size: 1.6rem;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
   }
 
   &.sent {

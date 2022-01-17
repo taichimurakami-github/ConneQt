@@ -78,13 +78,16 @@ export const ShowMypageTop = (props) => {
                 error: (e) => {
                   let errorMessage =
                     e.code === 1
-                      ? "現在地の取得を許可してください。"
-                      : "位置情報の取得中にエラーが発生しました。";
+                      ? [
+                          "現在地の取得を許可してください。",
+                          "もう一度設定し直すには、アプリを再起動、またはマイページから「アプリケーションおアップデートを実行」を行い、もう一度現在地を取得してください。",
+                        ]
+                      : ["位置情報の取得中にエラーが発生しました。"];
 
                   showErrorModal({
                     content: {
                       title: "現在地の取得に失敗しました。",
-                      text: [errorMessage],
+                      text: [...errorMessage],
                     },
                   });
                 },
@@ -184,7 +187,19 @@ export const ShowMypageTop = (props) => {
           title="位置情報を現在地に設定"
         />
 
-        <button className="btn-gray btn-sign-out" onClick={signOutFromApp}>
+        <button
+          className="btn-gray btn-sign-out"
+          onClick={() => {
+            showConfirmModal({
+              content: { title: "ログアウトしますか？" },
+              children: (
+                <ChoiceActionButton
+                  callback={{ yes: signOutFromApp, no: eraceModal }}
+                />
+              ),
+            });
+          }}
+        >
           ログアウトする
         </button>
 
