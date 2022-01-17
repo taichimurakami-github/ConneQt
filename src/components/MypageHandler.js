@@ -4,13 +4,13 @@ import { updateUserData } from "../fn/db/updateHandler";
 import { cmpConfig } from "./Mypage/config";
 import { ShowMypageTop } from "./Mypage/ShowMyPageTop";
 import { EditText } from "./Mypage/EditText";
-// import { AgeOptions } from "./UI/Options";
 import { AppRouteContext } from "../AppRoute";
 
-import "../styles/mypage.scss";
 import { EditMatchingAge } from "./Mypage/EditMatchingAge";
 import { EditUserImage } from "./Mypage/EditUserImage";
 import { validateAccountData } from "../fn/app/validateAccountData";
+
+import "../styles/Mypage.scss";
 
 export const MypageHandler = (props) => {
   const [viewState, setViewState] = useState(cmpConfig.state.view["001"]);
