@@ -187,22 +187,6 @@ export const ShowMypageTop = (props) => {
           title="位置情報を現在地に設定"
         />
 
-        <button
-          className="btn-gray btn-sign-out"
-          onClick={() => {
-            showConfirmModal({
-              content: { title: "ログアウトしますか？" },
-              children: (
-                <ChoiceActionButton
-                  callback={{ yes: signOutFromApp, no: eraceModal }}
-                />
-              ),
-            });
-          }}
-        >
-          ログアウトする
-        </button>
-
         <h3 className="mypage-menu-list-title">マッチング設定</h3>
 
         <ListMenu
@@ -284,6 +268,22 @@ export const ShowMypageTop = (props) => {
           handleClick={confirmDeleteAccount}
           title={<span className="orange">アカウントを削除</span>}
         />
+
+        <button
+          className="btn-gray btn-sign-out"
+          onClick={() => {
+            showConfirmModal({
+              content: { title: "ログアウトしますか？" },
+              children: (
+                <ChoiceActionButton
+                  callback={{ yes: signOutFromApp, no: eraceModal }}
+                />
+              ),
+            });
+          }}
+        >
+          ログアウトする
+        </button>
       </ul>
       <div className="spacer" style={{ height: "100px" }}></div>
     </>
