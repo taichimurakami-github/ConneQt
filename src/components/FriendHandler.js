@@ -10,8 +10,6 @@ import { approveRequest, rejectRequest } from "../fn/db/requestHandler";
 
 import { AppRouteContext } from "../AppRoute";
 import { updateUserDocObjectData } from "../fn/db/updateHandler";
-import { LSHandler } from "../fn/app/handleLocalStorage";
-import { appConfig } from "../app.config";
 
 export const FriendHandler = (props) => {
   const { showLoadingModal, showConfirmModal, showErrorModal, eraceModal } =

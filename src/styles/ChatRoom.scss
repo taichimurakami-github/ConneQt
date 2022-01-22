@@ -64,7 +64,7 @@ $input-text-focus-height: 150px;
   }
 
   .text-wrapper {
-    max-width: 65%;
+    max-width: 80%;
     display: flex;
     align-items: flex-end;
     column-gap: 5px;
@@ -97,6 +97,7 @@ $input-text-focus-height: 150px;
 
 .date-container {
   padding-top: 15px;
+  padding-bottom: 10px;
   font-size: 1.4rem;
 }
 

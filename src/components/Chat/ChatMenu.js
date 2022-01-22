@@ -3,12 +3,10 @@ import { UserProfile } from "../UI/UserProfile";
 export const ChatMenu = (props) => {
   return (
     <div className="app-view-container">
-      {props.chatRoomData.metaData ? (
+      {props.chatRoomData.metaData && (
         <h2 className="chatroom-menu-title">
           {props.metaData.doc.with.name}さんのプロフィール
         </h2>
-      ) : (
-        <h2 className="chatroom-menu-title">このユーザーは退会しました</h2>
       )}
       <UserProfile
         userDoc={

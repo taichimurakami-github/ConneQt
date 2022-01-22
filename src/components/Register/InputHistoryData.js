@@ -132,7 +132,7 @@ export const InputHistoryData = (props) => {
             setInputStr(inputValue);
           }}
           text={{
-            placeholder: "手動入力の場合はこちら",
+            placeholder: "大学名を入力",
           }}
           required={true}
           maxLength={30}
@@ -194,7 +194,6 @@ export const InputHistoryData = (props) => {
             style={{
               display: "inline-block",
               fontSize: "2rem",
-              // marginTop: "10px",
             }}
           >
             {props.registerUserData.history.university}

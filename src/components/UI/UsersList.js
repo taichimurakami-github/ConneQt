@@ -68,7 +68,7 @@ export const UsersList = (props) => {
  * @returns
  */
 export const FriendUserList = (props) => {
-  const getTopMessageFromChatRoomData = (chatRoomID) => {
+  const getTopMessage = (chatRoomID) => {
     const chatRoomData = props.chatRoomData[chatRoomID];
 
     // friendList上に表示される、一番新しいメッセージを表示
@@ -133,9 +133,7 @@ export const FriendUserList = (props) => {
                 />
                 <div className="text-container wide p-events-none">
                   <p className="name p-events-none">{userDoc?.name}</p>
-                  <p className="p-events-none">
-                    {getTopMessageFromChatRoomData(chatRoomID)}
-                  </p>
+                  <p className="p-events-none">{getTopMessage(chatRoomID)}</p>
                 </div>
                 <span
                   className={`notification round orange blink ${
@@ -161,10 +159,6 @@ export const FriendUserList = (props) => {
                 />
                 <div className="text-container p-events-none">
                   <p className="name p-events-none">退会したユーザー</p>
-                  <p className="p-events-none">
-                    {getTopMessageFromChatRoomData(chatRoomID)}
-                  </p>
-                  <span>{Date.now()}</span>
                 </div>
               </li>
             );
@@ -172,15 +166,16 @@ export const FriendUserList = (props) => {
         })
       ) : (
         <p>
-          "見つける" から友達を探しましょう！<br></br>
-          <button
+          <b>"見つける" から友達を探しましょう！</b>
+          <br></br>
+          {/* <button
             className="btn-orange"
             onClick={() => {
               props.handlePageContent(appConfig.pageContents["002"]);
             }}
           >
             友達を見つける
-          </button>
+          </button> */}
         </p>
       )}
     </ul>

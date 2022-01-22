@@ -10,15 +10,16 @@ export const ShowUserProfileOnRequestSent = (props) => {
         title={`${props.targetUserDoc?.name} さんのプロフィール`}
         handleBack={() => props.handleViewState(cmpConfig.state.view["001"])}
       />
+      <div className="app-view-container">
+        <UserProfile userDoc={props.targetUserDoc} />
 
-      <UserProfile userDoc={props.targetUserDoc} />
-
-      <button
-        className="btn-gray"
-        onClick={() => props.handleViewState(cmpConfig.state.view["001"])}
-      >
-        前のページに戻る
-      </button>
+        <button
+          className="btn-gray"
+          onClick={() => props.handleViewState(cmpConfig.state.view["001"])}
+        >
+          前のページに戻る
+        </button>
+      </div>
     </>
   );
 };
