@@ -3,7 +3,6 @@ import cmpConfig from "./config";
 import { Header } from "../UI/Header";
 import { FriendUserList, UsersList } from "../UI/UsersList";
 import { AppRouteContext } from "../../AppRoute";
-import { ChoiceActionButton } from "../UI/Button";
 import { deleteNonExistenceRequestSentUser } from "../../fn/db/requestHandler";
 
 export const ShowFriendList = (props) => {
