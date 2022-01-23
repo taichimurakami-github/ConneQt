@@ -12,7 +12,8 @@ export const UsersList = (props) => {
   //退会済みユーザーを削除
   const userDocs = [];
   for (const userDoc of props.userDocs) {
-    userDoc && userDocs.push(userDoc);
+    userDocs.push(userDoc);
+    // userDoc && userDocs.push(userDoc);
   }
 
   return (
@@ -21,34 +22,52 @@ export const UsersList = (props) => {
         props?.className?.wrapper ? props.className.wrapper : ""
       }`}
     >
-      {userDocs && userDocs.length !== 0 ? (
+      {userDocs.length > 0 ? (
         userDocs.map((val) => {
-          if (!val) return undefined;
+          if (val?.deleted) {
+            return (
+              <li
+                id={val.uid}
+                key={val.uid}
+                className={`user-list ${
+                  props?.className?.userList ? props.className.userList : ""
+                } ${props?.handleClick ? "clickable" : ""}`}
+                onClick={props?.handleClick}
+              >
+                <img className="user-icon p-events-none" src={val?.photo} />
+                <div className="text-container p-events-none">
+                  <p className="name p-events-none">退会したユーザー</p>
+                </div>
 
-          return (
-            <li
-              id={val.uid}
-              className={`user-list ${
-                props?.className?.userList ? props.className.userList : ""
-              } ${props?.handleClick ? "clickable" : ""}`}
-              onClick={props?.handleClick}
-              key={val.uid}
-            >
-              <img
-                className="user-icon p-events-none"
-                src={val?.photo}
-                alt={val?.name + "さんのプロフィール画像"}
-              />
-              <div className="text-container p-events-none">
-                <p className="name p-events-none">{val?.name}</p>
-                <p className="profile p-events-none">
-                  {cutStrLength(val?.profile, 15, "...")}
-                </p>
-              </div>
+                {props.children}
+              </li>
+            );
+          } else {
+            return (
+              <li
+                id={val.uid}
+                className={`user-list ${
+                  props?.className?.userList ? props.className.userList : ""
+                } ${props?.handleClick ? "clickable" : ""}`}
+                onClick={props?.handleClick}
+                key={val.uid}
+              >
+                <img
+                  className="user-icon p-events-none"
+                  src={val?.photo}
+                  alt={val?.name + "さんのプロフィール画像"}
+                />
+                <div className="text-container p-events-none">
+                  <p className="name p-events-none">{val?.name}</p>
+                  <p className="profile p-events-none">
+                    {cutStrLength(val?.profile, 15, "...")}
+                  </p>
+                </div>
 
-              {props.children}
-            </li>
-          );
+                {props.children}
+              </li>
+            );
+          }
         })
       ) : (
         <p>

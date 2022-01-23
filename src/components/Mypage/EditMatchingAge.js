@@ -51,7 +51,6 @@ export const EditMatchingAge = (props) => {
   };
 
   const isAbleToSubmit = () => {
-    console.log(typeof overAgeRestriction, typeof belowAgeRestriction);
     return (
       overAgeRestriction !== props.defaultValue.plus ||
       belowAgeRestriction !== props.defaultValue.minus

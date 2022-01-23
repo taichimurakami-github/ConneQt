@@ -22,8 +22,6 @@ export const FindUserHandler = (props) => {
   const [viewState, setViewState] = useState(cmpConfig.state.view["001"]);
 
   const fetchAndRenewAllUserDocs = async () => {
-    // console.log("handle fetch");
-
     //モーダルを表示
     showLoadingModal();
 
@@ -43,8 +41,6 @@ export const FindUserHandler = (props) => {
   const handleSendRequest = () => {
     const senderUid = props.nowUserDoc.uid;
     const receiverUid = selectedUserState.uid;
-
-    console.log(senderUid, receiverUid);
 
     (async () => {
       showLoadingModal();

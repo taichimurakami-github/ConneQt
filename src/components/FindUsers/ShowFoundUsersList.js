@@ -58,7 +58,6 @@ export const ShowFoundUsersList = (props) => {
         me: Number(authUserDoc.setting.matching.age.diff.plus),
         with: Number(targetUserDoc.setting.matching.age.diff.minus),
       };
-
       //1. 自分のage.diff.plus < |diff| ならば、自分の許容範囲外
       //2. 相手のage.diff.minus < |diff| ならば、相手の許容範囲外
       if (condition.me < Math.abs(diff) || condition.with < Math.abs(diff)) {

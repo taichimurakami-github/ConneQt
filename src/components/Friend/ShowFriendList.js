@@ -3,9 +3,12 @@ import cmpConfig from "./config";
 import { Header } from "../UI/Header";
 import { FriendUserList, UsersList } from "../UI/UsersList";
 import { AppRouteContext } from "../../AppRoute";
+import { ChoiceActionButton } from "../UI/Button";
+import { deleteNonExistenceRequestSentUser } from "../../fn/db/requestHandler";
 
 export const ShowFriendList = (props) => {
-  const { authUserDoc, showErrorModal } = useContext(AppRouteContext);
+  const { authUserDoc, showLoadingModal, showErrorModal, eraceModal } =
+    useContext(AppRouteContext);
 
   const handleShowProfileOnRequestSent = (e) => {
     const targetUserDoc = props.relatedUserDocs[e.target.id];
@@ -14,7 +17,23 @@ export const ShowFriendList = (props) => {
       return showErrorModal({
         content: {
           title: "ユーザー情報の取得に失敗しました。",
+          text: ["このユーザーはアカウントを削除済みです。"],
         },
+        children: (
+          <button
+            className="btn-orange"
+            onClick={async () => {
+              showLoadingModal();
+              await deleteNonExistenceRequestSentUser(
+                authUserDoc.uid,
+                e.target.id
+              );
+              eraceModal();
+            }}
+          >
+            このユーザーを消去
+          </button>
+        ),
       });
     }
 
@@ -103,9 +122,10 @@ export const ShowFriendList = (props) => {
       <div className="request-users-container sent">
         <h3 className="title">友達リクエスト送信済みのユーザー</h3>
         <UsersList
-          userDocs={authUserDoc.request.sent.map(
-            (uid) => props.relatedUserDocs[uid]
-          )}
+          userDocs={authUserDoc.request.sent.map((uid) => {
+            if (!props.relatedUserDocs[uid]) return { uid: uid, deleted: true };
+            else return props.relatedUserDocs[uid];
+          })}
           noUserMessage="現在、あなたが送ったリクエストはありません。"
           handleClick={handleShowProfileOnRequestSent}
         >

@@ -152,15 +152,15 @@ export const deleteAuthUserDoc = async (authUserDoc, chatRoomData) => {
   // }
 
   //requestを送った相手のrequest.receivedから自分を消去
-  // for (const uid of authUserDoc.request.sent) {
-  //   try {
-  //     updateDoc(doc(db, db_name.user, uid), {
-  //       "request.received": arrayRemove(authUserDoc.uid),
-  //     });
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // }
+  for (const uid of authUserDoc.request.sent) {
+    try {
+      updateDoc(doc(db, db_name.user, uid), {
+        "request.received": arrayRemove(authUserDoc.uid),
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
   /**
    * firebase storage関連
