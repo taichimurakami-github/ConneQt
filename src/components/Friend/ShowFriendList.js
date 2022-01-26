@@ -103,47 +103,50 @@ export const ShowFriendList = (props) => {
   return (
     <>
       <Header title="友達一覧" backable={false} />
-      <div className="request-users-container received">
-        <h3 className="title">あなた宛ての友達リクエスト</h3>
-        <UsersList
-          userDocs={authUserDoc.request.received.map(
-            (uid) => props.relatedUserDocs[uid]
-          )}
-          noUserMessage="現在、あなたが受け取ったリクエストはありません。"
-          handleClick={handleShowProfileOnRequestReceived}
-        >
-          <button className="btn-orange p-events-none">
-            プロフィールを見る
-          </button>
-        </UsersList>
-      </div>
+      <div className="app-view-container" style={{ marginTop: 0 }}>
+        <div className="request-users-container received">
+          <h3 className="title">あなた宛ての友達リクエスト</h3>
+          <UsersList
+            userDocs={authUserDoc.request.received.map(
+              (uid) => props.relatedUserDocs[uid]
+            )}
+            noUserMessage="現在、あなたが受け取ったリクエストはありません。"
+            handleClick={handleShowProfileOnRequestReceived}
+          >
+            <button className="btn-orange p-events-none">
+              プロフィールを見る
+            </button>
+          </UsersList>
+        </div>
 
-      <div className="request-users-container sent">
-        <h3 className="title">友達リクエスト送信済みのユーザー</h3>
-        <UsersList
-          userDocs={authUserDoc.request.sent.map((uid) => {
-            if (!props.relatedUserDocs[uid]) return { uid: uid, deleted: true };
-            else return props.relatedUserDocs[uid];
-          })}
-          noUserMessage="現在、あなたが送ったリクエストはありません。"
-          handleClick={handleShowProfileOnRequestSent}
-        >
-          <button className="btn-orange p-events-none">
-            プロフィールを見る
-          </button>
-        </UsersList>
-      </div>
+        <div className="request-users-container sent">
+          <h3 className="title">友達リクエスト送信済みのユーザー</h3>
+          <UsersList
+            userDocs={authUserDoc.request.sent.map((uid) => {
+              if (!props.relatedUserDocs[uid])
+                return { uid: uid, deleted: true };
+              else return props.relatedUserDocs[uid];
+            })}
+            noUserMessage="現在、あなたが送ったリクエストはありません。"
+            handleClick={handleShowProfileOnRequestSent}
+          >
+            <button className="btn-orange p-events-none">
+              プロフィールを見る
+            </button>
+          </UsersList>
+        </div>
 
-      <div className="friend-users-container">
-        <h3 className="title">あなたの友達一覧</h3>
-        <FriendUserList
-          authUserDoc={authUserDoc}
-          friendData={authUserDoc.friend}
-          chatRoomData={props.chatRoomData}
-          relatedUserDocs={props.relatedUserDocs}
-          handleShowChatRoom={handleShowChatRoom}
-          handleShowUnactivatedChatRoom={handleShowUnactivatedChatRoom}
-        />
+        <div className="friend-users-container">
+          <h3 className="title">あなたの友達一覧</h3>
+          <FriendUserList
+            authUserDoc={authUserDoc}
+            friendData={authUserDoc.friend}
+            chatRoomData={props.chatRoomData}
+            relatedUserDocs={props.relatedUserDocs}
+            handleShowChatRoom={handleShowChatRoom}
+            handleShowUnactivatedChatRoom={handleShowUnactivatedChatRoom}
+          />
+        </div>
       </div>
     </>
   );

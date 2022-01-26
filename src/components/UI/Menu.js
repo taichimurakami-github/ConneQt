@@ -50,7 +50,7 @@ export const PageMenu = (props) => {
         isActivated={isActivated(appConfig.pageContents["002"])}
         text="見つける"
         img={{
-          active: images.icon_find_yellow,
+          active: images.icon_find_blue,
           unactive: images.icon_find_gray,
         }}
       />
@@ -60,7 +60,7 @@ export const PageMenu = (props) => {
         isActivated={isActivated(appConfig.pageContents["003"])}
         text="友達一覧"
         img={{
-          active: images.icon_friend_yellow,
+          active: images.icon_friend_blue,
           unactive: images.icon_friend_gray,
         }}
       />
@@ -70,7 +70,7 @@ export const PageMenu = (props) => {
         isActivated={isActivated(appConfig.pageContents["004"])}
         text="マイページ"
         img={{
-          active: images.icon_mypage_yellow,
+          active: images.icon_mypage_blue,
           unactive: images.icon_mypage_gray,
         }}
       />
