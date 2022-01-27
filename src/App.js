@@ -1,8 +1,7 @@
 // config import
-import { appConfig, appInfo } from "./app.config";
+import { appConfig } from "./app.config";
 
 // lib imports
-
 import { useState, useEffect, useContext, createContext } from "react";
 
 // components imports
@@ -51,30 +50,6 @@ export const App = (props) => {
     (async () => {
       const r = await getRelatedUserDocs(authUserDoc);
       setRelatedUserDocsState(r);
-
-      //アップデート確認 >> アプデがあったら強制実行
-      // const latestAppInfo = await getLatestAppInfo();
-      // if (!latestAppInfo || latestAppInfo?.version !== appInfo.version) {
-      //   window.location.reload(true);
-      // }
-
-      // const lsData = LSHandler.load(appConfig.localStorage["002"].id);
-      // if (lsData && lsData?.type) {
-      //   switch (lsData.type) {
-      //     case appConfig.components.modal.type["002"]:
-      //       showConfirmModal({ ...lsData });
-      //       break;
-
-      //     case appConfig.components.modal.type["003"]:
-      //       showErrorModal({ ...lsData });
-      //       break;
-
-      //     default:
-      //       eraceModal();
-      //   }
-      // } else {
-      //   eraceModal();
-      // }
       eraceModal();
     })();
   }, []);

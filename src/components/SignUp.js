@@ -20,9 +20,9 @@ export const SignUp = () => {
         {!isRunningOnPWA && (
           //PWA上で動作していない
           <p className="description">
-            このアプリをスマートフォン上でご利用になる際は、
+            本アプリをスマートフォン上でご利用になる際は、
             <br></br>
-            インストールを推奨します。
+            ホーム画面へのインストールを推奨します。
             <br></br>
             <br></br>
             iphoneの場合は共有ボタン<br></br>→ 「ホーム画面に追加」

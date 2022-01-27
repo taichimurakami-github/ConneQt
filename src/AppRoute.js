@@ -10,7 +10,6 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { doc, getFirestore, onSnapshot } from "firebase/firestore";
 import { getAuthUserDoc } from "./fn/db/getHandler";
 import { signOut } from "./fn/auth/firebase.auth";
-import { LSHandler } from "./fn/app/handleLocalStorage";
 import { ErrorBoundary } from "react-error-boundary";
 
 export const AppRouteContext = createContext();
@@ -135,7 +134,7 @@ export const AuthHandler = () => {
     // setPageContentState(appConfig.pageContents["002"]);
 
     onAuthStateChanged(auth, (user) => {
-      console.log(user);
+      // console.log(user);
       if (user) {
         // User is signed in, see docs for a list of available properties
         // https://firebase.google.com/docs/reference/js/firebase.User
