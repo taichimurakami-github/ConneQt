@@ -35,8 +35,8 @@ export const RegisterHandler = (props) => {
   const [registerUserData, dispatchUserData] = useReducer(userDataReducerFunc, {
     // auto complete meta data
     ...userDocTemplate,
-    uid: props.authState.uid,
-    email: props.authState.email,
+    uid: props.authState?.uid,
+    email: props.authState?.email,
 
     // initial value from authState
     name: props.authState?.displayName,

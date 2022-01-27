@@ -17,13 +17,13 @@ const firebase_configData = {
     messagingSenderId: "753030643012",
     appId: "1:753030643012:web:cdeca0e58c0a7eeee3ab11",
   },
-  beta_public_01: {
-    apiKey: "AIzaSyCjxwdnAKpWA9t4A2-30w3wAbP3rxAzrpM",
-    authDomain: "hey-beta-002.firebaseapp.com",
-    projectId: "hey-beta-002",
-    storageBucket: "hey-beta-002.appspot.com",
-    messagingSenderId: "663845218100",
-    appId: "1:663845218100:web:ec56d5e29107021ce06761",
+  beta_public: {
+    apiKey: "AIzaSyCXSmLL6d2O6h25Mzn2yiRQqB7pZEqZkXk",
+    authDomain: "dezamii-7cdf1.firebaseapp.com",
+    projectId: "dezamii-7cdf1",
+    storageBucket: "dezamii-7cdf1.appspot.com",
+    messagingSenderId: "705081795202",
+    appId: "1:705081795202:web:b0dbe421bcca3921aa8a9b",
   },
 };
 
