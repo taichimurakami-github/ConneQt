@@ -18,12 +18,12 @@ const firebase_configData = {
     appId: "1:753030643012:web:cdeca0e58c0a7eeee3ab11",
   },
   beta_public: {
-    apiKey: "AIzaSyCXSmLL6d2O6h25Mzn2yiRQqB7pZEqZkXk",
-    authDomain: "dezamii-7cdf1.firebaseapp.com",
-    projectId: "dezamii-7cdf1",
-    storageBucket: "dezamii-7cdf1.appspot.com",
-    messagingSenderId: "705081795202",
-    appId: "1:705081795202:web:b0dbe421bcca3921aa8a9b",
+    apiKey: "AIzaSyD883q-fz5CRGPCjJe8FAS_5PjWFBclidQ",
+    authDomain: "dezamii-beta-2d77f.firebaseapp.com",
+    projectId: "dezamii-beta-2d77f",
+    storageBucket: "dezamii-beta-2d77f.appspot.com",
+    messagingSenderId: "578671779959",
+    appId: "1:578671779959:web:7dc5dfc5267de366c7e672",
   },
 };
 
