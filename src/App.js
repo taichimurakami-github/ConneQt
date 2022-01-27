@@ -1,5 +1,5 @@
 // config import
-import { appConfig } from "./app.config";
+import { appConfig, appInfo } from "./app.config";
 
 // lib imports
 
@@ -12,14 +12,17 @@ import { MypageHandler } from "./components/MypageHandler";
 import { PageMenu } from "./components/UI/Menu";
 
 // fn imports
-import { getRelatedUserDocs, getUserDocsByDataArray } from "./fn/db/getHandler";
+import {
+  getLatestAppInfo,
+  getRelatedUserDocs,
+  getUserDocsByDataArray,
+} from "./fn/db/getHandler";
 // import handleOnWriteHook from "../functions";
 
 // app common style imports
 import "./styles/App.scss";
 
 import { doc, getFirestore, onSnapshot } from "firebase/firestore";
-
 import { AppRouteContext } from "./AppRoute";
 import { db_name } from "./firebase.config";
 import { LSHandler } from "./fn/app/handleLocalStorage";
@@ -48,6 +51,13 @@ export const App = (props) => {
     (async () => {
       const r = await getRelatedUserDocs(authUserDoc);
       setRelatedUserDocsState(r);
+
+      //アップデート確認 >> アプデがあったら強制実行
+      const latestAppInfo = await getLatestAppInfo();
+      if (!latestAppInfo || latestAppInfo?.version !== appInfo.version) {
+        window.location.reload(true);
+      }
+
       // const lsData = LSHandler.load(appConfig.localStorage["002"].id);
       // if (lsData && lsData?.type) {
       //   switch (lsData.type) {

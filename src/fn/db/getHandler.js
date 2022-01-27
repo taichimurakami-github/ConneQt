@@ -28,6 +28,13 @@ export const getAuthUserDoc = async (authData) => {
   else return null;
 };
 
+export const getLatestAppInfo = async () => {
+  const docRef = doc(db, db_name.appInfo, "latest");
+  const result = await getDoc(docRef);
+  if (result.exists()) return result.data();
+  else return null;
+};
+
 /**
  * 第一引数内に含まれているuidに該当する全てのユーザのuserDocを取得
  * @param {[string]} uidArray
