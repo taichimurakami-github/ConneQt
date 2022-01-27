@@ -1,7 +1,7 @@
 import { signInWithGoogle } from "../fn/auth/firebase.auth";
 
 import "../styles/SignUp.scss";
-import logo from "../images/logo_dezamii.png";
+import logo from "../images/SVG/dezamii_char_white.svg";
 
 export const SignUp = () => {
   const isRunningOnPWA = window.matchMedia("(display-mode: standalone").matches;

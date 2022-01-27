@@ -11,11 +11,7 @@ import { MypageHandler } from "./components/MypageHandler";
 import { PageMenu } from "./components/UI/Menu";
 
 // fn imports
-import {
-  getLatestAppInfo,
-  getRelatedUserDocs,
-  getUserDocsByDataArray,
-} from "./fn/db/getHandler";
+import { getRelatedUserDocs, getUserDocsByDataArray } from "./fn/db/getHandler";
 // import handleOnWriteHook from "../functions";
 
 // app common style imports
