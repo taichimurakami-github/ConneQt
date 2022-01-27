@@ -13,9 +13,12 @@ import { AppRouteContext } from "../../AppRoute";
 import "../../styles/ChatRoom.scss";
 import { ChatView } from "../Chat/ChatView";
 import { ChatMenu } from "../Chat/ChatMenu";
+import { AppMenuContext } from "../../App";
 
 export const ShowChatRoom = (props) => {
   const { showLoadingModal, eraceModal } = useContext(AppRouteContext);
+  const { setAppMenuVisibleState } = useContext(AppMenuContext);
+  setAppMenuVisibleState(false);
 
   const headerMetaDataReducerFunc = (state, action) => {
     switch (action.type) {
@@ -115,6 +118,11 @@ export const ShowChatRoom = (props) => {
       : dispatchHeaderMetaData({
           type: cmpConfig.ShowChatRoom.headerMetaDataAction["002"],
         });
+
+    return () => {
+      //ChatRoomからFreindListに戻ったらAppMenuを表示
+      setAppMenuVisibleState(true);
+    };
   }, [headerMenuViewState]);
 
   return (

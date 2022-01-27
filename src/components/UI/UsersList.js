@@ -42,7 +42,7 @@ export const UsersList = (props) => {
                 {props.children}
               </li>
             );
-          } else {
+          } else if (val) {
             return (
               <li
                 id={val.uid}

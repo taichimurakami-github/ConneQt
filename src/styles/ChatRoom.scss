@@ -2,13 +2,14 @@
 @import "./common/mixin";
 
 $header: 54px;
-$menu: 75px;
+$menu: 0px;
 $input-text-min-height: 70px;
-$input-text-focus-height: 150px;
+$input-text-focus-height: 160px;
 
 .chat-view-component {
   position: fixed;
-  top: $header;
+  // top: $header;
+  bottom: 0;
   z-index: -1;
   left: 50%;
   transform: translateX(-50%);
@@ -19,7 +20,22 @@ $input-text-focus-height: 150px;
   max-width: 500px;
   overflow: hidden;
   width: 100%;
-  height: calc(100vh - #{$header} - #{$menu});
+  height: calc(100% - #{$header} - #{$menu});
+
+  .chat-content-container {
+    padding-top: 30px;
+    padding-bottom: 15px;
+    height: calc(100% - #{$input-text-min-height});
+    overflow: auto;
+    @include erace-scrollbar();
+    transition: height 0.2s;
+  }
+  .chat-input-form {
+    padding: 10px 5px;
+    height: calc(#{$input-text-min-height} - 10px);
+    margin: auto;
+    transition: height 0.2s;
+  }
 
   &.focus {
     top: calc(#{$header});
@@ -30,21 +46,6 @@ $input-text-focus-height: 150px;
         background: lighten($orange, 45%);
       }
     }
-  }
-
-  .chat-content-container {
-    padding-top: 30px;
-    padding-bottom: 15px;
-    height: 100%;
-    overflow: auto;
-    @include erace-scrollbar();
-    transition: height 0.2s;
-  }
-  .chat-input-form {
-    padding: 10px 5px;
-    height: calc(#{$input-text-min-height} - 10px);
-    margin: auto;
-    transition: height 0.2s;
   }
 }
 
