@@ -5,6 +5,7 @@ import { cmpConfig } from "./Mypage/config";
 import { ShowMypageTop } from "./Mypage/ShowMyPageTop";
 import { EditText } from "./Mypage/EditText";
 import { AppRouteContext } from "../AppRoute";
+import ErrorBoundary from "./ErrorBoundary";
 
 import { EditMatchingAge } from "./Mypage/EditMatchingAge";
 import { EditUserImage } from "./Mypage/EditUserImage";
@@ -158,5 +159,5 @@ export const MypageHandler = (props) => {
     }
   };
 
-  return <>{handleView()}</>;
+  return <ErrorBoundary>{handleView()}</ErrorBoundary>;
 };

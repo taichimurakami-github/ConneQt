@@ -53,10 +53,10 @@ export const App = (props) => {
       setRelatedUserDocsState(r);
 
       //アップデート確認 >> アプデがあったら強制実行
-      const latestAppInfo = await getLatestAppInfo();
-      if (!latestAppInfo || latestAppInfo?.version !== appInfo.version) {
-        window.location.reload(true);
-      }
+      // const latestAppInfo = await getLatestAppInfo();
+      // if (!latestAppInfo || latestAppInfo?.version !== appInfo.version) {
+      //   window.location.reload(true);
+      // }
 
       // const lsData = LSHandler.load(appConfig.localStorage["002"].id);
       // if (lsData && lsData?.type) {

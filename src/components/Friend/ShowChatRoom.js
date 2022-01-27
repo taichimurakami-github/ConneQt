@@ -14,6 +14,7 @@ import "../../styles/ChatRoom.scss";
 import { ChatView } from "../Chat/ChatView";
 import { ChatMenu } from "../Chat/ChatMenu";
 import { AppMenuContext } from "../../App";
+import ErrorBoundary from "../ErrorBoundary";
 
 export const ShowChatRoom = (props) => {
   const { showLoadingModal, eraceModal } = useContext(AppRouteContext);
@@ -133,19 +134,21 @@ export const ShowChatRoom = (props) => {
         title={headerMetaDataState.title}
         handleMenu={headerMetaDataState.handleMenu}
       />
-      {headerMenuViewState ? (
-        <ChatMenu
-          metaData={props.metaData}
-          chatRoomData={props.chatRoomData[props.metaData.chatRoomID]}
-          handleDeleteThisFriend={handleDeleteThisFriend}
-        />
-      ) : (
-        <ChatView
-          metaData={props.metaData}
-          chatRoomData={props.chatRoomData[props.metaData.chatRoomID]}
-          handleSend={handleSend}
-        />
-      )}
+      <ErrorBoundary>
+        {headerMenuViewState ? (
+          <ChatMenu
+            metaData={props.metaData}
+            chatRoomData={props.chatRoomData[props.metaData.chatRoomID]}
+            handleDeleteThisFriend={handleDeleteThisFriend}
+          />
+        ) : (
+          <ChatView
+            metaData={props.metaData}
+            chatRoomData={props.chatRoomData[props.metaData.chatRoomID]}
+            handleSend={handleSend}
+          />
+        )}
+      </ErrorBoundary>
     </>
   );
 };

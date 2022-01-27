@@ -5,6 +5,7 @@ import { useEffect, useState, useContext } from "react";
 import { ShowFoundUsersList } from "./FindUsers/ShowFoundUsersList";
 import { ShowUserProfile } from "./FindUsers/ShowUserProfile";
 import { ShowRequestForm } from "./FindUsers/ShowRequestForm";
+import ErrorBoundary from "./ErrorBoundary";
 
 //import firebase fn
 import { getRelatedUserDocs } from "../fn/db/getHandler";
@@ -112,5 +113,5 @@ export const FindUserHandler = (props) => {
     }
   };
 
-  return <>{handleView()}</>;
+  return <ErrorBoundary>{handleView()}</ErrorBoundary>;
 };

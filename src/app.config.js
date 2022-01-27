@@ -49,9 +49,11 @@ export const appConfig = {
 };
 
 export const appInfo = {
+  appName: "Dezamii",
   version: "1.0.3",
   mode: "beta",
   db: "firestore",
   contact: "conneqtu@gmail.com",
+  twitter: "https://twitter.com/Dezamii_ConneQt",
   copyright: "ConneQt",
 };

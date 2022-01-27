@@ -90,7 +90,6 @@ export const ShowFoundUsersList = (props) => {
     props.handleSelectedUser(props.allUserDocs[e.target.id]);
     props.handleViewState(cmpConfig.state.view["002"]);
   };
-
   const generateShowableUserDocs = () => {
     const shoableUserDocsArr = [];
     const unAbleToShowUserUidArr = [

@@ -11,6 +11,7 @@ import { doc, getFirestore, onSnapshot } from "firebase/firestore";
 import { getAuthUserDoc } from "./fn/db/getHandler";
 import { signOut } from "./fn/auth/firebase.auth";
 import { LSHandler } from "./fn/app/handleLocalStorage";
+import { ErrorBoundary } from "react-error-boundary";
 
 export const AppRouteContext = createContext();
 
@@ -254,7 +255,7 @@ export const AuthHandler = () => {
   };
 
   return (
-    <>
+    <ErrorBoundary>
       <AppRouteContext.Provider
         value={{
           modalState,
@@ -272,6 +273,6 @@ export const AuthHandler = () => {
 
         <ModalHandler />
       </AppRouteContext.Provider>
-    </>
+    </ErrorBoundary>
   );
 };
