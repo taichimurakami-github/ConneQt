@@ -1,7 +1,7 @@
 import { useState, useEffect, createContext } from "react";
 import { App } from "./App";
 
-import { appConfig } from "./app.config";
+import { appConfig, appInfo } from "./app.config";
 import { SignUp } from "./components/SignUp";
 import { ModalHandler } from "./components/ModalHandler";
 import { RegisterHandler } from "./components/RegisterHandler";
@@ -198,12 +198,15 @@ export const AuthHandler = () => {
             setViewState(appConfig.routePageContents["002"]);
           }
         } catch (e) {
+          console.log(e);
           showErrorModal({
             content: {
               title: "Google認証に失敗しました。",
               text: [
                 "アクセス権が存在しない可能性があります。",
-                "登録には、事前登録フォームでのお申し込みが必要です。",
+                "Twitterまたはメールにてご連絡ください。",
+                <a href={`mailto:${appInfo.contact}`}>{appInfo.contact}</a>,
+                <a href={appInfo.twitter}>公式twitterはこちら</a>,
               ],
             },
           });

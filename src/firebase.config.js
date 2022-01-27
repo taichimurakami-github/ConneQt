@@ -17,6 +17,14 @@ const firebase_configData = {
     messagingSenderId: "753030643012",
     appId: "1:753030643012:web:cdeca0e58c0a7eeee3ab11",
   },
+  beta_public_01: {
+    apiKey: "AIzaSyCjxwdnAKpWA9t4A2-30w3wAbP3rxAzrpM",
+    authDomain: "hey-beta-002.firebaseapp.com",
+    projectId: "hey-beta-002",
+    storageBucket: "hey-beta-002.appspot.com",
+    messagingSenderId: "663845218100",
+    appId: "1:663845218100:web:ec56d5e29107021ce06761",
+  },
 };
 
 const firebaseConfig = { ...firebase_configData[appInfo.mode] };
