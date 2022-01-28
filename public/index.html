@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
     <meta
-      name="description"
-      content="Web site created using create-react-app"
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
     />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <meta name="theme-color" content="#6c9bd2" />
+    <meta name="description" content="Dezamii PWAアプリケーション(ベータ版)" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo_square_192.png" />
     <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
@@ -24,12 +24,27 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>Hey!</title>
+    <title>Dezamii</title>
   </head>
   <body>
-    <noscript
-      >このアプリケーションを使用するには、ブラウザの設定からJavascriptを有効化する必要があります。</noscript
-    >
+    <noscript>
+      <div style="padding: 15px">
+        <p style="margin-bottom: 50px">
+          <b style="margin-bottom: 15px; color: red; display: block"
+            >このアプリケーションを使用するには、ブラウザの設定からJavascriptを有効化する必要があります。</b
+          >
+          <b>以下の手順を参考にして設定を変更してください。</b>
+        </p>
+        <p style="margin-bottom: 30px">
+          1. iPhone、iPadの場合<br />
+          <b>本体設定 → Safari → 詳細 → JavaScript をオン</b>
+        </p>
+        <p>
+          2. Androidスマートフォン、Mac、Windowsの場合<br />
+          <b>ブラウザの設定 → サイト設定 → JavaScript を許可</b>
+        </p>
+      </div>
+    </noscript>
     <div id="root"></div>
   </body>
 </html>

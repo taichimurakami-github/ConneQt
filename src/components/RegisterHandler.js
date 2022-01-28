@@ -15,6 +15,7 @@ import { ConfirmInputData } from "./Register/ConfirmInputData";
 import { InputNowLocationData } from "./Register/InputNowLocationData";
 
 import "../styles/Register.scss";
+import { appInfo } from "../app.config";
 
 const userDataReducerFunc = (state, action) => {
   switch (action.type) {
@@ -35,15 +36,16 @@ export const RegisterHandler = (props) => {
   const [registerUserData, dispatchUserData] = useReducer(userDataReducerFunc, {
     // auto complete meta data
     ...userDocTemplate,
-    uid: props.authState.uid,
-    email: props.authState.email,
+    uid: props.authState?.uid,
+    email: props.authState?.email,
 
     // initial value from authState
     name: props.authState?.displayName,
     photo: props.authState?.photoURL,
 
     //set initial value for input
-    age: "23",
+    birthday: { y: "1995", m: "1", d: "1" },
+    gender: "male",
 
     // user icon set from device data
     photoData: undefined,
@@ -115,7 +117,7 @@ export const RegisterHandler = (props) => {
   useEffect(() => {
     showConfirmModal({
       content: {
-        title: "Hey! へようこそ！",
+        title: appInfo.appName + " へようこそ！",
         text: [
           "新規アカウントへの情報登録を行います。",
           "必要な情報を入力し、「次へ進む」を押してください。",

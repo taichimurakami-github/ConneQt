@@ -4,12 +4,14 @@ import { updateUserData } from "../fn/db/updateHandler";
 import { cmpConfig } from "./Mypage/config";
 import { ShowMypageTop } from "./Mypage/ShowMyPageTop";
 import { EditText } from "./Mypage/EditText";
-import { AgeOptions } from "./UI/Options";
 import { AppRouteContext } from "../AppRoute";
+import ErrorBoundary from "./ErrorBoundary";
 
-import "../styles/mypage.scss";
 import { EditMatchingAge } from "./Mypage/EditMatchingAge";
 import { EditUserImage } from "./Mypage/EditUserImage";
+import { validateAccountData } from "../fn/app/validateAccountData";
+
+import "../styles/Mypage.scss";
 
 export const MypageHandler = (props) => {
   const [viewState, setViewState] = useState(cmpConfig.state.view["001"]);
@@ -98,26 +100,30 @@ export const MypageHandler = (props) => {
             viewState={viewState}
             handleViewState={setViewState}
             handleSubmit={handleSubmitToDB}
+            handleValidate={(str) => {
+              return validateAccountData("string-01", str) && str.length <= 30;
+            }}
             pattern=".*\S+.*"
             text={{
-              placeholder: "お名前を入力してください。",
+              placeholder: "お名前を30文字以内で入力",
             }}
             defaultValue={props.nowUserDoc.name}
           />
         );
 
-      case cmpConfig.state.view["004"]:
-        return (
-          <EditText
-            viewState={viewState}
-            handleViewState={setViewState}
-            handleSubmit={handleSubmitToDB}
-            inputMode="select"
-            defaultValue={props.nowUserDoc.age}
-          >
-            <AgeOptions />
-          </EditText>
-        );
+      //年齢の編集：無効化
+      // case cmpConfig.state.view["004"]:
+      // return (
+      // <EditText
+      //   viewState={viewState}
+      //   handleViewState={setViewState}
+      //   handleSubmit={handleSubmitToDB}
+      //   inputMode="select"
+      //   defaultValue={props.nowUserDoc.age}
+      // >
+      //   <AgeOptions />
+      // </EditText>
+      // );
 
       case cmpConfig.state.view["005"]:
         return (
@@ -125,12 +131,12 @@ export const MypageHandler = (props) => {
             viewState={viewState}
             handleViewState={setViewState}
             handleValidate={(str) => {
-              if (str.length > 100) return false;
+              return validateAccountData("string-01", str) && str.length <= 100;
             }}
             handleSubmit={handleSubmitToDB}
             inputMode="textarea"
             text={{
-              placeholder: "プロフィールを100文字以内で入力してください。",
+              placeholder: "プロフィールを100文字以内で入力",
             }}
             defaultValue={props.nowUserDoc.profile}
           />
@@ -153,5 +159,5 @@ export const MypageHandler = (props) => {
     }
   };
 
-  return <>{handleView()}</>;
+  return <ErrorBoundary>{handleView()}</ErrorBoundary>;
 };

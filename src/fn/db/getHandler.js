@@ -19,11 +19,18 @@ const db = getFirestore();
  * @returns {null | Object}
  */
 export const getAuthUserDoc = async (authData) => {
-  console.log(`searching user docs ... where uid = ${authData.uid}`);
+  // console.log(`searching user docs ... where uid = ${authData.uid}`);
 
   const docRef = doc(db, db_name.user, authData.uid);
   const result = await getDoc(docRef);
 
+  if (result.exists()) return result.data();
+  else return null;
+};
+
+export const getLatestAppInfo = async () => {
+  const docRef = doc(db, db_name.appInfo, "latest");
+  const result = await getDoc(docRef);
   if (result.exists()) return result.data();
   else return null;
 };

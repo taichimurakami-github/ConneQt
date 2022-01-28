@@ -1,4 +1,4 @@
-import "../../styles/header.scss";
+import "../../styles/UI/Header.scss";
 import arrow_lt from "../../images/arrow-lt-black.svg";
 
 export const Header = (props) => {

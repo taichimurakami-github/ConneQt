@@ -1,12 +1,13 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AppRouteContext } from "../../AppRoute";
+
 import { setGeolocation } from "../../fn/app/geolocation";
-import { validateAccountData } from "../../fn/app/validateAccountData";
-import { ChoiceActionButton } from "../UI/Button";
+
 import { Header } from "../UI/Header";
+import { ChoiceActionButton } from "../UI/Button";
 
 export const InputNowLocationData = (props) => {
-  const { showLoadingModal, showErrorModal, eraceModal } =
+  const { showLoadingModal, showErrorModal, showConfirmModal, eraceModal } =
     useContext(AppRouteContext);
 
   const isAbleToGoNext = () => {
@@ -55,16 +56,9 @@ export const InputNowLocationData = (props) => {
 
         <button
           className={`getNowLocation ${
-            props.registerUserData.location?.lat &&
-            props.registerUserData.location?.lng
-              ? "btn-gray"
-              : "btn-orange"
+            isAbleToGoNext() ? "btn-gray" : "btn-orange"
           }`}
           type="button"
-          disabled={
-            props.registerUserData.location?.lat &&
-            props.registerUserData.location?.lng
-          }
           onClick={() => {
             showLoadingModal();
             setGeolocation({
@@ -75,7 +69,11 @@ export const InputNowLocationData = (props) => {
                     location: { ...data },
                   },
                 });
-                eraceModal();
+                showConfirmModal({
+                  content: {
+                    title: "現在地を取得しました。",
+                  },
+                });
               },
               error: (e) => {
                 let errorMessage =
@@ -93,11 +91,13 @@ export const InputNowLocationData = (props) => {
             });
           }}
         >
-          {props.registerUserData.location?.lat &&
-          props.registerUserData.location?.lng
-            ? "現在地を取得しました。"
-            : "現在地の設定を開始"}
+          {isAbleToGoNext() ? "現在地を再取得する" : "現在地の設定を開始"}
         </button>
+        {isAbleToGoNext() && (
+          <p className="description orange">
+            <b>現在地は既に登録されています。</b>
+          </p>
+        )}
         <ChoiceActionButton
           callback={{
             yes: handleGoNext,

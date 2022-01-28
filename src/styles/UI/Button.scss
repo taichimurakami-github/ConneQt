@@ -2,6 +2,11 @@
 
 .modal-confirm-button-container {
   display: flex;
+  column-gap: 10px;
+
+  &.reverse {
+    flex-direction: row-reverse;
+  }
 
   .btn-no,
   .btn-yes {

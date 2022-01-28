@@ -2,6 +2,7 @@ import { useEffect, useState, useContext } from "react";
 
 import { ShowFriendList } from "./Friend/ShowFriendList";
 import { ShowChatRoom } from "./Friend/ShowChatRoom";
+import ErrorBoundary from "./ErrorBoundary";
 
 import cmpConfig from "./Friend/config";
 import { ShowUserProfileOnRequestReceived } from "./Friend/ShowUserProfileOnRequestReceived";
@@ -10,6 +11,7 @@ import { approveRequest, rejectRequest } from "../fn/db/requestHandler";
 
 import { AppRouteContext } from "../AppRoute";
 import { updateUserDocObjectData } from "../fn/db/updateHandler";
+import { AppMenuContext } from "../App";
 
 export const FriendHandler = (props) => {
   const { showLoadingModal, showConfirmModal, showErrorModal, eraceModal } =
@@ -151,11 +153,9 @@ export const FriendHandler = (props) => {
       case cmpConfig.state.view["001"]:
         return (
           <ShowFriendList
-            nowUserDoc={props.nowUserDoc}
             relatedUserDocs={props.allUserDocs}
             handleSelectedUserDoc={setSelectedUserDocState}
             handleViewState={setViewState}
-            handlePageContent={props.handlePageContent}
             handleTargetChatRoomData={setSelectedChatRoomDataState}
             chatRoomData={props.chatRoomData}
           />
@@ -165,6 +165,7 @@ export const FriendHandler = (props) => {
         return (
           <ShowChatRoom
             handleViewState={setViewState}
+            handlePageContent={props.handlePageContent} //chatのフォーカス時メニュー消去に利用
             chatRoomData={props.chatRoomData}
             handleEraceChatRoom={handleEraceChatRoom}
             metaData={selectedChatRoomDataState}
@@ -194,5 +195,5 @@ export const FriendHandler = (props) => {
     }
   };
 
-  return <>{handleView()}</>;
+  return <ErrorBoundary>{handleView()}</ErrorBoundary>;
 };

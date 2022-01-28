@@ -1,4 +1,4 @@
-import { useMemo, useState, useReducer, useContext, useEffect } from "react";
+import { useState, useReducer, useContext, useEffect } from "react";
 
 import { updateChatRoomData } from "../../fn/db/updateHandler";
 import {
@@ -8,13 +8,18 @@ import {
 
 import cmpConfig from "./config";
 import { Header } from "../UI/Header";
-import { UserProfile } from "../UI/UserProfile";
 import { AppRouteContext } from "../../AppRoute";
 
-import "../../styles/chat.scss";
+import "../../styles/ChatRoom.scss";
+import { ChatView } from "../Chat/ChatView";
+import { ChatMenu } from "../Chat/ChatMenu";
+import { AppMenuContext } from "../../App";
+import ErrorBoundary from "../ErrorBoundary";
 
 export const ShowChatRoom = (props) => {
   const { showLoadingModal, eraceModal } = useContext(AppRouteContext);
+  const { setAppMenuVisibleState } = useContext(AppMenuContext);
+  setAppMenuVisibleState(false);
 
   const headerMetaDataReducerFunc = (state, action) => {
     switch (action.type) {
@@ -114,6 +119,11 @@ export const ShowChatRoom = (props) => {
       : dispatchHeaderMetaData({
           type: cmpConfig.ShowChatRoom.headerMetaDataAction["002"],
         });
+
+    return () => {
+      //ChatRoomからFreindListに戻ったらAppMenuを表示
+      setAppMenuVisibleState(true);
+    };
   }, [headerMenuViewState]);
 
   return (
@@ -124,136 +134,21 @@ export const ShowChatRoom = (props) => {
         title={headerMetaDataState.title}
         handleMenu={headerMetaDataState.handleMenu}
       />
-      {headerMenuViewState ? (
-        <HeaderMenuComponent
-          metaData={props.metaData}
-          chatRoomData={props.chatRoomData[props.metaData.chatRoomID]}
-          handleDeleteThisFriend={handleDeleteThisFriend}
-        />
-      ) : (
-        <ChatViewComponent
-          metaData={props.metaData}
-          chatRoomData={props.chatRoomData[props.metaData.chatRoomID]}
-          handleSend={handleSend}
-        />
-      )}
-    </>
-  );
-};
-
-/**
- * チャット画面のコンポーネント
- * @returns {React.ReactElement}
- */
-const ChatViewComponent = (props) => {
-  /**
-   * チャットデータ内容をコンポーネント上に出力できる形に整形
-   */
-  const parseChatData = useMemo(() => {
-    const data = [...props.chatRoomData.data];
-    const orderedData = [];
-
-    //逆順に並べ替える（chatRoomData.id.dataは新しい順にpushされていくので、mapで取り出す際は逆になる）
-    for (let i = data.length - 1; i >= 0; i--) orderedData.push(data[i]);
-
-    return data;
-  }, [props.chatRoomData]);
-
-  return (
-    <>
-      <ul className="chat-content-container" style={{ paddingBottom: "200px" }}>
-        {parseChatData.map((val) => {
-          return (
-            <>
-              <div
-                className={`chat-list-view-container ${
-                  val.uid === props.metaData.doc.me.uid ? "right" : "left"
-                }`}
-              >
-                {val.uid === props.metaData.doc.with.uid && (
-                  <img
-                    className="user-icon"
-                    src={props.metaData.doc.with?.photo || ""}
-                    alt={
-                      props.userDoc?.name
-                        ? props.userDoc.name + "さんのプロフィール画像"
-                        : ""
-                    }
-                  ></img>
-                )}
-
-                <p className="text-container">{val.text}</p>
-              </div>
-            </>
-          );
-        })}
-      </ul>
-      {props.chatRoomData?.metaData && (
-        <InputChatText handleOnSubmit={props.handleSend} />
-      )}
-    </>
-  );
-};
-
-const HeaderMenuComponent = (props) => {
-  return (
-    <>
-      {props.chatRoomData.metaData ? (
-        <h2 className="chatroom-menu-title">
-          {props.metaData.doc.with.name}さんのプロフィール
-        </h2>
-      ) : (
-        <h2 className="chatroom-menu-title">このユーザーは退会しました</h2>
-      )}
-      <UserProfile
-        userDoc={
-          props.chatRoomData?.metaData
-            ? props.metaData.doc.with
-            : {
-                uid: props.metaData.doc.with.uid,
-              }
-        }
-      />
-      {
-        //友達削除ボタン：chatRoomDataにmetaDataが存在している場合=相手が存在している場合のみ表示
-        <button className="btn-orange" onClick={props.handleDeleteThisFriend}>
-          この友達を削除する
-        </button>
-      }
-    </>
-  );
-};
-
-const InputChatText = (props) => {
-  const [inputState, setInputState] = useState("");
-
-  const handleTextInput = (e) => {
-    setInputState(e.target.value);
-  };
-
-  const handleOnSubmit = (e) => {
-    e.preventDefault();
-    console.log("aa");
-    props.handleOnSubmit(inputState);
-    setInputState("");
-  };
-
-  return (
-    <>
-      <form
-        className="chat-input-wrapper"
-        style={{ background: "white" }}
-        onSubmit={handleOnSubmit}
-      >
-        <textarea
-          className="input-text-area"
-          value={inputState}
-          onChange={handleTextInput}
-        ></textarea>
-        <button type="submit" className="btn-orange">
-          送信
-        </button>
-      </form>
+      <ErrorBoundary>
+        {headerMenuViewState ? (
+          <ChatMenu
+            metaData={props.metaData}
+            chatRoomData={props.chatRoomData[props.metaData.chatRoomID]}
+            handleDeleteThisFriend={handleDeleteThisFriend}
+          />
+        ) : (
+          <ChatView
+            metaData={props.metaData}
+            chatRoomData={props.chatRoomData[props.metaData.chatRoomID]}
+            handleSend={handleSend}
+          />
+        )}
+      </ErrorBoundary>
     </>
   );
 };

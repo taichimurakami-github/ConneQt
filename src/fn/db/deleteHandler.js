@@ -141,15 +141,15 @@ export const deleteAuthUserDoc = async (authUserDoc, chatRoomData) => {
   }
 
   //requestを送ってきた相手のrequest.sentから自分を消去
-  for (const uid of authUserDoc.request.received) {
-    try {
-      updateDoc(doc(db, db_name.user, uid), {
-        "request.sent": arrayRemove(authUserDoc.uid),
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  }
+  // for (const uid of authUserDoc.request.received) {
+  //   try {
+  //     updateDoc(doc(db, db_name.user, uid), {
+  //       "request.sent": arrayRemove(authUserDoc.uid),
+  //     });
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // }
 
   //requestを送った相手のrequest.receivedから自分を消去
   for (const uid of authUserDoc.request.sent) {

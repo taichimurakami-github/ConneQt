@@ -1,4 +1,5 @@
 @import "./assets";
+@import "./mixin";
 
 html {
   font-size: 62.5%;
@@ -99,4 +100,45 @@ h2 {
 
 .darkgray {
   color: $darkgray;
+}
+
+.app-view-container {
+  margin-top: 30px;
+  padding: 0 10px 200px;
+  overflow: auto;
+
+  @include erace-scrollbar();
+}
+
+.notification {
+  display: none;
+  &.active {
+    display: block;
+  }
+
+  &.round {
+    $size: 18px;
+    width: $size;
+    height: $size;
+    border-radius: 100px;
+  }
+
+  &.orange {
+    background: $orange;
+  }
+
+  &.blink {
+    animation: blink 1.5s infinite;
+    @keyframes blink {
+      0% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+  }
 }

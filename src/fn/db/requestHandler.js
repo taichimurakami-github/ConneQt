@@ -102,4 +102,20 @@ const rejectRequest = async (rejectingUserUid, rejectedUserUid) => {
   return true;
 };
 
-export { sendRequest, approveRequest, rejectRequest };
+const deleteNonExistenceRequestSentUser = async (nowUserUid, targetUid) => {
+  const authUserRef = doc(db, db_name.user, nowUserUid);
+
+  // リクエストを拒否される側のUserDocを更新
+  // request.sent からリクエスト受信者のuidを削除 >> request.rejectedに追加
+  await updateDoc(authUserRef, {
+    "request.sent": arrayRemove(targetUid),
+    "request.rejected": arrayUnion(targetUid),
+  });
+};
+
+export {
+  sendRequest,
+  approveRequest,
+  rejectRequest,
+  deleteNonExistenceRequestSentUser,
+};

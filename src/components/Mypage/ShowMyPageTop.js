@@ -9,6 +9,7 @@ import { cmpConfig } from "./config";
 import { AppRouteContext } from "../../AppRoute";
 import { appInfo } from "../../app.config";
 import { setGeolocation } from "../../fn/app/geolocation";
+import { getAgeFromBirthday } from "../../fn/util/getAgeFromBirthday";
 
 export const ShowMypageTop = (props) => {
   const {
@@ -30,7 +31,7 @@ export const ShowMypageTop = (props) => {
 
     if (diff === 0) return "マッチングしない";
     else if (diff === 100) return "制限なし";
-    else return diff + "歳まで";
+    else return diff + "歳差まで";
   };
 
   const handleDeleteAccount = async () => {
@@ -77,13 +78,16 @@ export const ShowMypageTop = (props) => {
                 error: (e) => {
                   let errorMessage =
                     e.code === 1
-                      ? "現在地の取得を許可してください。"
-                      : "位置情報の取得中にエラーが発生しました。";
+                      ? [
+                          "現在地の取得を許可してください。",
+                          "もう一度設定し直すには、アプリを再起動、またはマイページから「アプリケーションおアップデートを実行」を行い、もう一度現在地を取得してください。",
+                        ]
+                      : ["位置情報の取得中にエラーが発生しました。"];
 
                   showErrorModal({
                     content: {
                       title: "現在地の取得に失敗しました。",
-                      text: [errorMessage],
+                      text: [...errorMessage],
                     },
                   });
                 },
@@ -118,7 +122,7 @@ export const ShowMypageTop = (props) => {
     <>
       <Header title="マイページ" backable={false} />
 
-      <ul className="mypage-top-wrapper">
+      <ul className="mypage-top-wrapper app-view-container">
         <h3 className="mypage-menu-list-title mg-top-0">ユーザー情報</h3>
 
         <img
@@ -139,6 +143,12 @@ export const ShowMypageTop = (props) => {
         </button>
 
         <li style={{ marginBottom: "5px" }}>
+          性別 ：<b>{props.nowUserDoc.gender === "male" ? "男性" : "女性"}</b>
+        </li>
+        <li style={{ marginBottom: "5px" }}>
+          年齢 ：<b>{getAgeFromBirthday(props.nowUserDoc.birthday)} 歳</b>
+        </li>
+        <li style={{ marginBottom: "5px" }}>
           出身校 ：
           <b>
             {props.nowUserDoc?.hometown?.prefecture +
@@ -157,12 +167,12 @@ export const ShowMypageTop = (props) => {
           content={props.nowUserDoc?.name}
         />
 
-        <ListMenu
+        {/* <ListMenu
           id={cmpConfig.state.view["004"]}
           handleClick={() => props.handleViewState(cmpConfig.state.view["004"])}
           title="年齢を編集："
           content={props.nowUserDoc?.age + " 歳"}
-        />
+        /> */}
 
         <ListMenu
           id={cmpConfig.state.view["005"]}
@@ -177,10 +187,6 @@ export const ShowMypageTop = (props) => {
           title="位置情報を現在地に設定"
         />
 
-        <button className="btn-gray btn-sign-out" onClick={signOutFromApp}>
-          ログアウトする
-        </button>
-
         <h3 className="mypage-menu-list-title">マッチング設定</h3>
 
         <ListMenu
@@ -192,26 +198,36 @@ export const ShowMypageTop = (props) => {
           )} / 年下：${getMatchingAgeText("minus")} `}
         />
 
-        {/* <ListMenu
-          id={cmpConfig.state.view["006"]}
-          handleClick={() =>
-            props.handleViewState(cmpConfig.state.view["005"])
-          }
-          title="出身地を編集："
-          content={
-            props.nowUserDoc?.hometown.prefecture + " " + props.nowUserDoc?.hometown.city
-          }
-        />
-
-        <ListMenu
-          id={cmpConfig.state.view["007"]}
-          handleClick={() =>
-            props.handleViewState(cmpConfig.state.view["005"])
-          }
-          title="出身大学を編集："
-          content={props.nowUserDoc?.history?.university}
-        /> */}
         <h3 className="mypage-menu-list-title">その他</h3>
+        <ListMenu
+          id="EXECUTE_SUPER_RELOAD"
+          handleClick={() => {
+            showConfirmModal({
+              content: {
+                title: "アプリをアップデートする",
+                text: [
+                  "「はい」を押すと、アプリケーションを再起動します。",
+                  "アップデートがあれば、自動的に適用されます。",
+                ],
+              },
+              children: (
+                <ChoiceActionButton
+                  text={{
+                    yes: "はい",
+                    no: "いいえ",
+                  }}
+                  callback={{
+                    yes: () => {
+                      window.location.reload(true);
+                    },
+                    no: eraceModal,
+                  }}
+                />
+              ),
+            });
+          }}
+          title="アプリケーションのアップデートを実行"
+        />
 
         <ListMenu
           id={cmpConfig.state.view["000"]}
@@ -222,6 +238,7 @@ export const ShowMypageTop = (props) => {
               },
               children: (
                 <div>
+                  <p>アプリ名：{appInfo.appName}</p>
                   <p>
                     version:{" "}
                     <span className="orange">{`${appInfo.version} (${appInfo.mode})`}</span>
@@ -252,7 +269,24 @@ export const ShowMypageTop = (props) => {
           handleClick={confirmDeleteAccount}
           title={<span className="orange">アカウントを削除</span>}
         />
+
+        <button
+          className="btn-gray btn-sign-out"
+          onClick={() => {
+            showConfirmModal({
+              content: { title: "ログアウトしますか？" },
+              children: (
+                <ChoiceActionButton
+                  callback={{ yes: signOutFromApp, no: eraceModal }}
+                />
+              ),
+            });
+          }}
+        >
+          ログアウトする
+        </button>
       </ul>
+      <div className="spacer" style={{ height: "100px" }}></div>
     </>
   );
 };

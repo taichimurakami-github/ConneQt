@@ -17,6 +17,14 @@ const firebase_configData = {
     messagingSenderId: "753030643012",
     appId: "1:753030643012:web:cdeca0e58c0a7eeee3ab11",
   },
+  beta_public: {
+    apiKey: "AIzaSyD883q-fz5CRGPCjJe8FAS_5PjWFBclidQ",
+    authDomain: "dezamii-beta-2d77f.firebaseapp.com",
+    projectId: "dezamii-beta-2d77f",
+    storageBucket: "dezamii-beta-2d77f.appspot.com",
+    messagingSenderId: "578671779959",
+    appId: "1:578671779959:web:7dc5dfc5267de366c7e672",
+  },
 };
 
 const firebaseConfig = { ...firebase_configData[appInfo.mode] };
@@ -28,12 +36,14 @@ const firestoreQueryConfig = {
 const db_name = {
   user: "users",
   chatRoom: "chatRooms",
+  appInfo: "appInfo",
 };
 
 const userDocTemplate = {
   uid: "",
   name: "",
-  age: "",
+  birthday: { y: "", m: "", d: "" },
+  gender: "",
   email: "",
   photo: "",
   hometown: {

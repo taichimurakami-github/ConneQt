@@ -2,11 +2,10 @@ import {
   getDownloadURL,
   getStorage,
   ref,
-  uploadBytes,
   uploadString,
 } from "firebase/storage";
 import { doc, getFirestore, onSnapshot, setDoc } from "firebase/firestore";
-import { db_name, firebaseConfig } from "../../firebase.config";
+import { db_name } from "../../firebase.config";
 import "./firestore.ready";
 
 const db = getFirestore();
@@ -47,7 +46,7 @@ export const registerUpdateHookForUsers = (uid, setter) => {
    * それ以降はユーザーデータに変更があったときのみ該当データが取得される。
    */
   return onSnapshot(doc(db, db_name.user, uid), (doc) => {
-    console.log("user data updated.");
+    // console.log("user data updated.");
     console.log(doc.data());
     setter(doc.data());
   });

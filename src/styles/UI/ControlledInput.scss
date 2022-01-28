@@ -13,10 +13,31 @@ textarea {
   width: 90%;
   max-width: 250px;
   margin: 0 auto 30px;
+  font-size: 1.5rem;
 }
 
 textarea {
   resize: none;
   max-width: 500px;
   height: 130px;
+}
+
+.ymd-selects-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  column-gap: 10px;
+  margin-bottom: 30px;
+
+  select {
+    padding: 5px;
+    margin: 0;
+  }
+
+  .long-select {
+    width: 70px;
+  }
+  .short-select {
+    width: 50px;
+  }
 }

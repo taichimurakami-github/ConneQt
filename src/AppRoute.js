@@ -1,7 +1,7 @@
 import { useState, useEffect, createContext } from "react";
 import { App } from "./App";
 
-import { appConfig } from "./app.config";
+import { appConfig, appInfo } from "./app.config";
 import { SignUp } from "./components/SignUp";
 import { ModalHandler } from "./components/ModalHandler";
 import { RegisterHandler } from "./components/RegisterHandler";
@@ -10,6 +10,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { doc, getFirestore, onSnapshot } from "firebase/firestore";
 import { getAuthUserDoc } from "./fn/db/getHandler";
 import { signOut } from "./fn/auth/firebase.auth";
+import { ErrorBoundary } from "react-error-boundary";
 
 export const AppRouteContext = createContext();
 
@@ -108,7 +109,7 @@ export const AuthHandler = () => {
     const authUserDoc_unSubFunc = onSnapshot(
       doc(db, "users", user.uid),
       (doc) => {
-        console.log("your doc data has been changed.");
+        // console.log("your doc data has been changed.");
         const data = doc.data();
 
         //undefinedだったらこれ以下の処理を実行しない(アカウント消去時)
@@ -121,19 +122,24 @@ export const AuthHandler = () => {
     return registerUnsubFunc([authUserDoc_unSubFunc]);
   };
 
-  //ログイン状態を判定・処理
   useEffect(() => {
+    //localStorage.appNavの利用準備
+    //    if(!LSHandler.load(appConfig.localStorage["002"].id)){
+    // LSHandler.save(appConfig.localStorage["002"].id)
+    //    }
+
+    //ログイン状態を判定・処理
     showLoadingModal();
     const auth = getAuth();
     // setPageContentState(appConfig.pageContents["002"]);
 
     onAuthStateChanged(auth, (user) => {
-      console.log(user);
+      // console.log(user);
       if (user) {
         // User is signed in, see docs for a list of available properties
         // https://firebase.google.com/docs/reference/js/firebase.User
         console.log("you have signed in as : " + user.email);
-        authState && console.log("you have already authenticated.");
+        // authState && console.log("you have already authenticated.");
 
         if (!authState) {
           //すでにauthStateが設定されている場合のみ実施
@@ -151,7 +157,7 @@ export const AuthHandler = () => {
         eraceModal();
       } else {
         // User is signed out
-        console.log("you have signed out!");
+        console.log("you have signed out");
 
         // AuthStateを初期化
         setAuthState(null);
@@ -170,7 +176,7 @@ export const AuthHandler = () => {
         const isUserStateExists = authUserDoc ? true : false;
         if (isUserStateExists) {
           //既にuserDocStateが存在しているかどうか判定
-          console.log("your userdata has already exist.");
+          // console.log("your userdata has already exist.");
           eraceModal();
           return;
         }
@@ -188,16 +194,19 @@ export const AuthHandler = () => {
           } else {
             //fetchedAuthUserData == nullだった
             //初回登録へ
-            console.log("you are new here.");
+            // console.log("you are new here.");
             setViewState(appConfig.routePageContents["002"]);
           }
         } catch (e) {
+          console.log(e);
           showErrorModal({
             content: {
               title: "Google認証に失敗しました。",
               text: [
                 "アクセス権が存在しない可能性があります。",
-                "登録には、事前登録フォームでのお申し込みが必要です。",
+                "Twitterまたはメールにてご連絡ください。",
+                <a href={`mailto:${appInfo.contact}`}>{appInfo.contact}</a>,
+                <a href={appInfo.twitter}>公式twitterはこちら</a>,
               ],
             },
           });
@@ -248,7 +257,7 @@ export const AuthHandler = () => {
   };
 
   return (
-    <>
+    <ErrorBoundary>
       <AppRouteContext.Provider
         value={{
           modalState,
@@ -266,6 +275,6 @@ export const AuthHandler = () => {
 
         <ModalHandler />
       </AppRouteContext.Provider>
-    </>
+    </ErrorBoundary>
   );
 };

@@ -5,6 +5,7 @@ import { useEffect, useState, useContext } from "react";
 import { ShowFoundUsersList } from "./FindUsers/ShowFoundUsersList";
 import { ShowUserProfile } from "./FindUsers/ShowUserProfile";
 import { ShowRequestForm } from "./FindUsers/ShowRequestForm";
+import ErrorBoundary from "./ErrorBoundary";
 
 //import firebase fn
 import { getRelatedUserDocs } from "../fn/db/getHandler";
@@ -22,8 +23,6 @@ export const FindUserHandler = (props) => {
   const [viewState, setViewState] = useState(cmpConfig.state.view["001"]);
 
   const fetchAndRenewAllUserDocs = async () => {
-    // console.log("handle fetch");
-
     //モーダルを表示
     showLoadingModal();
 
@@ -43,8 +42,6 @@ export const FindUserHandler = (props) => {
   const handleSendRequest = () => {
     const senderUid = props.nowUserDoc.uid;
     const receiverUid = selectedUserState.uid;
-
-    console.log(senderUid, receiverUid);
 
     (async () => {
       showLoadingModal();
@@ -116,5 +113,5 @@ export const FindUserHandler = (props) => {
     }
   };
 
-  return <>{handleView()}</>;
+  return <ErrorBoundary>{handleView()}</ErrorBoundary>;
 };

@@ -1,10 +1,10 @@
 import { useContext, useState } from "react";
 import { AppRouteContext } from "../../AppRoute";
+import { updateUserData } from "../../fn/db/updateHandler";
+
 import { cmpConfig } from "./config";
 import { Header } from "../UI/Header";
 import { ControlledInputText } from "../UI/InputText";
-import { validateAccountData } from "../../fn/app/validateAccountData";
-import { updateUserData } from "../../fn/db/updateHandler";
 import { MatchingAgeDiffOptions } from "../UI/Options";
 
 export const EditMatchingAge = (props) => {
@@ -51,7 +51,6 @@ export const EditMatchingAge = (props) => {
   };
 
   const isAbleToSubmit = () => {
-    console.log(typeof overAgeRestriction, typeof belowAgeRestriction);
     return (
       overAgeRestriction !== props.defaultValue.plus ||
       belowAgeRestriction !== props.defaultValue.minus
@@ -66,14 +65,13 @@ export const EditMatchingAge = (props) => {
         handleBack={() => props.handleViewState(cmpConfig.state.view["001"])}
       />
 
-      <form onSubmit={handleSubmit}>
+      <form className="app-view-container" onSubmit={handleSubmit}>
         <h2 className="input-target-title" style={{ marginBottom: "30px" }}>
           マッチング年齢幅を設定
         </h2>
         <p className="description">
-          マッチングする年齢幅を設定してください。<br></br>
+          マッチングする年齢幅を選択してください。<br></br>
           年上、年下それぞれ別々に設定できます。<br></br>
-          なお、半角英数字で0〜100の数字のみ設定できます。
         </p>
         <ControlledInputText
           id="over-age-restriction"

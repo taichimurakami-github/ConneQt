@@ -4,8 +4,8 @@ import { getImageDataURL } from "../../fn/app/getImageDataURL";
 
 import { ChoiceActionButton } from "../UI/Button";
 import { Header } from "../UI/Header";
-import { ControlledInputText } from "../UI/InputText";
-import { AgeOptions } from "../UI/Options";
+import { ControlledInputText, ControlledSelectYmd } from "../UI/InputText";
+import { GenderOptions } from "../UI/Options";
 
 import { AppRouteContext } from "../../AppRoute";
 
@@ -108,22 +108,32 @@ export const InputBasicData = (props) => {
         />
 
         <ControlledInputText
-          id="userAge"
+          id="userGender"
           element="select"
-          valueState={props.registerUserData.age}
+          valueState={props.registerUserData.gender}
           setValueState={(inputValue) => {
             props.dispatchUserData({
               type: "set",
-              value: { age: inputValue },
+              value: { gender: inputValue },
             });
           }}
           text={{
-            label: "年齢(選択してください)",
+            label: "性別(選択してください)",
           }}
           required={true}
         >
-          <AgeOptions />
+          <GenderOptions />
         </ControlledInputText>
+
+        <ControlledSelectYmd
+          valueState={props.registerUserData.birthday}
+          setValueState={(value) => {
+            props.dispatchUserData({
+              type: "set",
+              value: { birthday: value },
+            });
+          }}
+        />
 
         <ControlledInputText
           id="userProfile"
@@ -144,7 +154,7 @@ export const InputBasicData = (props) => {
           required={true}
           statefulNavComponent={
             <p>
-              {props.registerUserData.profile.length}/{100}
+              入力文字数：{props.registerUserData.profile.length}/{100}
             </p>
           }
         />

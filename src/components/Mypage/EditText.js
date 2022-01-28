@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { validateAccountData } from "../../fn/app/validateAccountData";
 import { Header } from "../UI/Header";
 import { ControlledInputText } from "../UI/InputText";
 import { cmpConfig } from "./config";
@@ -7,15 +6,25 @@ import { cmpConfig } from "./config";
 export const EditText = (props) => {
   const [inputState, setInputState] = useState(props.defaultValue);
   let ControlledInputProps = {};
+  let h2TitleText = "";
 
   const generateHeaderTitle = () => {
     switch (props.viewState) {
-      case cmpConfig.state.view["002"]:
-        return "アイコンを編集";
       case cmpConfig.state.view["003"]:
-        return "お名前を編集";
-      case cmpConfig.state.view["004"]:
-        return "年齢を編集";
+        ControlledInputProps = {
+          text: {
+            label: "お名前を30文字以内で入力",
+            placeholder: "お名前を入力",
+          },
+          maxLength: 30,
+          statefulNavComponent: (
+            <p>
+              {inputState.length}/{30}
+            </p>
+          ),
+        };
+
+        return (h2TitleText = "お名前を編集");
       case cmpConfig.state.view["005"]:
         ControlledInputProps = {
           text: {
@@ -29,7 +38,7 @@ export const EditText = (props) => {
             </p>
           ),
         };
-        return "プロフィール編集";
+        return (h2TitleText = "プロフィール編集");
       default:
         return "";
     }
@@ -37,8 +46,7 @@ export const EditText = (props) => {
 
   const isAbleToSubmit = () => {
     return (
-      inputState !== props.defaultValue &&
-      validateAccountData("string-01", inputState)
+      inputState !== props.defaultValue && props.handleValidate(inputState)
     );
   };
 
@@ -55,14 +63,15 @@ export const EditText = (props) => {
         handleBack={() => props.handleViewState(cmpConfig.state.view["001"])}
       />
 
-      <form onSubmit={handleSubmit}>
-        <h2 className="input-target-title">{props.title}</h2>
+      <form className="app-view-container" onSubmit={handleSubmit}>
+        <h2 className="input-target-title">{h2TitleText}</h2>
         <ControlledInputText
           id={props.viewState}
           element={props.inputMode}
           valueState={inputState}
           setValueState={setInputState}
           required={true}
+          maxLength={30}
           {...ControlledInputProps}
         >
           {props.children}

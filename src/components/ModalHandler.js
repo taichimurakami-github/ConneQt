@@ -8,7 +8,7 @@ import { ErrorModal } from "./Modal/ErrorModal";
 import { AppRouteContext } from "../AppRoute";
 
 //style import
-import "../styles/modal.scss";
+import "../styles/Modal.scss";
 
 export const ModalHandler = () => {
   const { modalState, eraceModal } = useContext(AppRouteContext);

@@ -2,8 +2,7 @@
 import { appConfig } from "./app.config";
 
 // lib imports
-
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, createContext } from "react";
 
 // components imports
 import { FindUserHandler } from "./components/FindUserHandler";
@@ -19,21 +18,25 @@ import { getRelatedUserDocs, getUserDocsByDataArray } from "./fn/db/getHandler";
 import "./styles/App.scss";
 
 import { doc, getFirestore, onSnapshot } from "firebase/firestore";
-
 import { AppRouteContext } from "./AppRoute";
 import { db_name } from "./firebase.config";
+import { LSHandler } from "./fn/app/handleLocalStorage";
+
+export const AppMenuContext = createContext();
 
 export const App = (props) => {
   /**
    * setState definitions
    */
-  const { authUserDoc, eraceModal } = useContext(AppRouteContext);
+  const { authUserDoc, showConfirmModal, eraceModal } =
+    useContext(AppRouteContext);
   // const [nowUserDoc, setNowUserDoc] = useState({...authUserDoc})
   const [relatedUserDocsState, setRelatedUserDocsState] = useState({});
   const [pageContentState, setPageContentState] = useState(
     appConfig.pageContents["003"]
   );
   const [chatRoomDataState, setChatRoomDataState] = useState({});
+  const [appMenuVisibleState, setAppMenuVisibleState] = useState(true);
 
   /**
    * useEffect functions
@@ -78,6 +81,16 @@ export const App = (props) => {
             (doc) => {
               //現在のchatRoomDataStateに要素を追加
               const data = doc.data();
+
+              // //localStorage内に該当データが存在しない場合は追加しておく
+              const lsData = LSHandler.load(appConfig.localStorage["001"].id);
+              if (!lsData || !lsData.hasOwnProperty(chatRoomID)) {
+                LSHandler.save(appConfig.localStorage["001"].id, {
+                  [chatRoomID]: { checkedAt: 0 },
+                });
+              }
+
+              // doc.dataが存在していればchatRoomDataStateを更新
               if (data) {
                 //多重state更新に対処するため、バッチ処理とする
                 setChatRoomDataState((beforeChatRoomDataState) => {
@@ -120,7 +133,7 @@ export const App = (props) => {
     newUserUidArray.length > 0 &&
       (async () => {
         const r = await getUserDocsByDataArray(newUserUidArray);
-        console.log({ ...relatedUserDocsState, ...r });
+        // console.log({ ...relatedUserDocsState, ...r });
         setRelatedUserDocsState({
           ...relatedUserDocsState,
           ...r,
@@ -131,15 +144,6 @@ export const App = (props) => {
     authUserDoc.request.received,
     authUserDoc.request.sent,
   ]);
-
-  // const deleteExistChatRoomData = (tRoomID = "") => {
-  //   if ((chatRoomID = "")) return;
-
-  //   const validatedChatRoomDataState = { ...chatRoomDataState };
-  //   delete validatedChatRoomDataState[chatRoomID];
-
-  //   setChatRoomDataState(validatedChatRoomDataState);
-  // };
 
   /**
    * handle Page Content(Main content) by appConfig.pageContents data
@@ -156,7 +160,6 @@ export const App = (props) => {
             chatRoomData={chatRoomDataState}
             handleChatRoom={setChatRoomDataState}
             handleRelatedUserDocs={setRelatedUserDocsState}
-            handlePageContent={setPageContentState}
           />
         );
 
@@ -186,12 +189,15 @@ export const App = (props) => {
    */
   return (
     <div className="App">
-      {handlePageContent(pageContentState)}
-      <div className="spacer" style={{ height: "100px" }}></div>
-      {authUserDoc && (
+      <AppMenuContext.Provider value={{ setAppMenuVisibleState }}>
+        {/* <div className="spacer" style={{ height: "100px" }}></div> */}
+        {handlePageContent(pageContentState)}
+      </AppMenuContext.Provider>
+      {authUserDoc && appMenuVisibleState && (
         <PageMenu
           pageContentState={pageContentState}
           handlePageContent={setPageContentState}
+          visibility={appMenuVisibleState}
         />
       )}
     </div>

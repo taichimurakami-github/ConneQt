@@ -12,6 +12,20 @@ export const appConfig = {
       content: null,
     },
   },
+  localStorage: {
+    "001": {
+      id: "CHATROOM_USER_ACTION_LOG",
+      template: {
+        chatRoom: {},
+      },
+    },
+    "002": {
+      id: "APP_USER_NAVIGATON_MODAL_ARGS",
+      template: {
+        type: null,
+      },
+    },
+  },
   components: {
     modal: {
       type: {
@@ -35,9 +49,11 @@ export const appConfig = {
 };
 
 export const appInfo = {
-  version: "2022.01.10__001",
-  mode: "beta",
+  appName: "Dezamii",
+  version: "1.0.4",
+  mode: "beta_public",
   db: "firestore",
   contact: "conneqtu@gmail.com",
+  twitter: "https://twitter.com/Dezamii_ConneQt",
   copyright: "ConneQt",
 };

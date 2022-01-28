@@ -10,15 +10,16 @@ export const ShowUserProfileOnRequestReceived = (props) => {
         title={`${props.targetUserDoc?.name} さんのプロフィール`}
         handleBack={() => props.handleViewState(cmpConfig.state.view["001"])}
       />
+      <div className="app-view-container">
+        <UserProfile userDoc={props.targetUserDoc} />
 
-      <UserProfile userDoc={props.targetUserDoc} />
-
-      <button className="btn-orange" onClick={props.handleApproveRequest}>
-        リクエストを許可する
-      </button>
-      <button className="btn-gray" onClick={props.handleRejectRequest}>
-        リクエストを拒否する
-      </button>
+        <button className="btn-orange" onClick={props.handleApproveRequest}>
+          リクエストを許可する
+        </button>
+        <button className="btn-gray" onClick={props.handleRejectRequest}>
+          リクエストを拒否する
+        </button>
+      </div>
     </>
   );
 };
