@@ -15,6 +15,7 @@ import { ConfirmInputData } from "./Register/ConfirmInputData";
 import { InputNowLocationData } from "./Register/InputNowLocationData";
 
 import "../styles/Register.scss";
+import { appInfo } from "../app.config";
 
 const userDataReducerFunc = (state, action) => {
   switch (action.type) {
@@ -116,7 +117,7 @@ export const RegisterHandler = (props) => {
   useEffect(() => {
     showConfirmModal({
       content: {
-        title: "Hey! へようこそ！",
+        title: appInfo.appName + " へようこそ！",
         text: [
           "新規アカウントへの情報登録を行います。",
           "必要な情報を入力し、「次へ進む」を押してください。",

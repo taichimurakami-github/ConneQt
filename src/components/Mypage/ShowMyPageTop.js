@@ -238,6 +238,7 @@ export const ShowMypageTop = (props) => {
               },
               children: (
                 <div>
+                  <p>アプリ名：{appInfo.appName}</p>
                   <p>
                     version:{" "}
                     <span className="orange">{`${appInfo.version} (${appInfo.mode})`}</span>
