@@ -134,9 +134,11 @@ export const App = (props) => {
       (async () => {
         const r = await getUserDocsByDataArray(newUserUidArray);
         // console.log({ ...relatedUserDocsState, ...r });
-        setRelatedUserDocsState({
-          ...relatedUserDocsState,
-          ...r,
+        setRelatedUserDocsState((beforeUserDocsState) => {
+          return {
+            ...beforeUserDocsState,
+            ...r,
+          };
         });
       })();
   }, [
