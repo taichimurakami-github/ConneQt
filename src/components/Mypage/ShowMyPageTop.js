@@ -149,7 +149,7 @@ export const ShowMypageTop = (props) => {
           年齢 ：<b>{getAgeFromBirthday(props.nowUserDoc.birthday)} 歳</b>
         </li>
         <li style={{ marginBottom: "5px" }}>
-          出身校 ：
+          出身地 ：
           <b>
             {props.nowUserDoc?.hometown?.prefecture +
               " " +
@@ -157,7 +157,7 @@ export const ShowMypageTop = (props) => {
           </b>
         </li>
         <li style={{ marginBottom: "15px" }}>
-          出身地 ： <b>{props.nowUserDoc?.history?.university}</b>
+          出身校 ： <b>{props.nowUserDoc?.history?.university}</b>
         </li>
 
         <ListMenu
