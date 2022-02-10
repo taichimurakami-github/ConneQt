@@ -1,18 +1,17 @@
 @import "./common/assets";
 
 .sign-up-content-container {
-  position: fixed;
-  width: 100%;
-  height: 100%;
+  padding: 15px;
   overflow: auto;
 
   .app-logo-icon {
-    width: 250px;
+    width: 225px;
+    margin-top: 35px;
     margin-bottom: 20px;
   }
 
   .app-logo-type {
-    width: 250px;
+    width: 200px;
     margin-bottom: 50px;
   }
 
