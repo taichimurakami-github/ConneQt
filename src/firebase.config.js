@@ -67,7 +67,7 @@ const userDocTemplate = {
   setting: {
     matching: {
       age: {
-        diff: { plus: 2, minus: 2 },
+        diff: { plus: 100, minus: 100 },
       },
       hometown: {
         prefecture: true,
