@@ -37,7 +37,7 @@ $text-height: 15px;
   }
 
   &.active {
-    color: $yellow;
+    color: $base1;
   }
 }
 
@@ -46,7 +46,7 @@ $text-height: 15px;
   width: 15px;
   height: 15px;
   border-radius: 100px;
-  background: $orange;
+  background: $base1;
 
   &:not(.active) {
     display: none;

@@ -17,17 +17,17 @@ $button-size: 100px;
     margin-bottom: 10px;
   }
 
-  &.sent {
-    .title {
-      color: $yellow;
-    }
-    border: 2px solid $yellow;
-  }
   &.received {
     .title {
-      color: $orange;
+      color: $base1;
     }
-    border: 2px solid $orange;
+    border: 2px solid $base1;
+  }
+  &.sent {
+    .title {
+      color: $accent;
+    }
+    border: 2px solid $accent;
   }
 }
 

@@ -1,7 +1,8 @@
 import { signInWithGoogle } from "../fn/auth/firebase.auth";
 
 import "../styles/SignUp.scss";
-import logo from "../images/SVG/dezamii_char_white.svg";
+import logo from "../images/logo_dezamii.png";
+import logotype from "../images/SVG/dezamii_logotype.svg";
 
 export const SignUp = () => {
   const isRunningOnPWA = window.matchMedia("(display-mode: standalone").matches;
@@ -10,10 +11,11 @@ export const SignUp = () => {
     <>
       <div className="sign-up-content-container flex-col-xyc">
         <img
-          className="app-logo"
+          className="app-logo-icon"
           src={logo}
-          alt="Hey! コミュニケーション促進サービス"
+          alt="Dezamii コミュニケーション促進サービス"
         ></img>
+        <img className="app-logo-type" src={logotype} alt="De"></img>
         <button className="btn-orange btn-sign-up" onClick={signInWithGoogle}>
           googleアカウントでログイン
         </button>

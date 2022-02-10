@@ -36,11 +36,11 @@ button {
   }
 
   &.btn-gray {
-    background: $darkgray;
+    background: $accent;
   }
 
   &.btn-orange {
-    background: $orange;
+    background: $base1;
   }
 
   &.btn-img {
@@ -95,7 +95,7 @@ h2 {
 }
 
 .orange {
-  color: orange;
+  color: $base1;
 }
 
 .darkgray {
@@ -124,7 +124,7 @@ h2 {
   }
 
   &.orange {
-    background: $orange;
+    background: $base1;
   }
 
   &.blink {

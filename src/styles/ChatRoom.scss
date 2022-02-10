@@ -43,7 +43,7 @@ $input-text-focus-height: 160px;
     .chat-input-form {
       height: $input-text-focus-height;
       textarea {
-        background: lighten($orange, 45%);
+        background: lighten($base1, 45%);
       }
     }
   }
@@ -81,12 +81,12 @@ $input-text-focus-height: 160px;
     text-align: left;
     word-break: break-all;
     max-width: 70vw;
+    color: white;
 
     &.me {
-      background: $yellow;
+      background: $base1;
     }
     &.with {
-      color: white;
       background: $darkgray;
     }
   }
